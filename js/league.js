@@ -115,8 +115,9 @@ function renderTeamCards(standings) {
   standings.forEach(t => {
     const href = ROUTES[t.name] || '#';
     const wr = t.gp > 0 ? (t.wins / t.gp * 100).toFixed(0) + '%' : '—';
-    const disabled = href === '#' ? 'style="opacity:.45;pointer-events:none"' : '';
-    grid.innerHTML += `<a href="${href}" class="vs-card" ${disabled} style="display:block;text-decoration:none;color:inherit">
+    const baseStyle = 'display:block;text-decoration:none;color:inherit';
+    const extraStyle = href === '#' ? 'opacity:.45;pointer-events:none;' : '';
+    grid.innerHTML += `<a href="${href}" class="vs-card" style="${extraStyle}${baseStyle}">
       <div style="font-size:.82rem;color:var(--text2);margin-bottom:.4rem">${short(t.name)}</div>
       <div class="vs-record"><span class="w">${t.wins}</span><span style="color:var(--text2)">W </span><span class="l">${t.losses}</span><span style="color:var(--text2)">L</span></div>
       <div style="font-size:.76rem;color:var(--text2);margin-top:.2rem">${wr} 勝率${href !== '#' ? ' →' : ''}</div>
