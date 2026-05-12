@@ -635,3 +635,164 @@ def calc_simulation(standings_raw, team_name):
             "championship":   "Bo7（7戰4勝），主場分配 2-2-1-1-1",
         },
     }
+
+
+def load_allteam(allteam_file=None):
+    path = allteam_file or ALLTEAM_FILE
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def calc_standings(allteam_data):
+    raw = [
+        {"name": t["team"]["name"],
+         "wins": t["won_game_count"],
+         "losses": t["lost_game_count"],
+         "gp": t["game_count"]}
+        for t in allteam_data
+    ]
+    return sorted(raw, key=lambda x: -(x["wins"] / x["gp"] if x["gp"] > 0 else 0))
+
+
+def calc_next_game(allgame_data, team_id, standings_raw, team_wr):
+    """Return next_game dict from schedule; empty dict if season over."""
+    import datetime as dt_mod
+    today = dt_mod.date.today()
+
+    upcoming = sorted(
+        [g for g in allgame_data
+         if (g["home_team"]["id"] == team_id or g["away_team"]["id"] == team_id)
+         and dt_mod.datetime.strptime(g["game_date"], "%Y-%m-%d").date() >= today],
+        key=lambda x: x["game_date"]
+    )
+    if not upcoming:
+        return {}
+
+    g        = upcoming[0]
+    is_home  = g["home_team"]["id"] == team_id
+    opp_team = g["away_team"] if is_home else g["home_team"]
+    opp_name = opp_team["name"]
+
+    opp_row = next((t for t in standings_raw if t["name"] == opp_name), None)
+    opp_wr  = (opp_row["wins"] / opp_row["gp"]
+               if opp_row and opp_row["gp"] > 0 else 0.5)
+    base     = team_wr / (team_wr + opp_wr + 1e-9)
+    prob_adj = float(np.clip(base + (HOME_ADV if is_home else -HOME_ADV), 0.05, 0.95))
+
+    weekdays_cn = ["一", "二", "三", "四", "五", "六", "日"]
+    dt = dt_mod.datetime.strptime(g["game_date"], "%Y-%m-%d")
+    ha = "主場" if is_home else "客場"
+    date_label = f"{dt.month}/{dt.day}（{weekdays_cn[dt.weekday()]}）{ha}"
+
+    return {
+        "opponent":          opp_name,
+        "date":              date_label,
+        "is_home":           is_home,
+        "win_prob_model":    round(base, 4),
+        "win_prob_adjusted": round(prob_adj, 4),
+    }
+
+
+def process_team(team_id, games_dir=None, allteam_file=None, allgame_file=None):
+    """Full pipeline for one team. Returns output dict and writes data/{slug}_2526.json."""
+    from generate_league import calc_league_rtg, calc_scoring_sources
+
+    cfg     = TEAMS[team_id]
+    slug    = cfg["slug"]
+    name    = cfg["name"]
+    is_full = cfg["full_depth"]
+
+    all_game_data = load_game_files(games_dir)
+    allteam_data  = load_allteam(allteam_file)
+
+    _allgame_path = allgame_file or os.path.join(_BASE_DIR, "data", "allgame_2526.txt")
+    with open(_allgame_path, encoding="utf-8") as f:
+        allgame_data = json.load(f)
+
+    games          = parse_games(all_game_data, team_id, name)
+    vs_summary     = calc_vs_summary(games)
+    home_away      = calc_home_away(games)
+    standings_raw  = calc_standings(allteam_data)
+    quarter        = calc_quarter_analysis(games, all_game_data, team_id)
+    league_rtg     = calc_league_rtg(allteam_data)
+    scoring_src    = calc_scoring_sources(allteam_data)
+
+    team_row     = next((t for t in standings_raw if t["name"] == name), None)
+    total_wins   = team_row["wins"]   if team_row else sum(g["won"] for g in games)
+    total_losses = team_row["losses"] if team_row else sum(not g["won"] for g in games)
+    total_gp     = team_row["gp"]     if team_row else len(games)
+    games_rem    = max(0, TOTAL_GAMES - total_gp)
+    win_rate     = total_wins / total_gp if total_gp > 0 else 0.5
+
+    next_game = calc_next_game(allgame_data, team_id, standings_raw, win_rate)
+
+    output = {
+        "meta": {
+            "team_id":         team_id,
+            "team_name":       name,
+            "season":          "2025-26",
+            "generated":       datetime.date.today().isoformat(),
+            "total_games":     total_gp,
+            "games_remaining": games_rem,
+        },
+        "team_stats": {
+            "wins":            total_wins,
+            "losses":          total_losses,
+            "games_played":    total_gp,
+            "games_remaining": games_rem,
+            "avg_pts":         _mean([g["team_score"] for g in games]),
+            "avg_opp_pts":     _mean([g["opp_score"]  for g in games]),
+            "win_rate":        round(win_rate, 4),
+        },
+        "standings":        standings_raw,
+        "league_rtg":       league_rtg,
+        "scoring_sources":  scoring_src,
+        "games":            games,
+        "vs_summary":       vs_summary,
+        "home_away":        home_away,
+        "quarter_analysis": quarter,
+        "next_game":        next_game,
+        "heatmap":          [],
+        "ppp_heatmap":      [],
+        "player_avg":       {},
+        "simulation":       {},
+        "roc":              {},
+        "mann_whitney":     [],
+        "scenario_chart":   [],
+        "last_game_hint":   {},
+        "playoff_series":   {},
+    }
+
+    if is_full and len(games) >= 4:
+        teams_order = [t["team"]["name"] for t in allteam_data if t["team"]["id"] != team_id]
+        pm_map, ppp_map, ps_map = collect_player_stats(all_game_data, team_id)
+        output["heatmap"]     = build_heatmap(pm_map, teams_order)
+        output["ppp_heatmap"] = build_ppp_heatmap(ppp_map, teams_order)
+        output["player_avg"]  = calc_player_season_avg(ps_map)
+        output["simulation"]  = calc_simulation(standings_raw, name)
+        gts                    = calc_game_team_stats(all_game_data, team_id)
+        output["roc"]          = calc_roc_analysis(gts)
+        output["mann_whitney"] = calc_mann_whitney(gts)
+        sc, hint               = calc_scenario_chart(gts, games)
+        output["scenario_chart"] = sc
+        output["last_game_hint"] = hint
+
+    out_dir  = os.path.join(_BASE_DIR, "data")
+    out_path = os.path.join(out_dir, f"{slug}_2526.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+    print(f">>> {slug}_2526.json written ({total_wins}W{total_losses}L)")
+    return output
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Process TPBL team data")
+    parser.add_argument("--team-id", type=int, required=True,
+                        choices=list(TEAMS.keys()),
+                        help="Team ID (2-8)")
+    args = parser.parse_args()
+    process_team(args.team_id)
+
+
+if __name__ == "__main__":
+    main()
