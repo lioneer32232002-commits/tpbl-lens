@@ -841,12 +841,16 @@ def process_team(team_id, games_dir=None, allteam_file=None, allgame_file=None):
         "playoff_series":   {},
     }
 
+    # 球員賽季均值：所有有比賽的隊伍都產生
+    if len(games) >= 1:
+        _, _, ps_map = collect_player_stats(all_game_data, team_id)
+        output["player_avg"] = calc_player_season_avg(ps_map)
+
     if is_full and len(games) >= 4:
         teams_order = [t["team"]["name"] for t in allteam_data if t["team"]["id"] != team_id]
-        pm_map, ppp_map, ps_map = collect_player_stats(all_game_data, team_id)
+        pm_map, ppp_map, _ = collect_player_stats(all_game_data, team_id)
         output["heatmap"]     = build_heatmap(pm_map, teams_order)
         output["ppp_heatmap"] = build_ppp_heatmap(ppp_map, teams_order)
-        output["player_avg"]  = calc_player_season_avg(ps_map)
         output["simulation"]  = calc_simulation(standings_raw, name)
         gts                    = calc_game_team_stats(all_game_data, team_id)
         output["roc"]          = calc_roc_analysis(gts)

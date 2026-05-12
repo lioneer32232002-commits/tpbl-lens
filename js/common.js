@@ -13,6 +13,26 @@ Chart.defaults.animation.duration = 900;
 Chart.defaults.animation.easing = 'easeOutQuart';
 Chart.defaults.color = '#8fa3b8';
 
+// 盤古之白：中英文/數字之間自動加空白
+function _initPangu() {
+  if (typeof pangu === 'undefined') { setTimeout(_initPangu, 80); return; }
+  try {
+    pangu.autoSpacingPage();
+  } catch (_) {
+    pangu.spacingPage();
+    const target = document.body;
+    if (window.MutationObserver) {
+      const mo = new MutationObserver(() => pangu.spacingPage());
+      mo.observe(target, { childList: true, subtree: true, characterData: true });
+    }
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _initPangu);
+} else {
+  _initPangu();
+}
+
 const _deferred = [];
 let _obs;
 function deferChart(el, factory) {

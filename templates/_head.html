@@ -3,6 +3,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" defer></script>
 <style>
   :root {
     --bg:      #0f1923;
@@ -17,9 +18,9 @@
     --hm-p2:   #0096c7;
     --hm-p1:   #90e0ef;
     --hm-z:    #374e5e;
-    --hm-n1:   #5a3020;
-    --hm-n2:   #c1440e;
-    --hm-n3:   #e85d04;
+    --hm-n1:   #f48fb1;
+    --hm-n2:   #ec407a;
+    --hm-n3:   #d81b60;
     --hm-null: #1a2a3a;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,7 +64,7 @@
   .hm-p2   { background: var(--hm-p2); color: #fff; }
   .hm-p1   { background: var(--hm-p1); color: #0a1520; }
   .hm-z    { background: var(--hm-z);  color: #8fa3b8; }
-  .hm-n1   { background: var(--hm-n1); color: #ddd; }
+  .hm-n1   { background: var(--hm-n1); color: #0a1520; }
   .hm-n2   { background: var(--hm-n2); color: #fff; }
   .hm-n3   { background: var(--hm-n3); color: #fff; }
   .hm-null { background: var(--hm-null); color: var(--text2); }
@@ -76,11 +77,14 @@
   .prob-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: var(--accent); }
   .bar-ch { background: #ffd700; }
   /* VS CARDS */
-  .vs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .75rem; }
-  .vs-card { background: var(--bg2); border-radius: 8px; padding: .75rem; border: 1px solid var(--border); text-align: center; }
-  .vs-record { font-size: 1.15rem; font-weight: 900; }
+  .vs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .6rem; }
+  .vs-card { background: var(--bg2); border-radius: 8px; padding: .65rem .5rem; border: 1px solid var(--border); text-align: center; }
+  .vs-card .vs-name { font-size: .78rem; color: var(--text2); margin-bottom: .25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vs-record { font-size: 1.05rem; font-weight: 900; white-space: nowrap; }
   .vs-record .w { color: var(--accent); }
   .vs-record .l { color: var(--text2); }
+  .vs-record .sep { color: var(--text2); margin: 0 .15rem; font-weight: 700; }
+  .vs-meta { font-size: .72rem; color: var(--text2); margin-top: .2rem; white-space: nowrap; }
   /* FOOTER */
   footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; color: var(--text2); font-size: .82rem; margin-top: 3rem; }
   footer a { color: var(--accent); text-decoration: none; }
@@ -91,5 +95,17 @@
     h2 { font-size: .95rem; }
     .hm-cell { width: 50px; height: 30px; font-size: .74rem; }
     .hm-name { font-size: .74rem; padding: .3rem .4rem; }
+    table { font-size: .8rem; }
+    th, td { padding: .35rem .45rem; white-space: nowrap; }
+    .card { padding: .85rem; }
+    .vs-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .45rem; }
+    .vs-card { padding: .5rem .35rem; }
+    .vs-record { font-size: .95rem; }
+    .vs-card .vs-name { font-size: .7rem; }
+    .vs-meta { font-size: .66rem; }
+    /* 主客場 mobile：隱藏 "場/勝/敗" 單位，只留數字 */
+    .ha-unit { display: none; }
+    .ha-wl .ha-sep::before { content: "-"; color: var(--text2); margin: 0 .15rem; }
+    .ha-wl { white-space: nowrap; }
   }
 </style>

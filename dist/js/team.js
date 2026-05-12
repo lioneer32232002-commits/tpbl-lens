@@ -122,9 +122,9 @@ function renderVsCards(vs) {
     const total = r.w + r.l;
     const wr = total > 0 ? (r.w / total * 100).toFixed(0) + '%' : '—';
     html += `<div class="vs-card">
-      <div style="font-size:.78rem;color:var(--text2);margin-bottom:.3rem">${esc(short(opp))}</div>
-      <div class="vs-record"><span class="w">${r.w}</span><span style="color:var(--text2)">勝</span><span class="l">${r.l}</span><span style="color:var(--text2)">敗</span></div>
-      <div style="font-size:.74rem;color:var(--text2);margin-top:.2rem">${wr} · 均${(+(r.avg_team ?? 0)).toFixed(1)}分</div>
+      <div class="vs-name">${esc(short(opp))}</div>
+      <div class="vs-record"><span class="w">${r.w}</span><span class="sep">-</span><span class="l">${r.l}</span></div>
+      <div class="vs-meta">${wr} · 均 ${(+(r.avg_team ?? 0)).toFixed(1)}</div>
     </div>`;
   });
   grid.innerHTML = html;
@@ -140,8 +140,8 @@ function renderHomeAway(ha) {
     const net = avgPts - avgOpp;
     return `<tr>
       <td><strong>${label}</strong></td>
-      <td>${d.gp} 場</td>
-      <td>${d.wins} 勝 ${d.losses} 敗</td>
+      <td>${d.gp}<span class="ha-unit"> 場</span></td>
+      <td class="ha-wl"><span style="color:var(--accent);font-weight:700">${d.wins}</span><span class="ha-unit"> 勝</span><span class="ha-sep"> </span><span style="color:var(--text2)">${d.losses}</span><span class="ha-unit"> 敗</span></td>
       <td>${(winRate * 100).toFixed(1)}%</td>
       <td>${avgPts.toFixed(1)} / ${avgOpp.toFixed(1)}</td>
       <td style="color:${net >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${net >= 0 ? '+' : ''}${net.toFixed(1)}</td>
@@ -282,56 +282,131 @@ function renderQuarter(qa) {
 }
 
 function renderMannWhitney(mw) {
-  const tbody = document.getElementById('mw-tbody');
-  if (!tbody || !mw) return;
-  let html = '';
-  mw.forEach(item => {
-    const sig = item.significant
-      ? `<span style="color:var(--accent);font-weight:700">✓ p=${(+(item.p_value ?? 0)).toFixed(4)}</span>`
-      : `<span style="color:var(--text2)">—</span>`;
-    html += `<tr>
-      <td>${esc(item.stat)}</td>
-      <td>${(+(item.p_value ?? 0)).toFixed(4)}</td>
-      <td>${(+(item.effect_r ?? 0)).toFixed(3)}</td>
-      <td>${sig}</td>
-      <td>${(+(item.wins_median ?? 0)).toFixed(1)}</td>
-      <td>${(+(item.losses_median ?? 0)).toFixed(1)}</td>
-    </tr>`;
+  const el = document.getElementById('chart-mw');
+  if (!el || !mw || !mw.length) return;
+  const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
+
+  const points = mw.map(item => {
+    const p = Math.max(+(item.p_value ?? 1), 1e-6);
+    return {
+      x: +(item.effect_r ?? 0),
+      y: -Math.log10(p),
+      stat: item.stat,
+      p,
+      r: +(item.effect_r ?? 0),
+      sig: !!item.significant,
+      wm: +(item.wins_median ?? 0),
+      lm: +(item.losses_median ?? 0),
+    };
   });
-  tbody.innerHTML = html;
+
+  deferChart(el, () => new Chart(el, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: '顯著差異',
+          data: points.filter(p => p.sig),
+          backgroundColor: 'rgba(0,212,255,0.85)',
+          borderColor: 'rgba(0,212,255,1)',
+          pointRadius: 7, pointHoverRadius: 10,
+        },
+        {
+          label: '未達顯著',
+          data: points.filter(p => !p.sig),
+          backgroundColor: 'rgba(143,163,184,0.45)',
+          borderColor: 'rgba(143,163,184,0.7)',
+          pointRadius: 5, pointHoverRadius: 8,
+        },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { labels: { color: axis } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return `${d.stat}  r=${d.r.toFixed(3)}  p=${d.p.toFixed(4)}  勝/敗中位 ${d.wm.toFixed(1)} / ${d.lm.toFixed(1)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '效應量 r（→ 勝場較高）', color: axis },
+          ticks: { color: axis }, grid: { color: grid },
+          suggestedMin: -1, suggestedMax: 1,
+        },
+        y: {
+          title: { display: true, text: '−log10(p)（越高越顯著）', color: axis },
+          ticks: { color: axis }, grid: { color: grid },
+          suggestedMin: 0,
+        }
+      }
+    }
+  }));
+
+  // 在點圖下方顯示前幾名標籤摘要
+  const labelHost = document.getElementById('mw-labels');
+  if (labelHost) {
+    const top = [...points].sort((a, b) => b.y - a.y).slice(0, 6);
+    labelHost.innerHTML = top.map(d => {
+      const color = d.sig ? 'var(--accent)' : 'var(--text2)';
+      return `<span style="display:inline-block;margin:.15rem .5rem .15rem 0;font-size:.78rem;color:${color}"><strong>${esc(d.stat)}</strong> r=${d.r.toFixed(2)} · p=${d.p.toFixed(3)}</span>`;
+    }).join('');
+  }
 }
 
 function renderRoc(roc) {
   const container = document.getElementById('roc-container');
   if (!container || !roc) return;
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
-  Object.entries(roc).forEach(([stat, data]) => {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.style.marginBottom = '.75rem';
-    const canvas = document.createElement('canvas');
-    canvas.style.maxHeight = '200px';
-    div.innerHTML = `<div style="font-size:.84rem;color:var(--text2);margin-bottom:.5rem">${esc(stat)} · AUC = <strong style="color:var(--accent)">${data.auc.toFixed(3)}</strong></div>`;
-    div.appendChild(canvas);
-    container.appendChild(div);
-    deferChart(canvas, () => new Chart(canvas, {
-      type: 'line',
-      data: {
-        datasets: [
-          { label: stat, data: data.curve.map(p => ({ x: p.fpr, y: p.tpr })), borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.1)', pointRadius: 2, tension: 0.2 },
-          { label: '隨機', data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], borderColor: 'rgba(255,255,255,0.2)', borderDash: [4, 4], pointRadius: 0 },
-        ]
+  const palette = ['#00d4ff', '#f06292', '#ffd700', '#80cbc4', '#ce93d8', '#ffb74d', '#a5d6a7', '#90caf9', '#ff8a65', '#bcaaa4'];
+  const entries = Object.entries(roc).sort((a, b) => (b[1].auc || 0) - (a[1].auc || 0));
+
+  const card = document.createElement('div');
+  card.className = 'card chart-wrap';
+  const canvas = document.createElement('canvas');
+  canvas.style.maxHeight = '420px';
+  card.appendChild(canvas);
+  container.innerHTML = '';
+  container.appendChild(card);
+
+  const legendList = document.createElement('div');
+  legendList.style.cssText = 'margin-top:.75rem;font-size:.78rem;color:var(--text2);display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.3rem .75rem';
+  legendList.innerHTML = entries.map(([stat, d], i) =>
+    `<div><span style="display:inline-block;width:10px;height:10px;background:${palette[i % palette.length]};border-radius:2px;margin-right:.4rem;vertical-align:middle"></span>${esc(stat)} · <strong style="color:var(--text)">${d.auc.toFixed(3)}</strong></div>`
+  ).join('');
+  card.appendChild(legendList);
+
+  deferChart(canvas, () => new Chart(canvas, {
+    type: 'line',
+    data: {
+      datasets: [
+        ...entries.map(([stat, d], i) => ({
+          label: `${stat} (AUC ${d.auc.toFixed(3)})`,
+          data: d.curve.map(p => ({ x: p.fpr, y: p.tpr })),
+          borderColor: palette[i % palette.length],
+          backgroundColor: 'transparent',
+          pointRadius: 0, borderWidth: 2, tension: 0.2,
+        })),
+        { label: '隨機', data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], borderColor: 'rgba(255,255,255,0.25)', borderDash: [4, 4], pointRadius: 0, borderWidth: 1 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'nearest', intersect: false },
       },
-      options: {
-        responsive: true, maintainAspectRatio: true,
-        scales: {
-          x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'FPR', color: axis }, ticks: { color: axis }, grid: { color: grid } },
-          y: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'TPR', color: axis }, ticks: { color: axis }, grid: { color: grid } }
-        },
-        plugins: { legend: { labels: { color: axis } } }
+      scales: {
+        x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'FPR', color: axis }, ticks: { color: axis }, grid: { color: grid } },
+        y: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'TPR', color: axis }, ticks: { color: axis }, grid: { color: grid } }
       }
-    }));
-  });
+    }
+  }));
 }
 
 function renderLastGame(lg) {

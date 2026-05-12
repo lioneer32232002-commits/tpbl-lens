@@ -1,1 +1,1501 @@
-{"meta":{"team_id":8,"team_name":"臺北台新戰神","season":"2025-26","generated":"2026-05-12","total_games":36,"games_remaining":0},"team_stats":{"wins":11,"losses":25,"games_played":36,"games_remaining":0,"avg_pts":93.52,"avg_opp_pts":101.16,"win_rate":0.3056},"standings":[{"name":"桃園台啤永豐雲豹","wins":23,"losses":13,"gp":36},{"name":"新竹御嵿攻城獅","wins":22,"losses":14,"gp":36},{"name":"福爾摩沙夢想家","wins":22,"losses":14,"gp":36},{"name":"新北中信特攻","wins":20,"losses":16,"gp":36},{"name":"新北國王","wins":19,"losses":17,"gp":36},{"name":"臺北台新戰神","wins":11,"losses":25,"gp":36},{"name":"高雄全家海神","wins":9,"losses":27,"gp":36}],"league_rtg":[{"name":"桃園台啤永豐雲豹","wins":23,"losses":13,"gp":36,"ortg":106.0,"drtg":100.8,"netrtg":5.2},{"name":"新北中信特攻","wins":20,"losses":16,"gp":36,"ortg":106.5,"drtg":101.7,"netrtg":4.8},{"name":"福爾摩沙夢想家","wins":22,"losses":14,"gp":36,"ortg":108.2,"drtg":103.5,"netrtg":4.7},{"name":"新竹御嵿攻城獅","wins":22,"losses":14,"gp":36,"ortg":105.0,"drtg":100.5,"netrtg":4.5},{"name":"新北國王","wins":19,"losses":17,"gp":36,"ortg":106.3,"drtg":107.7,"netrtg":-1.4},{"name":"臺北台新戰神","wins":11,"losses":25,"gp":36,"ortg":103.6,"drtg":111.5,"netrtg":-7.9},{"name":"高雄全家海神","wins":9,"losses":27,"gp":36,"ortg":101.7,"drtg":111.4,"netrtg":-9.7}],"scoring_sources":[{"name":"福爾摩沙夢想家","three":35.5,"mid":6.7,"paint":39.2,"ft":19.0,"total":100.4},{"name":"桃園台啤永豐雲豹","three":29.2,"mid":9.4,"paint":44.4,"ft":16.2,"total":99.2},{"name":"新北中信特攻","three":33.6,"mid":4.5,"paint":46.4,"ft":14.6,"total":99.1},{"name":"新北國王","three":34.2,"mid":9.6,"paint":40.5,"ft":14.2,"total":98.5},{"name":"臺北台新戰神","three":34.1,"mid":8.0,"paint":36.3,"ft":17.8,"total":96.2},{"name":"新竹御嵿攻城獅","three":30,"mid":7.9,"paint":40.3,"ft":17.4,"total":95.6},{"name":"高雄全家海神","three":33.8,"mid":5.2,"paint":38.7,"ft":15.8,"total":93.6}],"games":[{"date":"20251019","opp":"新北國王","team_score":123,"opp_score":120,"won":true,"is_home":false,"rounds":{"1":26,"2":28,"3":31,"4":23,"5":15},"opp_rounds":{"1":28,"2":30,"3":16,"4":34,"5":12},"paint":50,"fast_break":4,"second_chance":23,"ft_made":16},{"date":"20251025","opp":"新北中信特攻","team_score":78,"opp_score":91,"won":false,"is_home":false,"rounds":{"1":28,"2":20,"3":15,"4":15},"opp_rounds":{"1":35,"2":23,"3":21,"4":12},"paint":18,"fast_break":3,"second_chance":5,"ft_made":21},{"date":"20251101","opp":"高雄全家海神","team_score":110,"opp_score":105,"won":true,"is_home":false,"rounds":{"1":24,"2":25,"3":33,"4":28},"opp_rounds":{"1":25,"2":27,"3":29,"4":24},"paint":40,"fast_break":18,"second_chance":21,"ft_made":19},{"date":"20251123","opp":"福爾摩沙夢想家","team_score":117,"opp_score":128,"won":false,"is_home":false,"rounds":{"1":32,"2":35,"3":22,"4":28},"opp_rounds":{"1":37,"2":34,"3":35,"4":22},"paint":48,"fast_break":10,"second_chance":12,"ft_made":12},{"date":"20251203","opp":"新竹御嵿攻城獅","team_score":100,"opp_score":98,"won":true,"is_home":true,"rounds":{"1":24,"2":23,"3":19,"4":34},"opp_rounds":{"1":28,"2":27,"3":21,"4":22},"paint":44,"fast_break":9,"second_chance":13,"ft_made":26},{"date":"20251207","opp":"高雄全家海神","team_score":96,"opp_score":91,"won":true,"is_home":true,"rounds":{"1":22,"2":24,"3":14,"4":23,"5":13},"opp_rounds":{"1":26,"2":20,"3":14,"4":23,"5":8},"paint":54,"fast_break":4,"second_chance":12,"ft_made":18},{"date":"20251221","opp":"新竹御嵿攻城獅","team_score":94,"opp_score":83,"won":true,"is_home":false,"rounds":{"1":24,"2":32,"3":22,"4":16},"opp_rounds":{"1":23,"2":27,"3":22,"4":11},"paint":40,"fast_break":11,"second_chance":13,"ft_made":22},{"date":"20251227","opp":"福爾摩沙夢想家","team_score":98,"opp_score":108,"won":false,"is_home":false,"rounds":{"1":21,"2":27,"3":23,"4":27},"opp_rounds":{"1":28,"2":29,"3":19,"4":32},"paint":34,"fast_break":16,"second_chance":10,"ft_made":14},{"date":"20260107","opp":"高雄全家海神","team_score":103,"opp_score":108,"won":false,"is_home":false,"rounds":{"1":23,"2":30,"3":30,"4":20},"opp_rounds":{"1":29,"2":31,"3":25,"4":23},"paint":38,"fast_break":26,"second_chance":7,"ft_made":26},{"date":"20260110","opp":"福爾摩沙夢想家","team_score":91,"opp_score":110,"won":false,"is_home":true,"rounds":{"1":23,"2":25,"3":23,"4":20},"opp_rounds":{"1":21,"2":30,"3":33,"4":26},"paint":30,"fast_break":10,"second_chance":8,"ft_made":26},{"date":"20260117","opp":"新北中信特攻","team_score":79,"opp_score":95,"won":false,"is_home":true,"rounds":{"1":26,"2":17,"3":22,"4":14},"opp_rounds":{"1":19,"2":26,"3":23,"4":27},"paint":26,"fast_break":2,"second_chance":12,"ft_made":10},{"date":"20260118","opp":"新竹御嵿攻城獅","team_score":98,"opp_score":101,"won":false,"is_home":true,"rounds":{"1":19,"2":24,"3":29,"4":26},"opp_rounds":{"1":22,"2":25,"3":23,"4":31},"paint":24,"fast_break":0,"second_chance":8,"ft_made":23},{"date":"20260125","opp":"新北中信特攻","team_score":112,"opp_score":104,"won":true,"is_home":false,"rounds":{"1":34,"2":15,"3":37,"4":26},"opp_rounds":{"1":24,"2":29,"3":26,"4":25},"paint":32,"fast_break":11,"second_chance":11,"ft_made":17},{"date":"20260201","opp":"桃園台啤永豐雲豹","team_score":87,"opp_score":98,"won":false,"is_home":false,"rounds":{"1":21,"2":20,"3":22,"4":24},"opp_rounds":{"1":21,"2":31,"3":29,"4":17},"paint":40,"fast_break":8,"second_chance":14,"ft_made":15},{"date":"20260207","opp":"新北國王","team_score":96,"opp_score":98,"won":false,"is_home":true,"rounds":{"1":27,"2":21,"3":30,"4":18},"opp_rounds":{"1":26,"2":20,"3":28,"4":24},"paint":32,"fast_break":6,"second_chance":8,"ft_made":29},{"date":"20260208","opp":"福爾摩沙夢想家","team_score":91,"opp_score":104,"won":false,"is_home":true,"rounds":{"1":21,"2":25,"3":29,"4":16},"opp_rounds":{"1":20,"2":26,"3":34,"4":24},"paint":14,"fast_break":3,"second_chance":4,"ft_made":23},{"date":"20260211","opp":"高雄全家海神","team_score":90,"opp_score":104,"won":false,"is_home":true,"rounds":{"1":25,"2":29,"3":16,"4":20},"opp_rounds":{"1":34,"2":23,"3":21,"4":26},"paint":28,"fast_break":13,"second_chance":6,"ft_made":29},{"date":"20260214","opp":"新北國王","team_score":95,"opp_score":116,"won":false,"is_home":false,"rounds":{"1":27,"2":29,"3":25,"4":14},"opp_rounds":{"1":37,"2":33,"3":28,"4":18},"paint":30,"fast_break":6,"second_chance":9,"ft_made":22},{"date":"20260306","opp":"新北國王","team_score":90,"opp_score":93,"won":false,"is_home":false,"rounds":{"1":28,"2":19,"3":21,"4":22},"opp_rounds":{"1":27,"2":25,"3":21,"4":20},"paint":34,"fast_break":17,"second_chance":20,"ft_made":15},{"date":"20260311","opp":"新竹御嵿攻城獅","team_score":102,"opp_score":94,"won":true,"is_home":false,"rounds":{"1":29,"2":29,"3":18,"4":26},"opp_rounds":{"1":32,"2":23,"3":28,"4":11},"paint":44,"fast_break":15,"second_chance":7,"ft_made":12},{"date":"20260321","opp":"桃園台啤永豐雲豹","team_score":73,"opp_score":99,"won":false,"is_home":true,"rounds":{"1":27,"2":18,"3":12,"4":16},"opp_rounds":{"1":32,"2":23,"3":22,"4":22},"paint":28,"fast_break":8,"second_chance":6,"ft_made":10},{"date":"20260401","opp":"新北中信特攻","team_score":91,"opp_score":89,"won":true,"is_home":false,"rounds":{"1":13,"2":29,"3":31,"4":18},"opp_rounds":{"1":27,"2":20,"3":23,"4":19},"paint":38,"fast_break":2,"second_chance":16,"ft_made":11},{"date":"20260405","opp":"桃園台啤永豐雲豹","team_score":96,"opp_score":107,"won":false,"is_home":false,"rounds":{"1":34,"2":17,"3":22,"4":23},"opp_rounds":{"1":29,"2":30,"3":23,"4":25},"paint":38,"fast_break":12,"second_chance":12,"ft_made":19},{"date":"20260412","opp":"高雄全家海神","team_score":104,"opp_score":93,"won":true,"is_home":false,"rounds":{"1":21,"2":22,"3":31,"4":30},"opp_rounds":{"1":16,"2":23,"3":32,"4":22},"paint":46,"fast_break":12,"second_chance":8,"ft_made":11},{"date":"20260418","opp":"福爾摩沙夢想家","team_score":66,"opp_score":99,"won":false,"is_home":false,"rounds":{"1":27,"2":14,"3":16,"4":9},"opp_rounds":{"1":24,"2":31,"3":31,"4":13},"paint":18,"fast_break":9,"second_chance":11,"ft_made":12},{"date":"20260425","opp":"新竹御嵿攻城獅","team_score":86,"opp_score":104,"won":false,"is_home":true,"rounds":{"1":15,"2":24,"3":24,"4":23},"opp_rounds":{"1":22,"2":31,"3":22,"4":29},"paint":30,"fast_break":7,"second_chance":2,"ft_made":19},{"date":"20260426","opp":"新北中信特攻","team_score":103,"opp_score":111,"won":false,"is_home":true,"rounds":{"1":35,"2":28,"3":17,"4":23},"opp_rounds":{"1":29,"2":17,"3":24,"4":41},"paint":24,"fast_break":7,"second_chance":14,"ft_made":16},{"date":"20260502","opp":"新竹御嵿攻城獅","team_score":73,"opp_score":96,"won":false,"is_home":false,"rounds":{"1":25,"2":14,"3":17,"4":17},"opp_rounds":{"1":29,"2":24,"3":19,"4":24},"paint":34,"fast_break":10,"second_chance":11,"ft_made":8},{"date":"20260502","opp":"新竹御嵿攻城獅","team_score":73,"opp_score":96,"won":false,"is_home":false,"rounds":{"1":25,"2":14,"3":17,"4":17},"opp_rounds":{"1":29,"2":24,"3":19,"4":24},"paint":34,"fast_break":10,"second_chance":11,"ft_made":8},{"date":"20251004","opp":"新北國王","team_score":105,"opp_score":100,"won":true,"is_home":false,"rounds":{"1":28,"2":22,"3":27,"4":28},"opp_rounds":{"1":33,"2":25,"3":26,"4":16},"paint":56,"fast_break":16,"second_chance":7,"ft_made":14},{"date":"20251005","opp":"高雄全家海神","team_score":79,"opp_score":93,"won":false,"is_home":true,"rounds":{"1":24,"2":17,"3":21,"4":17},"opp_rounds":{"1":34,"2":17,"3":19,"4":23},"paint":30,"fast_break":13,"second_chance":10,"ft_made":14}],"vs_summary":{"新北國王":{"w":2,"l":3,"avg_team":101.8,"avg_opp":105.4},"新北中信特攻":{"w":2,"l":3,"avg_team":92.6,"avg_opp":98.0},"高雄全家海神":{"w":3,"l":3,"avg_team":97.0,"avg_opp":99.0},"福爾摩沙夢想家":{"w":0,"l":5,"avg_team":92.6,"avg_opp":109.8},"新竹御嵿攻城獅":{"w":3,"l":4,"avg_team":89.43,"avg_opp":96.0},"桃園台啤永豐雲豹":{"w":0,"l":3,"avg_team":85.33,"avg_opp":101.33}},"home_away":{"home":{"gp":12,"wins":2,"losses":10,"win_rate":0.1667,"avg_pts":90.17,"avg_opp":100.67,"net":-10.5},"away":{"gp":19,"wins":8,"losses":11,"win_rate":0.4211,"avg_pts":95.63,"avg_opp":101.47,"net":-5.8}},"quarter_analysis":{"Q1":{"avg_score":25.1,"avg_opp":27.29,"win_rate":0.3548,"games":31,"diffs":[-2,-7,-1,-5,-4,-4,1,-7,-6,2,7,-3,10,0,1,1,-9,-10,1,-3,-5,-14,5,5,3,-7,6,-4,-4,-5,-10],"avg_poss":23.36,"avg_opp_poss":23.11},"Q2":{"avg_score":23.1,"avg_opp":25.94,"win_rate":0.2581,"games":31,"diffs":[-2,-3,-2,1,-4,4,5,-2,-1,-5,-9,-1,-14,-11,1,-1,6,-4,-6,6,-5,9,-13,-1,-17,-7,11,-10,-10,-3,0],"avg_poss":23.21,"avg_opp_poss":23.4},"Q3":{"avg_score":23.1,"avg_opp":24.39,"win_rate":0.3548,"games":31,"diffs":[15,-6,4,-13,-2,0,0,4,5,-10,-1,6,11,-7,2,-5,-5,-3,0,-10,-10,8,-1,-1,-15,2,-7,-2,-2,1,2],"avg_poss":22.85,"avg_opp_poss":22.89},"Q4":{"avg_score":21.32,"avg_opp":22.9,"win_rate":0.3548,"games":31,"diffs":[-11,3,4,6,12,0,5,-5,-3,-6,-13,-5,1,7,-6,-8,-6,-4,2,15,-6,-1,-2,8,-4,-6,-18,-7,-7,12,-6],"avg_poss":22.65,"avg_opp_poss":22.61}},"next_game":{},"heatmap":[],"ppp_heatmap":[],"player_avg":{},"simulation":{},"roc":{},"mann_whitney":[],"scenario_chart":[],"last_game_hint":{"date":"20260502","opp":"新竹御嵿攻城獅","is_home":false,"won":false,"team_score":73,"opp_score":96,"scenario":"","team_pred":0,"opp_pred":0,"team_diff":73,"opp_diff":96,"actual_stats":{},"pred_stats":{}},"playoff_series":{}}
+{
+  "meta": {
+    "team_id": 8,
+    "team_name": "臺北台新戰神",
+    "season": "2025-26",
+    "generated": "2026-05-12",
+    "total_games": 36,
+    "games_remaining": 0
+  },
+  "team_stats": {
+    "wins": 11,
+    "losses": 25,
+    "games_played": 36,
+    "games_remaining": 0,
+    "avg_pts": 93.52,
+    "avg_opp_pts": 101.16,
+    "win_rate": 0.3056
+  },
+  "standings": [
+    {
+      "name": "桃園台啤永豐雲豹",
+      "wins": 23,
+      "losses": 13,
+      "gp": 36
+    },
+    {
+      "name": "新竹御嵿攻城獅",
+      "wins": 22,
+      "losses": 14,
+      "gp": 36
+    },
+    {
+      "name": "福爾摩沙夢想家",
+      "wins": 22,
+      "losses": 14,
+      "gp": 36
+    },
+    {
+      "name": "新北中信特攻",
+      "wins": 20,
+      "losses": 16,
+      "gp": 36
+    },
+    {
+      "name": "新北國王",
+      "wins": 19,
+      "losses": 17,
+      "gp": 36
+    },
+    {
+      "name": "臺北台新戰神",
+      "wins": 11,
+      "losses": 25,
+      "gp": 36
+    },
+    {
+      "name": "高雄全家海神",
+      "wins": 9,
+      "losses": 27,
+      "gp": 36
+    }
+  ],
+  "league_rtg": [
+    {
+      "name": "桃園台啤永豐雲豹",
+      "wins": 23,
+      "losses": 13,
+      "gp": 36,
+      "ortg": 106.0,
+      "drtg": 100.8,
+      "netrtg": 5.2
+    },
+    {
+      "name": "新北中信特攻",
+      "wins": 20,
+      "losses": 16,
+      "gp": 36,
+      "ortg": 106.5,
+      "drtg": 101.7,
+      "netrtg": 4.8
+    },
+    {
+      "name": "福爾摩沙夢想家",
+      "wins": 22,
+      "losses": 14,
+      "gp": 36,
+      "ortg": 108.2,
+      "drtg": 103.5,
+      "netrtg": 4.7
+    },
+    {
+      "name": "新竹御嵿攻城獅",
+      "wins": 22,
+      "losses": 14,
+      "gp": 36,
+      "ortg": 105.0,
+      "drtg": 100.5,
+      "netrtg": 4.5
+    },
+    {
+      "name": "新北國王",
+      "wins": 19,
+      "losses": 17,
+      "gp": 36,
+      "ortg": 106.3,
+      "drtg": 107.7,
+      "netrtg": -1.4
+    },
+    {
+      "name": "臺北台新戰神",
+      "wins": 11,
+      "losses": 25,
+      "gp": 36,
+      "ortg": 103.6,
+      "drtg": 111.5,
+      "netrtg": -7.9
+    },
+    {
+      "name": "高雄全家海神",
+      "wins": 9,
+      "losses": 27,
+      "gp": 36,
+      "ortg": 101.7,
+      "drtg": 111.4,
+      "netrtg": -9.7
+    }
+  ],
+  "scoring_sources": [
+    {
+      "name": "福爾摩沙夢想家",
+      "three": 35.5,
+      "mid": 6.7,
+      "paint": 39.2,
+      "ft": 19.0,
+      "total": 100.4
+    },
+    {
+      "name": "桃園台啤永豐雲豹",
+      "three": 29.2,
+      "mid": 9.4,
+      "paint": 44.4,
+      "ft": 16.2,
+      "total": 99.2
+    },
+    {
+      "name": "新北中信特攻",
+      "three": 33.6,
+      "mid": 4.5,
+      "paint": 46.4,
+      "ft": 14.6,
+      "total": 99.1
+    },
+    {
+      "name": "新北國王",
+      "three": 34.2,
+      "mid": 9.6,
+      "paint": 40.5,
+      "ft": 14.2,
+      "total": 98.5
+    },
+    {
+      "name": "臺北台新戰神",
+      "three": 34.1,
+      "mid": 8.0,
+      "paint": 36.3,
+      "ft": 17.8,
+      "total": 96.2
+    },
+    {
+      "name": "新竹御嵿攻城獅",
+      "three": 30,
+      "mid": 7.9,
+      "paint": 40.3,
+      "ft": 17.4,
+      "total": 95.6
+    },
+    {
+      "name": "高雄全家海神",
+      "three": 33.8,
+      "mid": 5.2,
+      "paint": 38.7,
+      "ft": 15.8,
+      "total": 93.6
+    }
+  ],
+  "games": [
+    {
+      "date": "20251019",
+      "opp": "新北國王",
+      "team_score": 123,
+      "opp_score": 120,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 26,
+        "2": 28,
+        "3": 31,
+        "4": 23,
+        "5": 15
+      },
+      "opp_rounds": {
+        "1": 28,
+        "2": 30,
+        "3": 16,
+        "4": 34,
+        "5": 12
+      },
+      "paint": 50,
+      "fast_break": 4,
+      "second_chance": 23,
+      "ft_made": 16
+    },
+    {
+      "date": "20251025",
+      "opp": "新北中信特攻",
+      "team_score": 78,
+      "opp_score": 91,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 28,
+        "2": 20,
+        "3": 15,
+        "4": 15
+      },
+      "opp_rounds": {
+        "1": 35,
+        "2": 23,
+        "3": 21,
+        "4": 12
+      },
+      "paint": 18,
+      "fast_break": 3,
+      "second_chance": 5,
+      "ft_made": 21
+    },
+    {
+      "date": "20251101",
+      "opp": "高雄全家海神",
+      "team_score": 110,
+      "opp_score": 105,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 24,
+        "2": 25,
+        "3": 33,
+        "4": 28
+      },
+      "opp_rounds": {
+        "1": 25,
+        "2": 27,
+        "3": 29,
+        "4": 24
+      },
+      "paint": 40,
+      "fast_break": 18,
+      "second_chance": 21,
+      "ft_made": 19
+    },
+    {
+      "date": "20251123",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 117,
+      "opp_score": 128,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 32,
+        "2": 35,
+        "3": 22,
+        "4": 28
+      },
+      "opp_rounds": {
+        "1": 37,
+        "2": 34,
+        "3": 35,
+        "4": 22
+      },
+      "paint": 48,
+      "fast_break": 10,
+      "second_chance": 12,
+      "ft_made": 12
+    },
+    {
+      "date": "20251203",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 100,
+      "opp_score": 98,
+      "won": true,
+      "is_home": true,
+      "rounds": {
+        "1": 24,
+        "2": 23,
+        "3": 19,
+        "4": 34
+      },
+      "opp_rounds": {
+        "1": 28,
+        "2": 27,
+        "3": 21,
+        "4": 22
+      },
+      "paint": 44,
+      "fast_break": 9,
+      "second_chance": 13,
+      "ft_made": 26
+    },
+    {
+      "date": "20251207",
+      "opp": "高雄全家海神",
+      "team_score": 96,
+      "opp_score": 91,
+      "won": true,
+      "is_home": true,
+      "rounds": {
+        "1": 22,
+        "2": 24,
+        "3": 14,
+        "4": 23,
+        "5": 13
+      },
+      "opp_rounds": {
+        "1": 26,
+        "2": 20,
+        "3": 14,
+        "4": 23,
+        "5": 8
+      },
+      "paint": 54,
+      "fast_break": 4,
+      "second_chance": 12,
+      "ft_made": 18
+    },
+    {
+      "date": "20251221",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 94,
+      "opp_score": 83,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 24,
+        "2": 32,
+        "3": 22,
+        "4": 16
+      },
+      "opp_rounds": {
+        "1": 23,
+        "2": 27,
+        "3": 22,
+        "4": 11
+      },
+      "paint": 40,
+      "fast_break": 11,
+      "second_chance": 13,
+      "ft_made": 22
+    },
+    {
+      "date": "20251227",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 98,
+      "opp_score": 108,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 21,
+        "2": 27,
+        "3": 23,
+        "4": 27
+      },
+      "opp_rounds": {
+        "1": 28,
+        "2": 29,
+        "3": 19,
+        "4": 32
+      },
+      "paint": 34,
+      "fast_break": 16,
+      "second_chance": 10,
+      "ft_made": 14
+    },
+    {
+      "date": "20260107",
+      "opp": "高雄全家海神",
+      "team_score": 103,
+      "opp_score": 108,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 23,
+        "2": 30,
+        "3": 30,
+        "4": 20
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 31,
+        "3": 25,
+        "4": 23
+      },
+      "paint": 38,
+      "fast_break": 26,
+      "second_chance": 7,
+      "ft_made": 26
+    },
+    {
+      "date": "20260110",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 91,
+      "opp_score": 110,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 23,
+        "2": 25,
+        "3": 23,
+        "4": 20
+      },
+      "opp_rounds": {
+        "1": 21,
+        "2": 30,
+        "3": 33,
+        "4": 26
+      },
+      "paint": 30,
+      "fast_break": 10,
+      "second_chance": 8,
+      "ft_made": 26
+    },
+    {
+      "date": "20260117",
+      "opp": "新北中信特攻",
+      "team_score": 79,
+      "opp_score": 95,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 26,
+        "2": 17,
+        "3": 22,
+        "4": 14
+      },
+      "opp_rounds": {
+        "1": 19,
+        "2": 26,
+        "3": 23,
+        "4": 27
+      },
+      "paint": 26,
+      "fast_break": 2,
+      "second_chance": 12,
+      "ft_made": 10
+    },
+    {
+      "date": "20260118",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 98,
+      "opp_score": 101,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 19,
+        "2": 24,
+        "3": 29,
+        "4": 26
+      },
+      "opp_rounds": {
+        "1": 22,
+        "2": 25,
+        "3": 23,
+        "4": 31
+      },
+      "paint": 24,
+      "fast_break": 0,
+      "second_chance": 8,
+      "ft_made": 23
+    },
+    {
+      "date": "20260125",
+      "opp": "新北中信特攻",
+      "team_score": 112,
+      "opp_score": 104,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 34,
+        "2": 15,
+        "3": 37,
+        "4": 26
+      },
+      "opp_rounds": {
+        "1": 24,
+        "2": 29,
+        "3": 26,
+        "4": 25
+      },
+      "paint": 32,
+      "fast_break": 11,
+      "second_chance": 11,
+      "ft_made": 17
+    },
+    {
+      "date": "20260201",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 87,
+      "opp_score": 98,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 21,
+        "2": 20,
+        "3": 22,
+        "4": 24
+      },
+      "opp_rounds": {
+        "1": 21,
+        "2": 31,
+        "3": 29,
+        "4": 17
+      },
+      "paint": 40,
+      "fast_break": 8,
+      "second_chance": 14,
+      "ft_made": 15
+    },
+    {
+      "date": "20260207",
+      "opp": "新北國王",
+      "team_score": 96,
+      "opp_score": 98,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 27,
+        "2": 21,
+        "3": 30,
+        "4": 18
+      },
+      "opp_rounds": {
+        "1": 26,
+        "2": 20,
+        "3": 28,
+        "4": 24
+      },
+      "paint": 32,
+      "fast_break": 6,
+      "second_chance": 8,
+      "ft_made": 29
+    },
+    {
+      "date": "20260208",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 91,
+      "opp_score": 104,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 21,
+        "2": 25,
+        "3": 29,
+        "4": 16
+      },
+      "opp_rounds": {
+        "1": 20,
+        "2": 26,
+        "3": 34,
+        "4": 24
+      },
+      "paint": 14,
+      "fast_break": 3,
+      "second_chance": 4,
+      "ft_made": 23
+    },
+    {
+      "date": "20260211",
+      "opp": "高雄全家海神",
+      "team_score": 90,
+      "opp_score": 104,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 25,
+        "2": 29,
+        "3": 16,
+        "4": 20
+      },
+      "opp_rounds": {
+        "1": 34,
+        "2": 23,
+        "3": 21,
+        "4": 26
+      },
+      "paint": 28,
+      "fast_break": 13,
+      "second_chance": 6,
+      "ft_made": 29
+    },
+    {
+      "date": "20260214",
+      "opp": "新北國王",
+      "team_score": 95,
+      "opp_score": 116,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 27,
+        "2": 29,
+        "3": 25,
+        "4": 14
+      },
+      "opp_rounds": {
+        "1": 37,
+        "2": 33,
+        "3": 28,
+        "4": 18
+      },
+      "paint": 30,
+      "fast_break": 6,
+      "second_chance": 9,
+      "ft_made": 22
+    },
+    {
+      "date": "20260306",
+      "opp": "新北國王",
+      "team_score": 90,
+      "opp_score": 93,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 28,
+        "2": 19,
+        "3": 21,
+        "4": 22
+      },
+      "opp_rounds": {
+        "1": 27,
+        "2": 25,
+        "3": 21,
+        "4": 20
+      },
+      "paint": 34,
+      "fast_break": 17,
+      "second_chance": 20,
+      "ft_made": 15
+    },
+    {
+      "date": "20260311",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 102,
+      "opp_score": 94,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 29,
+        "2": 29,
+        "3": 18,
+        "4": 26
+      },
+      "opp_rounds": {
+        "1": 32,
+        "2": 23,
+        "3": 28,
+        "4": 11
+      },
+      "paint": 44,
+      "fast_break": 15,
+      "second_chance": 7,
+      "ft_made": 12
+    },
+    {
+      "date": "20260321",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 73,
+      "opp_score": 99,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 27,
+        "2": 18,
+        "3": 12,
+        "4": 16
+      },
+      "opp_rounds": {
+        "1": 32,
+        "2": 23,
+        "3": 22,
+        "4": 22
+      },
+      "paint": 28,
+      "fast_break": 8,
+      "second_chance": 6,
+      "ft_made": 10
+    },
+    {
+      "date": "20260401",
+      "opp": "新北中信特攻",
+      "team_score": 91,
+      "opp_score": 89,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 13,
+        "2": 29,
+        "3": 31,
+        "4": 18
+      },
+      "opp_rounds": {
+        "1": 27,
+        "2": 20,
+        "3": 23,
+        "4": 19
+      },
+      "paint": 38,
+      "fast_break": 2,
+      "second_chance": 16,
+      "ft_made": 11
+    },
+    {
+      "date": "20260405",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 96,
+      "opp_score": 107,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 34,
+        "2": 17,
+        "3": 22,
+        "4": 23
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 30,
+        "3": 23,
+        "4": 25
+      },
+      "paint": 38,
+      "fast_break": 12,
+      "second_chance": 12,
+      "ft_made": 19
+    },
+    {
+      "date": "20260412",
+      "opp": "高雄全家海神",
+      "team_score": 104,
+      "opp_score": 93,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 21,
+        "2": 22,
+        "3": 31,
+        "4": 30
+      },
+      "opp_rounds": {
+        "1": 16,
+        "2": 23,
+        "3": 32,
+        "4": 22
+      },
+      "paint": 46,
+      "fast_break": 12,
+      "second_chance": 8,
+      "ft_made": 11
+    },
+    {
+      "date": "20260418",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 66,
+      "opp_score": 99,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 27,
+        "2": 14,
+        "3": 16,
+        "4": 9
+      },
+      "opp_rounds": {
+        "1": 24,
+        "2": 31,
+        "3": 31,
+        "4": 13
+      },
+      "paint": 18,
+      "fast_break": 9,
+      "second_chance": 11,
+      "ft_made": 12
+    },
+    {
+      "date": "20260425",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 86,
+      "opp_score": 104,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 15,
+        "2": 24,
+        "3": 24,
+        "4": 23
+      },
+      "opp_rounds": {
+        "1": 22,
+        "2": 31,
+        "3": 22,
+        "4": 29
+      },
+      "paint": 30,
+      "fast_break": 7,
+      "second_chance": 2,
+      "ft_made": 19
+    },
+    {
+      "date": "20260426",
+      "opp": "新北中信特攻",
+      "team_score": 103,
+      "opp_score": 111,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 35,
+        "2": 28,
+        "3": 17,
+        "4": 23
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 17,
+        "3": 24,
+        "4": 41
+      },
+      "paint": 24,
+      "fast_break": 7,
+      "second_chance": 14,
+      "ft_made": 16
+    },
+    {
+      "date": "20260502",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 73,
+      "opp_score": 96,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 25,
+        "2": 14,
+        "3": 17,
+        "4": 17
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 24,
+        "3": 19,
+        "4": 24
+      },
+      "paint": 34,
+      "fast_break": 10,
+      "second_chance": 11,
+      "ft_made": 8
+    },
+    {
+      "date": "20260502",
+      "opp": "新竹御嵿攻城獅",
+      "team_score": 73,
+      "opp_score": 96,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 25,
+        "2": 14,
+        "3": 17,
+        "4": 17
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 24,
+        "3": 19,
+        "4": 24
+      },
+      "paint": 34,
+      "fast_break": 10,
+      "second_chance": 11,
+      "ft_made": 8
+    },
+    {
+      "date": "20251004",
+      "opp": "新北國王",
+      "team_score": 105,
+      "opp_score": 100,
+      "won": true,
+      "is_home": false,
+      "rounds": {
+        "1": 28,
+        "2": 22,
+        "3": 27,
+        "4": 28
+      },
+      "opp_rounds": {
+        "1": 33,
+        "2": 25,
+        "3": 26,
+        "4": 16
+      },
+      "paint": 56,
+      "fast_break": 16,
+      "second_chance": 7,
+      "ft_made": 14
+    },
+    {
+      "date": "20251005",
+      "opp": "高雄全家海神",
+      "team_score": 79,
+      "opp_score": 93,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 24,
+        "2": 17,
+        "3": 21,
+        "4": 17
+      },
+      "opp_rounds": {
+        "1": 34,
+        "2": 17,
+        "3": 19,
+        "4": 23
+      },
+      "paint": 30,
+      "fast_break": 13,
+      "second_chance": 10,
+      "ft_made": 14
+    }
+  ],
+  "vs_summary": {
+    "新北國王": {
+      "w": 2,
+      "l": 3,
+      "avg_team": 101.8,
+      "avg_opp": 105.4
+    },
+    "新北中信特攻": {
+      "w": 2,
+      "l": 3,
+      "avg_team": 92.6,
+      "avg_opp": 98.0
+    },
+    "高雄全家海神": {
+      "w": 3,
+      "l": 3,
+      "avg_team": 97.0,
+      "avg_opp": 99.0
+    },
+    "福爾摩沙夢想家": {
+      "w": 0,
+      "l": 5,
+      "avg_team": 92.6,
+      "avg_opp": 109.8
+    },
+    "新竹御嵿攻城獅": {
+      "w": 3,
+      "l": 4,
+      "avg_team": 89.43,
+      "avg_opp": 96.0
+    },
+    "桃園台啤永豐雲豹": {
+      "w": 0,
+      "l": 3,
+      "avg_team": 85.33,
+      "avg_opp": 101.33
+    }
+  },
+  "home_away": {
+    "home": {
+      "gp": 12,
+      "wins": 2,
+      "losses": 10,
+      "win_rate": 0.1667,
+      "avg_pts": 90.17,
+      "avg_opp": 100.67,
+      "net": -10.5
+    },
+    "away": {
+      "gp": 19,
+      "wins": 8,
+      "losses": 11,
+      "win_rate": 0.4211,
+      "avg_pts": 95.63,
+      "avg_opp": 101.47,
+      "net": -5.8
+    }
+  },
+  "quarter_analysis": {
+    "Q1": {
+      "avg_score": 25.1,
+      "avg_opp": 27.29,
+      "win_rate": 0.3548,
+      "games": 31,
+      "diffs": [
+        -2,
+        -7,
+        -1,
+        -5,
+        -4,
+        -4,
+        1,
+        -7,
+        -6,
+        2,
+        7,
+        -3,
+        10,
+        0,
+        1,
+        1,
+        -9,
+        -10,
+        1,
+        -3,
+        -5,
+        -14,
+        5,
+        5,
+        3,
+        -7,
+        6,
+        -4,
+        -4,
+        -5,
+        -10
+      ],
+      "avg_poss": 23.36,
+      "avg_opp_poss": 23.11
+    },
+    "Q2": {
+      "avg_score": 23.1,
+      "avg_opp": 25.94,
+      "win_rate": 0.2581,
+      "games": 31,
+      "diffs": [
+        -2,
+        -3,
+        -2,
+        1,
+        -4,
+        4,
+        5,
+        -2,
+        -1,
+        -5,
+        -9,
+        -1,
+        -14,
+        -11,
+        1,
+        -1,
+        6,
+        -4,
+        -6,
+        6,
+        -5,
+        9,
+        -13,
+        -1,
+        -17,
+        -7,
+        11,
+        -10,
+        -10,
+        -3,
+        0
+      ],
+      "avg_poss": 23.21,
+      "avg_opp_poss": 23.4
+    },
+    "Q3": {
+      "avg_score": 23.1,
+      "avg_opp": 24.39,
+      "win_rate": 0.3548,
+      "games": 31,
+      "diffs": [
+        15,
+        -6,
+        4,
+        -13,
+        -2,
+        0,
+        0,
+        4,
+        5,
+        -10,
+        -1,
+        6,
+        11,
+        -7,
+        2,
+        -5,
+        -5,
+        -3,
+        0,
+        -10,
+        -10,
+        8,
+        -1,
+        -1,
+        -15,
+        2,
+        -7,
+        -2,
+        -2,
+        1,
+        2
+      ],
+      "avg_poss": 22.85,
+      "avg_opp_poss": 22.89
+    },
+    "Q4": {
+      "avg_score": 21.32,
+      "avg_opp": 22.9,
+      "win_rate": 0.3548,
+      "games": 31,
+      "diffs": [
+        -11,
+        3,
+        4,
+        6,
+        12,
+        0,
+        5,
+        -5,
+        -3,
+        -6,
+        -13,
+        -5,
+        1,
+        7,
+        -6,
+        -8,
+        -6,
+        -4,
+        2,
+        15,
+        -6,
+        -1,
+        -2,
+        8,
+        -4,
+        -6,
+        -18,
+        -7,
+        -7,
+        12,
+        -6
+      ],
+      "avg_poss": 22.65,
+      "avg_opp_poss": 22.61
+    }
+  },
+  "next_game": {},
+  "heatmap": [],
+  "ppp_heatmap": [],
+  "player_avg": {
+    "洛夫頓": {
+      "score": 24.17,
+      "rebounds": 4.0,
+      "assists": 5.17,
+      "steals": 1.0,
+      "blocks": 0.0,
+      "turnovers": 3.67,
+      "plus_minus": -3.33,
+      "efficiency": 18.0,
+      "tsp": 52.78,
+      "usg": 22.55,
+      "three_pointers_made": 3.17,
+      "three_pointers_attempted": 8.67,
+      "games": 6
+    },
+    "丁聖儒": {
+      "score": 13.4,
+      "rebounds": 3.28,
+      "assists": 7.72,
+      "steals": 1.48,
+      "blocks": 0.0,
+      "turnovers": 3.08,
+      "plus_minus": -0.24,
+      "efficiency": 16.32,
+      "tsp": 55.96,
+      "usg": 14.14,
+      "three_pointers_made": 2.0,
+      "three_pointers_attempted": 5.12,
+      "games": 25
+    },
+    "魏芃禾": {
+      "score": 2.09,
+      "rebounds": 0.55,
+      "assists": 1.05,
+      "steals": 0.36,
+      "blocks": 0.05,
+      "turnovers": 1.18,
+      "plus_minus": -3.73,
+      "efficiency": 0.55,
+      "tsp": 22.46,
+      "usg": 3.29,
+      "three_pointers_made": 0.32,
+      "three_pointers_attempted": 1.82,
+      "games": 22
+    },
+    "劉彥廷": {
+      "score": 3.24,
+      "rebounds": 3.0,
+      "assists": 0.53,
+      "steals": 0.59,
+      "blocks": 0.0,
+      "turnovers": 0.65,
+      "plus_minus": -4.53,
+      "efficiency": 4.0,
+      "tsp": 44.31,
+      "usg": 3.11,
+      "three_pointers_made": 0.18,
+      "three_pointers_attempted": 0.88,
+      "games": 17
+    },
+    "陳文宏": {
+      "score": 2.96,
+      "rebounds": 1.04,
+      "assists": 0.37,
+      "steals": 0.26,
+      "blocks": 0.04,
+      "turnovers": 0.33,
+      "plus_minus": -3.81,
+      "efficiency": 2.89,
+      "tsp": 55.62,
+      "usg": 2.4,
+      "three_pointers_made": 0.63,
+      "three_pointers_attempted": 1.85,
+      "games": 27
+    },
+    "張兆辰": {
+      "score": 3.89,
+      "rebounds": 1.79,
+      "assists": 0.68,
+      "steals": 0.47,
+      "blocks": 0.11,
+      "turnovers": 0.58,
+      "plus_minus": -7.16,
+      "efficiency": 2.89,
+      "tsp": 32.79,
+      "usg": 3.63,
+      "three_pointers_made": 0.79,
+      "three_pointers_attempted": 2.84,
+      "games": 19
+    },
+    "基德": {
+      "score": 20.4,
+      "rebounds": 7.0,
+      "assists": 2.33,
+      "steals": 1.13,
+      "blocks": 0.27,
+      "turnovers": 2.0,
+      "plus_minus": 2.33,
+      "efficiency": 18.33,
+      "tsp": 54.46,
+      "usg": 17.01,
+      "three_pointers_made": 2.87,
+      "three_pointers_attempted": 8.13,
+      "games": 15
+    },
+    "黃聰翰": {
+      "score": 9.58,
+      "rebounds": 2.38,
+      "assists": 0.54,
+      "steals": 0.96,
+      "blocks": 0.15,
+      "turnovers": 0.62,
+      "plus_minus": -2.62,
+      "efficiency": 8.19,
+      "tsp": 57.44,
+      "usg": 7.29,
+      "three_pointers_made": 2.65,
+      "three_pointers_attempted": 6.92,
+      "games": 26
+    },
+    "謝銘駿": {
+      "score": 5.0,
+      "rebounds": 2.11,
+      "assists": 1.11,
+      "steals": 0.39,
+      "blocks": 0.07,
+      "turnovers": 1.18,
+      "plus_minus": -4.14,
+      "efficiency": 4.25,
+      "tsp": 35.51,
+      "usg": 5.52,
+      "three_pointers_made": 0.5,
+      "three_pointers_attempted": 1.79,
+      "games": 28
+    },
+    "孫思堯": {
+      "score": 0.6,
+      "rebounds": 2.4,
+      "assists": 0.0,
+      "steals": 0.2,
+      "blocks": 0.2,
+      "turnovers": 1.2,
+      "plus_minus": -2.4,
+      "efficiency": 1.2,
+      "tsp": 13.48,
+      "usg": 1.2,
+      "three_pointers_made": 0.0,
+      "three_pointers_attempted": 0.2,
+      "games": 5
+    },
+    "錢肯尼": {
+      "score": 9.03,
+      "rebounds": 2.93,
+      "assists": 1.72,
+      "steals": 0.72,
+      "blocks": 0.21,
+      "turnovers": 1.9,
+      "plus_minus": -4.07,
+      "efficiency": 8.28,
+      "tsp": 52.0,
+      "usg": 9.16,
+      "three_pointers_made": 0.79,
+      "three_pointers_attempted": 2.38,
+      "games": 29
+    },
+    "齊曼加": {
+      "score": 8.29,
+      "rebounds": 10.86,
+      "assists": 0.86,
+      "steals": 1.43,
+      "blocks": 1.0,
+      "turnovers": 3.14,
+      "plus_minus": -0.43,
+      "efficiency": 14.57,
+      "tsp": 58.27,
+      "usg": 9.5,
+      "three_pointers_made": 0.0,
+      "three_pointers_attempted": 0.0,
+      "games": 7
+    },
+    "雷蒙恩": {
+      "score": 10.61,
+      "rebounds": 5.04,
+      "assists": 2.3,
+      "steals": 1.09,
+      "blocks": 0.26,
+      "turnovers": 1.78,
+      "plus_minus": -4.17,
+      "efficiency": 10.74,
+      "tsp": 47.62,
+      "usg": 11.8,
+      "three_pointers_made": 1.0,
+      "three_pointers_attempted": 3.35,
+      "games": 23
+    },
+    "陳冠全": {
+      "score": 2.25,
+      "rebounds": 1.6,
+      "assists": 0.45,
+      "steals": 0.4,
+      "blocks": 0.15,
+      "turnovers": 0.85,
+      "plus_minus": -2.15,
+      "efficiency": 2.45,
+      "tsp": 31.76,
+      "usg": 2.67,
+      "three_pointers_made": 0.15,
+      "three_pointers_attempted": 0.55,
+      "games": 20
+    },
+    "江均": {
+      "score": 1.47,
+      "rebounds": 1.13,
+      "assists": 0.4,
+      "steals": 0.4,
+      "blocks": 0.07,
+      "turnovers": 0.53,
+      "plus_minus": -3.33,
+      "efficiency": 0.67,
+      "tsp": 8.81,
+      "usg": 1.5,
+      "three_pointers_made": 0.2,
+      "three_pointers_attempted": 1.0,
+      "games": 15
+    },
+    "威力斯": {
+      "score": 23.17,
+      "rebounds": 13.67,
+      "assists": 1.67,
+      "steals": 1.5,
+      "blocks": 0.33,
+      "turnovers": 2.42,
+      "plus_minus": -1.25,
+      "efficiency": 27.33,
+      "tsp": 55.45,
+      "usg": 20.75,
+      "three_pointers_made": 1.5,
+      "three_pointers_attempted": 3.67,
+      "games": 12
+    },
+    "蘇奕晉": {
+      "score": 2.06,
+      "rebounds": 1.18,
+      "assists": 0.88,
+      "steals": 0.47,
+      "blocks": 0.18,
+      "turnovers": 0.71,
+      "plus_minus": 0.53,
+      "efficiency": 2.88,
+      "tsp": 32.83,
+      "usg": 1.63,
+      "three_pointers_made": 0.35,
+      "three_pointers_attempted": 0.94,
+      "games": 17
+    },
+    "史東": {
+      "score": 13.29,
+      "rebounds": 5.86,
+      "assists": 0.57,
+      "steals": 0.86,
+      "blocks": 0.57,
+      "turnovers": 1.43,
+      "plus_minus": -9.29,
+      "efficiency": 11.57,
+      "tsp": 47.53,
+      "usg": 13.81,
+      "three_pointers_made": 1.71,
+      "three_pointers_attempted": 4.14,
+      "games": 7
+    },
+    "梅克": {
+      "score": 25.5,
+      "rebounds": 13.88,
+      "assists": 3.12,
+      "steals": 1.12,
+      "blocks": 0.75,
+      "turnovers": 4.25,
+      "plus_minus": -1.88,
+      "efficiency": 27.0,
+      "tsp": 53.51,
+      "usg": 21.73,
+      "three_pointers_made": 2.5,
+      "three_pointers_attempted": 8.62,
+      "games": 8
+    },
+    "弗利沙": {
+      "score": 6.4,
+      "rebounds": 2.4,
+      "assists": 3.2,
+      "steals": 1.2,
+      "blocks": 0.2,
+      "turnovers": 1.2,
+      "plus_minus": -8.8,
+      "efficiency": 5.6,
+      "tsp": 37.58,
+      "usg": 6.29,
+      "three_pointers_made": 0.4,
+      "three_pointers_attempted": 2.4,
+      "games": 5
+    },
+    "恩多": {
+      "score": 17.55,
+      "rebounds": 14.73,
+      "assists": 1.82,
+      "steals": 1.0,
+      "blocks": 0.64,
+      "turnovers": 2.09,
+      "plus_minus": -9.36,
+      "efficiency": 24.91,
+      "tsp": 55.25,
+      "usg": 17.22,
+      "three_pointers_made": 0.45,
+      "three_pointers_attempted": 1.73,
+      "games": 11
+    },
+    "張耕淯": {
+      "score": 0.0,
+      "rebounds": 1.33,
+      "assists": 0.0,
+      "steals": 0.67,
+      "blocks": 0.0,
+      "turnovers": 0.67,
+      "plus_minus": -4.0,
+      "efficiency": -0.67,
+      "tsp": 0.0,
+      "usg": 1.37,
+      "three_pointers_made": 0.0,
+      "three_pointers_attempted": 1.33,
+      "games": 3
+    }
+  },
+  "simulation": {},
+  "roc": {},
+  "mann_whitney": [],
+  "scenario_chart": [],
+  "last_game_hint": {},
+  "playoff_series": {}
+}
