@@ -60,7 +60,7 @@ def sync_new_games(schedule):
             if not isinstance(stats, dict):
                 continue
             ht_total = stats.get("home_team", {}).get("teams", {}).get("total", {})
-            if not ht_total.get("won_score") and not ht_total.get("lost_score"):
+            if ht_total.get("won_score") is None and ht_total.get("lost_score") is None:
                 continue
             stats["game_id"] = g["id"]
             stats["game_date"] = g["game_date"]
