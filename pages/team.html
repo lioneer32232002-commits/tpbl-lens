@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <title>{{TEAM_TITLE}}</title>
+  <meta name="description" content="{{TEAM_NAME}} 2025-26 賽季進階統計分析｜TPBL-Lens">
+  {{HEAD}}
+</head>
+<body>
+{{NAV}}
+<main data-team="{{TEAM_SLUG}}">
+
+  <section id="stats-summary">
+    <h2>賽季總覽</h2>
+    <div id="stats-summary-content" class="card"></div>
+  </section>
+
+  <section id="standings">
+    <h2>聯盟排名</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>#</th><th>球隊</th><th>勝</th><th>敗</th><th>勝率</th></tr></thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="league-rtg">
+    <h2>每百回合效率</h2>
+    <div class="card chart-wrap"><canvas id="chart-rtg" style="max-height:340px"></canvas></div>
+  </section>
+
+  <section id="vs-summary">
+    <h2>對各隊戰績</h2>
+    <div id="vs-grid" class="vs-grid"></div>
+  </section>
+
+  <section id="home-away">
+    <h2>主客場分析</h2>
+    <div id="home-away-content" class="card"></div>
+  </section>
+
+  <section id="player-avg">
+    <h2>球員賽季均值</h2>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>球員</th><th>得分</th><th>籃板</th><th>助攻</th><th>抄截</th><th>蓋帽</th><th>失誤</th><th>±</th><th>效率</th><th>TS%</th><th>USG%</th><th>場數</th></tr>
+        </thead>
+        <tbody id="player-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Full-depth sections — hidden until JS reveals them -->
+  <section id="simulation" style="display:none">
+    <h2>季後賽機率模擬</h2>
+    <div class="card"><div id="prob-bars"></div></div>
+  </section>
+
+  <section id="heatmap" style="display:none">
+    <h2>球員 Plus/Minus 熱力圖</h2>
+    <div class="card">
+      <div class="heatmap-wrap">
+        <table class="heatmap-table" id="heatmap-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="ppp-heatmap" style="display:none">
+    <h2>球員 PPP 熱力圖</h2>
+    <div class="card">
+      <div class="heatmap-wrap">
+        <table class="heatmap-table" id="ppp-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="usg-ts" style="display:none">
+    <h2>USG% vs TS% 散點圖</h2>
+    <div class="card chart-wrap"><canvas id="chart-usg-ts" style="max-height:380px"></canvas></div>
+  </section>
+
+  <section id="scenario" style="display:none">
+    <h2>情境分析</h2>
+    <div class="card chart-wrap"><canvas id="chart-scenario" style="max-height:340px"></canvas></div>
+  </section>
+
+  <section id="quarter" style="display:none">
+    <h2>節次分析</h2>
+    <div id="quarter-content" class="card"></div>
+  </section>
+
+  <section id="mann-whitney" style="display:none">
+    <h2>Mann-Whitney 勝負差異分析</h2>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <thead><tr><th>指標</th><th>p 值</th><th>效應量 r</th><th>顯著</th><th>勝場中位</th><th>敗場中位</th></tr></thead>
+        <tbody id="mw-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="roc" style="display:none">
+    <h2>ROC 曲線（勝負預測指標）</h2>
+    <div id="roc-container"></div>
+  </section>
+
+  <section id="last-game" style="display:none">
+    <h2>最新比賽回顧</h2>
+    <div id="last-game-content" class="card"></div>
+  </section>
+
+</main>
+{{FOOTER}}
+<script src="/js/common.js"></script>
+<script src="/js/team.js"></script>
+</body>
+</html>
