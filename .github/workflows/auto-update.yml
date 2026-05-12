@@ -2,7 +2,7 @@ name: TPBL-lens Auto Update
 
 on:
   schedule:
-    - cron: '30 14 * * *'  # 22:30 CST = 14:30 UTC
+    - cron: '0 14 * * *'   # 22:00 CST = 14:00 UTC
   workflow_dispatch:        # manual trigger via GitHub UI
 
 jobs:
