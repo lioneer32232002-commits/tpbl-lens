@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <title>夢想家 2025-26 賽季分析｜TPBL-Lens</title>
+  <meta name="description" content="福爾摩沙夢想家 2025-26 賽季進階統計分析｜TPBL-Lens">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:      #0f1923;
+    --bg2:     #1a2a3a;
+    --bg3:     #243447;
+    --accent:  #00d4ff;
+    --accent2: #ff6b35;
+    --text:    #e8edf2;
+    --text2:   #8fa3b8;
+    --border:  rgba(0,212,255,.18);
+    --hm-p3:   #0077b6;
+    --hm-p2:   #0096c7;
+    --hm-p1:   #90e0ef;
+    --hm-z:    #374e5e;
+    --hm-n1:   #5a3020;
+    --hm-n2:   #c1440e;
+    --hm-n3:   #e85d04;
+    --hm-null: #1a2a3a;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; line-height: 1.6; }
+  /* NAV */
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.4); }
+  nav { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; height: 56px; }
+  .logo { color: var(--accent); font-weight: 900; font-size: 1.1rem; text-decoration: none; white-space: nowrap; letter-spacing: .05em; }
+  .nav-links { display: flex; gap: .2rem; overflow-x: auto; }
+  .nav-links a { color: var(--text2); text-decoration: none; padding: .3rem .65rem; border-radius: 6px; font-size: .84rem; white-space: nowrap; transition: background .15s, color .15s; }
+  .nav-links a:hover, .nav-links a.active { background: var(--bg3); color: var(--accent); }
+  /* LAYOUT */
+  main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+  section { margin-bottom: 2.5rem; }
+  h2 { font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; border-left: 3px solid var(--accent); padding-left: .75rem; }
+  /* CARDS */
+  .card { background: var(--bg2); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+  th { color: var(--text2); font-weight: 700; text-align: left; padding: .5rem .75rem; border-bottom: 1px solid var(--bg3); white-space: nowrap; }
+  td { padding: .42rem .75rem; border-bottom: 1px solid rgba(255,255,255,.04); }
+  tr:last-child td { border-bottom: none; }
+  tr.highlight td { color: var(--accent); font-weight: 700; }
+  tr.playoff-cut td { border-bottom: 2px solid var(--accent2); }
+  /* RANK PILLS */
+  .rank-pill { display: inline-block; width: 22px; height: 22px; border-radius: 50%; line-height: 22px; text-align: center; font-size: .74rem; font-weight: 700; }
+  .r-in  { background: var(--accent);  color: #000; }
+  .r-pi  { background: var(--accent2); color: #000; }
+  .r-out { background: var(--bg3);     color: var(--text2); }
+  /* CHARTS */
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-width: 100%; }
+  /* HEATMAP */
+  .heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .heatmap-table { border-collapse: separate; border-spacing: 3px; font-size: .82rem; }
+  .heatmap-table th { color: var(--text2); font-size: .76rem; padding: .3rem .5rem; }
+  .heatmap-table th:first-child { text-align: left; }
+  .hm-name { padding: .4rem .75rem; color: var(--text); font-weight: 700; background: var(--bg2); border-radius: 4px; white-space: nowrap; width: 1%; }
+  .hm-cell { width: 60px; height: 34px; border-radius: 5px; text-align: center; font-weight: 700; font-size: .8rem; vertical-align: middle; }
+  .hm-p3   { background: var(--hm-p3); color: #fff; }
+  .hm-p2   { background: var(--hm-p2); color: #fff; }
+  .hm-p1   { background: var(--hm-p1); color: #0a1520; }
+  .hm-z    { background: var(--hm-z);  color: #8fa3b8; }
+  .hm-n1   { background: var(--hm-n1); color: #ddd; }
+  .hm-n2   { background: var(--hm-n2); color: #fff; }
+  .hm-n3   { background: var(--hm-n3); color: #fff; }
+  .hm-null { background: var(--hm-null); color: var(--text2); }
+  /* PROB BARS */
+  .prob-row { margin-bottom: .75rem; }
+  .prob-row label { display: flex; justify-content: space-between; margin-bottom: .3rem; font-size: .87rem; color: var(--text2); }
+  .prob-row label strong { color: var(--text); }
+  .pct-val { color: var(--accent); font-weight: 700; }
+  .prob-bar-bg { background: var(--bg3); border-radius: 4px; height: 10px; overflow: hidden; }
+  .prob-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: var(--accent); }
+  .bar-ch { background: #ffd700; }
+  /* VS CARDS */
+  .vs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .75rem; }
+  .vs-card { background: var(--bg2); border-radius: 8px; padding: .75rem; border: 1px solid var(--border); text-align: center; }
+  .vs-record { font-size: 1.15rem; font-weight: 900; }
+  .vs-record .w { color: var(--accent); }
+  .vs-record .l { color: var(--text2); }
+  /* FOOTER */
+  footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; color: var(--text2); font-size: .82rem; margin-top: 3rem; }
+  footer a { color: var(--accent); text-decoration: none; }
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    main { padding: 1rem; }
+    nav { gap: .5rem; }
+    h2 { font-size: .95rem; }
+    .hm-cell { width: 50px; height: 30px; font-size: .74rem; }
+    .hm-name { font-size: .74rem; padding: .3rem .4rem; }
+  }
+</style>
+
+</head>
+<body>
+<header>
+  <nav aria-label="主選單">
+    <a class="logo" href="/">TPBL-Lens</a>
+    <div class="nav-links">
+      <a href="/">總覽</a>
+      <a href="/formosa/">夢想家</a>
+      <a href="/lions/">攻城獅</a>
+      <a href="/aquas/">海神</a>
+      <a href="/leopards/">雲豹</a>
+      <a href="/braves/">特攻</a>
+      <a href="/kings/">國王</a>
+      <a href="/warriors/">戰神</a>
+    </div>
+  </nav>
+</header>
+
+<main data-team="formosa">
+
+  <section id="stats-summary">
+    <h2>賽季總覽</h2>
+    <div id="stats-summary-content" class="card"></div>
+  </section>
+
+  <section id="standings">
+    <h2>聯盟排名</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>#</th><th>球隊</th><th>勝</th><th>敗</th><th>勝率</th></tr></thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="league-rtg">
+    <h2>每百回合效率</h2>
+    <div class="card chart-wrap"><canvas id="chart-rtg" style="max-height:340px"></canvas></div>
+  </section>
+
+  <section id="vs-summary">
+    <h2>對各隊戰績</h2>
+    <div id="vs-grid" class="vs-grid"></div>
+  </section>
+
+  <section id="home-away">
+    <h2>主客場分析</h2>
+    <div id="home-away-content" class="card"></div>
+  </section>
+
+  <section id="player-avg">
+    <h2>球員賽季均值</h2>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>球員</th><th>得分</th><th>籃板</th><th>助攻</th><th>抄截</th><th>蓋帽</th><th>失誤</th><th>±</th><th>效率</th><th>TS%</th><th>USG%</th><th>場數</th></tr>
+        </thead>
+        <tbody id="player-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Full-depth sections — hidden until JS reveals them -->
+  <section id="simulation" style="display:none">
+    <h2>季後賽機率模擬</h2>
+    <div class="card"><div id="prob-bars"></div></div>
+  </section>
+
+  <section id="heatmap" style="display:none">
+    <h2>球員 Plus/Minus 熱力圖</h2>
+    <div class="card">
+      <div class="heatmap-wrap">
+        <table class="heatmap-table" id="heatmap-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="ppp-heatmap" style="display:none">
+    <h2>球員 PPP 熱力圖</h2>
+    <div class="card">
+      <div class="heatmap-wrap">
+        <table class="heatmap-table" id="ppp-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="usg-ts" style="display:none">
+    <h2>USG% vs TS% 散點圖</h2>
+    <div class="card chart-wrap"><canvas id="chart-usg-ts" style="max-height:380px"></canvas></div>
+  </section>
+
+  <section id="scenario" style="display:none">
+    <h2>情境分析</h2>
+    <div class="card chart-wrap"><canvas id="chart-scenario" style="max-height:340px"></canvas></div>
+  </section>
+
+  <section id="quarter" style="display:none">
+    <h2>節次分析</h2>
+    <div id="quarter-content" class="card"></div>
+  </section>
+
+  <section id="mann-whitney" style="display:none">
+    <h2>Mann-Whitney 勝負差異分析</h2>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <thead><tr><th>指標</th><th>p 值</th><th>效應量 r</th><th>顯著</th><th>勝場中位</th><th>敗場中位</th></tr></thead>
+        <tbody id="mw-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="roc" style="display:none">
+    <h2>ROC 曲線（勝負預測指標）</h2>
+    <div id="roc-container"></div>
+  </section>
+
+  <section id="last-game" style="display:none">
+    <h2>最新比賽回顧</h2>
+    <div id="last-game-content" class="card"></div>
+  </section>
+
+</main>
+<footer>
+  <p>TPBL-Lens — 全聯盟中性分析平台 · 資料來源：<a href="https://tpbl.basketball" target="_blank" rel="noopener">tpbl.basketball</a></p>
+  <p style="margin-top:.35rem">本站為非官方獨立分析，不代表任何球隊立場</p>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/team.js"></script>
+</body>
+</html>

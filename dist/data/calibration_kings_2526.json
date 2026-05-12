@@ -1,0 +1,366 @@
+{
+  "meta": {
+    "team_id": 7,
+    "team_name": "新北國王",
+    "season": "2025-26",
+    "generated": "2026-05-12"
+  },
+  "summary": {
+    "brier_score": 0.235,
+    "n_games": 35,
+    "games_won": 19,
+    "calibration_note": "每場預測使用該場賽前可用資料，無 look-ahead bias"
+  },
+  "predictions": [
+    {
+      "date": "20251011",
+      "opp": "高雄全家海神",
+      "is_home": true,
+      "predicted_win_prob": 0.55,
+      "actual_win": true,
+      "team_score": 110,
+      "opp_score": 100,
+      "low_sample": true
+    },
+    {
+      "date": "20251012",
+      "opp": "福爾摩沙夢想家",
+      "is_home": true,
+      "predicted_win_prob": 0.55,
+      "actual_win": true,
+      "team_score": 112,
+      "opp_score": 93,
+      "low_sample": true
+    },
+    {
+      "date": "20251018",
+      "opp": "新北中信特攻",
+      "is_home": true,
+      "predicted_win_prob": 0.7167,
+      "actual_win": false,
+      "team_score": 89,
+      "opp_score": 105,
+      "low_sample": true
+    },
+    {
+      "date": "20251019",
+      "opp": "臺北台新戰神",
+      "is_home": true,
+      "predicted_win_prob": 0.6214,
+      "actual_win": false,
+      "team_score": 120,
+      "opp_score": 123,
+      "low_sample": true
+    },
+    {
+      "date": "20251025",
+      "opp": "高雄全家海神",
+      "is_home": false,
+      "predicted_win_prob": 0.45,
+      "actual_win": false,
+      "team_score": 79,
+      "opp_score": 91,
+      "low_sample": false
+    },
+    {
+      "date": "20251108",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": true,
+      "predicted_win_prob": 0.4944,
+      "actual_win": false,
+      "team_score": 89,
+      "opp_score": 108,
+      "low_sample": false
+    },
+    {
+      "date": "20251108",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": true,
+      "predicted_win_prob": 0.45,
+      "actual_win": false,
+      "team_score": 89,
+      "opp_score": 108,
+      "low_sample": false
+    },
+    {
+      "date": "20251109",
+      "opp": "高雄全家海神",
+      "is_home": true,
+      "predicted_win_prob": 0.5378,
+      "actual_win": true,
+      "team_score": 111,
+      "opp_score": 94,
+      "low_sample": false
+    },
+    {
+      "date": "20251112",
+      "opp": "福爾摩沙夢想家",
+      "is_home": true,
+      "predicted_win_prob": 0.453,
+      "actual_win": true,
+      "team_score": 94,
+      "opp_score": 91,
+      "low_sample": false
+    },
+    {
+      "date": "20251214",
+      "opp": "新北中信特攻",
+      "is_home": false,
+      "predicted_win_prob": 0.4444,
+      "actual_win": false,
+      "team_score": 111,
+      "opp_score": 114,
+      "low_sample": false
+    },
+    {
+      "date": "20251220",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": true,
+      "predicted_win_prob": 0.4136,
+      "actual_win": true,
+      "team_score": 125,
+      "opp_score": 103,
+      "low_sample": false
+    },
+    {
+      "date": "20251221",
+      "opp": "新北中信特攻",
+      "is_home": true,
+      "predicted_win_prob": 0.5262,
+      "actual_win": true,
+      "team_score": 85,
+      "opp_score": 78,
+      "low_sample": false
+    },
+    {
+      "date": "20251227",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": true,
+      "predicted_win_prob": 0.55,
+      "actual_win": false,
+      "team_score": 90,
+      "opp_score": 97,
+      "low_sample": false
+    },
+    {
+      "date": "20251228",
+      "opp": "高雄全家海神",
+      "is_home": true,
+      "predicted_win_prob": 0.6306,
+      "actual_win": true,
+      "team_score": 86,
+      "opp_score": 82,
+      "low_sample": false
+    },
+    {
+      "date": "20251231",
+      "opp": "新北中信特攻",
+      "is_home": false,
+      "predicted_win_prob": 0.45,
+      "actual_win": false,
+      "team_score": 82,
+      "opp_score": 94,
+      "low_sample": false
+    },
+    {
+      "date": "20260104",
+      "opp": "高雄全家海神",
+      "is_home": false,
+      "predicted_win_prob": 0.5587,
+      "actual_win": true,
+      "team_score": 111,
+      "opp_score": 94,
+      "low_sample": false
+    },
+    {
+      "date": "20260109",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": false,
+      "predicted_win_prob": 0.3983,
+      "actual_win": false,
+      "team_score": 87,
+      "opp_score": 110,
+      "low_sample": false
+    },
+    {
+      "date": "20260117",
+      "opp": "福爾摩沙夢想家",
+      "is_home": false,
+      "predicted_win_prob": 0.3896,
+      "actual_win": false,
+      "team_score": 96,
+      "opp_score": 116,
+      "low_sample": false
+    },
+    {
+      "date": "20260125",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": false,
+      "predicted_win_prob": 0.3726,
+      "actual_win": true,
+      "team_score": 94,
+      "opp_score": 87,
+      "low_sample": false
+    },
+    {
+      "date": "20260131",
+      "opp": "福爾摩沙夢想家",
+      "is_home": false,
+      "predicted_win_prob": 0.4059,
+      "actual_win": true,
+      "team_score": 114,
+      "opp_score": 97,
+      "low_sample": false
+    },
+    {
+      "date": "20260207",
+      "opp": "臺北台新戰神",
+      "is_home": false,
+      "predicted_win_prob": 0.4833,
+      "actual_win": true,
+      "team_score": 98,
+      "opp_score": 96,
+      "low_sample": false
+    },
+    {
+      "date": "20260214",
+      "opp": "臺北台新戰神",
+      "is_home": true,
+      "predicted_win_prob": 0.6371,
+      "actual_win": true,
+      "team_score": 116,
+      "opp_score": 95,
+      "low_sample": false
+    },
+    {
+      "date": "20260215",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": true,
+      "predicted_win_prob": 0.5405,
+      "actual_win": true,
+      "team_score": 100,
+      "opp_score": 85,
+      "low_sample": false
+    },
+    {
+      "date": "20260215",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": true,
+      "predicted_win_prob": 0.5494,
+      "actual_win": true,
+      "team_score": 100,
+      "opp_score": 85,
+      "low_sample": false
+    },
+    {
+      "date": "20260304",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": true,
+      "predicted_win_prob": 0.5102,
+      "actual_win": false,
+      "team_score": 100,
+      "opp_score": 116,
+      "low_sample": false
+    },
+    {
+      "date": "20260306",
+      "opp": "臺北台新戰神",
+      "is_home": true,
+      "predicted_win_prob": 0.6654,
+      "actual_win": true,
+      "team_score": 93,
+      "opp_score": 90,
+      "low_sample": false
+    },
+    {
+      "date": "20260308",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": false,
+      "predicted_win_prob": 0.4139,
+      "actual_win": true,
+      "team_score": 114,
+      "opp_score": 101,
+      "low_sample": false
+    },
+    {
+      "date": "20260315",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": false,
+      "predicted_win_prob": 0.4719,
+      "actual_win": false,
+      "team_score": 90,
+      "opp_score": 113,
+      "low_sample": false
+    },
+    {
+      "date": "20260327",
+      "opp": "福爾摩沙夢想家",
+      "is_home": false,
+      "predicted_win_prob": 0.4197,
+      "actual_win": false,
+      "team_score": 90,
+      "opp_score": 107,
+      "low_sample": false
+    },
+    {
+      "date": "20260405",
+      "opp": "新北中信特攻",
+      "is_home": false,
+      "predicted_win_prob": 0.4828,
+      "actual_win": false,
+      "team_score": 78,
+      "opp_score": 98,
+      "low_sample": false
+    },
+    {
+      "date": "20260411",
+      "opp": "高雄全家海神",
+      "is_home": false,
+      "predicted_win_prob": 0.6075,
+      "actual_win": true,
+      "team_score": 112,
+      "opp_score": 111,
+      "low_sample": false
+    },
+    {
+      "date": "20260424",
+      "opp": "福爾摩沙夢想家",
+      "is_home": true,
+      "predicted_win_prob": 0.498,
+      "actual_win": true,
+      "team_score": 105,
+      "opp_score": 99,
+      "low_sample": false
+    },
+    {
+      "date": "20260429",
+      "opp": "新竹御嵿攻城獅",
+      "is_home": false,
+      "predicted_win_prob": 0.45,
+      "actual_win": false,
+      "team_score": 78,
+      "opp_score": 98,
+      "low_sample": false
+    },
+    {
+      "date": "20251004",
+      "opp": "臺北台新戰神",
+      "is_home": true,
+      "predicted_win_prob": 0.5717,
+      "actual_win": false,
+      "team_score": 100,
+      "opp_score": 105,
+      "low_sample": false
+    },
+    {
+      "date": "20251005",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": false,
+      "predicted_win_prob": 0.95,
+      "actual_win": true,
+      "team_score": 99,
+      "opp_score": 89,
+      "low_sample": false
+    }
+  ]
+}
