@@ -152,7 +152,7 @@ function renderStyleClusters(clusters) {
     </tr>`;
   });
   html += '</tbody></table>';
-  el.innerHTML = html;
+  el.innerHTML = `<div style="overflow-x:auto">${html}</div>`;
 }
 
 function renderMatchupMatrix(matrix, standings) {

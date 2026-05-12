@@ -147,10 +147,10 @@ function renderHomeAway(ha) {
       <td style="color:${net >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${net >= 0 ? '+' : ''}${net.toFixed(1)}</td>
     </tr>`;
   };
-  el.innerHTML = `<table>
+  el.innerHTML = `<div style="overflow-x:auto"><table>
     <thead><tr><th></th><th>場次</th><th>勝負</th><th>勝率</th><th>均得/失</th><th>淨值</th></tr></thead>
     <tbody>${row('主場', ha.home)}${row('客場', ha.away)}</tbody>
-  </table>`;
+  </table></div>`;
 }
 
 function renderPlayerTable(playerAvg) {
@@ -278,7 +278,7 @@ function renderQuarter(qa) {
       <td>${(d.win_rate * 100).toFixed(1)}%</td>
     </tr>`;
   });
-  el.innerHTML = html + '</tbody></table>';
+  el.innerHTML = `<div style="overflow-x:auto">${html}</tbody></table></div>`;
 }
 
 function renderMannWhitney(mw) {
@@ -431,7 +431,7 @@ function renderLastGame(lg) {
       </div>
       <div style="font-size:.8rem;color:var(--text2)">情境：${esc(lg.scenario)}</div>
     </div>
-    <table style="font-size:.84rem">
+    <div style="overflow-x:auto"><table style="font-size:.84rem">
       <thead><tr><th>項目</th><th>預測</th><th>實際</th><th>差值</th></tr></thead>
       <tbody>
         <tr><td>本隊得分</td><td>${teamPred.toFixed(1)}</td><td>${lg.team_score}</td>
@@ -439,5 +439,5 @@ function renderLastGame(lg) {
         <tr><td>對手得分</td><td>${oppPred.toFixed(1)}</td><td>${lg.opp_score}</td>
           <td style="color:${oppDiff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${oppDiff >= 0 ? '+' : ''}${oppDiff.toFixed(1)}</td></tr>
       </tbody>
-    </table>`;
+    </table></div>`;
 }
