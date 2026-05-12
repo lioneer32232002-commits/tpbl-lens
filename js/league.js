@@ -189,29 +189,86 @@ const TEAM_COLORS = [
 ];
 
 function renderPaceTrend(trend) {
-  const el = document.getElementById('chart-pace');
-  if (!el || !trend || !trend.length) return;
-  const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
-  deferChart(el, () => new Chart(el, {
-    type: 'line',
-    data: {
-      datasets: trend.map((t, i) => ({
-        label: short(t.name),
-        data:  t.data,
-        borderColor:     TEAM_COLORS[i % TEAM_COLORS.length],
-        backgroundColor: 'transparent',
-        pointRadius: 2,
-        tension: 0.3,
-      }))
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-      scales: {
-        x: { type: 'linear', title: { display: true, text: '場次', color: axis }, ticks: { color: axis }, grid: { color: grid } },
-        y: { title: { display: true, text: '回合數', color: axis }, ticks: { color: axis }, grid: { color: grid } }
+  const host = document.getElementById('pace-grid');
+  const summary = document.getElementById('pace-summary');
+  if (!host || !trend || !trend.length) return;
+
+  // 全聯盟共用 y 軸範圍，方便視覺比較
+  const allY = trend.flatMap(t => (t.data || []).map(p => p.y)).filter(v => Number.isFinite(v));
+  const yMin = Math.floor(Math.min(...allY) - 1);
+  const yMax = Math.ceil(Math.max(...allY) + 1);
+  const leagueAvg = allY.reduce((a, v) => a + v, 0) / (allY.length || 1);
+
+  // 依平均節奏由快到慢排序
+  const enriched = trend.map((t, i) => {
+    const ys = (t.data || []).map(p => p.y).filter(v => Number.isFinite(v));
+    const avg = ys.length ? ys.reduce((a, v) => a + v, 0) / ys.length : 0;
+    const last = ys.length ? ys[ys.length - 1] : null;
+    const min = ys.length ? Math.min(...ys) : 0;
+    const max = ys.length ? Math.max(...ys) : 0;
+    return { ...t, _i: i, avg, last, min, max };
+  }).sort((a, b) => b.avg - a.avg);
+
+  let html = '';
+  enriched.forEach((t, idx) => {
+    const color = TEAM_COLORS[t._i % TEAM_COLORS.length];
+    const diff = t.avg - leagueAvg;
+    const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1);
+    const diffColor = diff >= 0 ? 'var(--accent)' : 'var(--accent2)';
+    html += `<div class="pace-card">
+      <div class="pace-head">
+        <span class="pace-name">${short(t.name)}</span>
+        <span class="pace-avg">${t.avg.toFixed(1)}</span>
+      </div>
+      <canvas data-idx="${idx}" height="48"></canvas>
+      <div class="pace-meta">
+        <span>區間 ${t.min.toFixed(0)}–${t.max.toFixed(0)}</span>
+        <span style="color:${diffColor}">vs 聯盟 ${diffStr}</span>
+      </div>
+    </div>`;
+  });
+  host.innerHTML = html;
+  if (summary) {
+    summary.textContent = `聯盟平均 ${leagueAvg.toFixed(1)} 回合／場 · y 軸 ${yMin}–${yMax}`;
+  }
+
+  // 各隊獨立 sparkline，共用 y 軸範圍
+  host.querySelectorAll('canvas').forEach(canvas => {
+    const idx = +canvas.dataset.idx;
+    const t = enriched[idx];
+    const color = TEAM_COLORS[t._i % TEAM_COLORS.length];
+    deferChart(canvas, () => new Chart(canvas, {
+      type: 'line',
+      data: {
+        datasets: [{
+          data: t.data,
+          borderColor: color,
+          backgroundColor: color.replace('0.9', '0.15'),
+          fill: true,
+          pointRadius: 0,
+          borderWidth: 1.8,
+          tension: 0.35,
+        }, {
+          data: (t.data || []).map(p => ({ x: p.x, y: leagueAvg })),
+          borderColor: 'rgba(255,255,255,0.25)',
+          backgroundColor: 'transparent',
+          borderDash: [3, 3],
+          borderWidth: 1,
+          pointRadius: 0,
+          tension: 0,
+        }]
       },
-      plugins: { legend: { labels: { color: axis } } }
-    }
-  }));
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+        animation: { duration: 600 },
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: {
+          x: { type: 'linear', display: false },
+          y: { display: false, min: yMin, max: yMax },
+        },
+      }
+    }));
+  });
 }

@@ -41,7 +41,7 @@
   /* TABLES */
   table { width: 100%; border-collapse: collapse; font-size: .87rem; }
   th { color: var(--text2); font-weight: 700; text-align: left; padding: .5rem .75rem; border-bottom: 1px solid var(--bg3); white-space: nowrap; }
-  td { padding: .42rem .75rem; border-bottom: 1px solid rgba(255,255,255,.04); }
+  td { padding: .42rem .75rem; border-bottom: 1px solid rgba(255,255,255,.04); white-space: nowrap; }
   tr:last-child td { border-bottom: none; }
   tr.highlight td { color: var(--accent); font-weight: 700; }
   tr.playoff-cut td { border-bottom: 2px solid var(--accent2); }
@@ -59,7 +59,7 @@
   .heatmap-table th { color: var(--text2); font-size: .76rem; padding: .3rem .5rem; }
   .heatmap-table th:first-child { text-align: left; }
   .hm-name { padding: .4rem .75rem; color: var(--text); font-weight: 700; background: var(--bg2); border-radius: 4px; white-space: nowrap; width: 1%; }
-  .hm-cell { width: 60px; height: 34px; border-radius: 5px; text-align: center; font-weight: 700; font-size: .8rem; vertical-align: middle; }
+  .hm-cell { width: 60px; height: 34px; border-radius: 5px; text-align: center; font-weight: 700; font-size: .8rem; vertical-align: middle; white-space: nowrap; word-break: keep-all; }
   .hm-p3   { background: var(--hm-p3); color: #fff; }
   .hm-p2   { background: var(--hm-p2); color: #fff; }
   .hm-p1   { background: var(--hm-p1); color: #0a1520; }
@@ -85,6 +85,14 @@
   .vs-record .l { color: var(--text2); }
   .vs-record .sep { color: var(--text2); margin: 0 .15rem; font-weight: 700; }
   .vs-meta { font-size: .72rem; color: var(--text2); margin-top: .2rem; white-space: nowrap; }
+  /* PACE SMALL MULTIPLES */
+  .pace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .65rem; }
+  .pace-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .6rem; }
+  .pace-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .15rem; }
+  .pace-name { font-weight: 700; font-size: .82rem; color: var(--text); }
+  .pace-avg { font-size: .78rem; color: var(--accent); font-weight: 700; }
+  .pace-meta { font-size: .68rem; color: var(--text2); margin-top: .2rem; display: flex; justify-content: space-between; }
+  .pace-card canvas { display: block; max-width: 100%; }
   /* FOOTER */
   footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; color: var(--text2); font-size: .82rem; margin-top: 3rem; }
   footer a { color: var(--accent); text-decoration: none; }
