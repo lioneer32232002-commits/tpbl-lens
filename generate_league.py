@@ -12,8 +12,11 @@ def _load_game_files():
     if not os.path.exists(game_dir):
         return result
     for fn in sorted(_glob.glob(os.path.join(game_dir, "*.txt"))):
-        with open(fn, encoding="utf-8") as f:
-            result.append(json.load(f))
+        try:
+            with open(fn, encoding="utf-8") as f:
+                result.append(json.load(f))
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"[generate_league] skipping {fn}: {e}", file=sys.stderr)
     return result
 
 
@@ -90,6 +93,7 @@ def calc_style_clusters(allteam_data):
 
     n    = len(teams)
     top  = max(1, n // 3)
+    # cluster priority: 三分型 > 禁區型 > 快攻型 > 均衡型
     by_pace  = [x["name"] for x in sorted(teams, key=lambda x: -x["pace"])]
     by_three = [x["name"] for x in sorted(teams, key=lambda x: -x["three_rate"])]
     by_paint = [x["name"] for x in sorted(teams, key=lambda x: -x["paint_rate"])]
@@ -118,9 +122,8 @@ def calc_matchup_matrix(game_data):
     for game in game_data:
         home  = game["home_team"]
         away  = game["away_team"]
-        total = home["teams"]["total"]
-        home_score = total.get("won_score",  0) or 0
-        away_score = total.get("lost_score", 0) or 0
+        home_score = (home["teams"]["total"].get("won_score", 0) or 0)
+        away_score = (away["teams"]["total"].get("won_score", 0) or 0)
         hn, an = home["name"], away["name"]
 
         if home_score > away_score:
