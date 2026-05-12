@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <title>TPBL-Lens｜全聯盟分析總覽 2025-26</title>
+  <meta name="description" content="TPBL 2025-26 全聯盟排名、效率比較、得分來源分析">
+  {{HEAD}}
+</head>
+<body>
+{{NAV}}
+<main>
+  <section id="standings">
+    <h2>聯盟排名</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>#</th><th>球隊</th><th>勝</th><th>敗</th><th>勝率</th></tr></thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="league-rtg">
+    <h2>每百回合效率</h2>
+    <div class="card chart-wrap"><canvas id="chart-rtg" style="max-height:340px"></canvas></div>
+  </section>
+
+  <section id="scoring-sources">
+    <h2>得分來源比較</h2>
+    <div class="card chart-wrap"><canvas id="chart-scoring" style="max-height:300px"></canvas></div>
+  </section>
+
+  <section id="team-cards">
+    <h2>各隊分析入口</h2>
+    <div id="team-cards-grid" class="vs-grid"></div>
+  </section>
+</main>
+{{FOOTER}}
+<script src="/js/league.js"></script>
+</body>
+</html>
