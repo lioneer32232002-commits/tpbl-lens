@@ -21,3 +21,11 @@ def test_division_id():
 
 def test_total_games():
     assert TOTAL_GAMES == 36
+
+def test_teams_have_required_keys():
+    required = {"name", "slug", "full_depth"}
+    for tid, t in TEAMS.items():
+        assert required.issubset(t.keys()), f"Team {tid} missing keys: {required - t.keys()}"
+        assert isinstance(t["name"], str) and t["name"]
+        assert isinstance(t["slug"], str) and t["slug"]
+        assert isinstance(t["full_depth"], bool)
