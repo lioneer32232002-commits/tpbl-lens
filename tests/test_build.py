@@ -9,6 +9,7 @@ def _setup(tmp_path):
     (tmp_path / "pages").mkdir()
     (tmp_path / "pages" / "index.html").write_text("{{HEAD}}{{NAV}}idx{{FOOTER}}", encoding="utf-8")
     (tmp_path / "pages" / "team.html").write_text("{{HEAD}}{{TEAM_SLUG}}|{{TEAM_NAME}}|{{TEAM_TITLE}}{{FOOTER}}", encoding="utf-8")
+    (tmp_path / "pages" / "calibration.html").write_text("{{HEAD}}{{TEAM_SLUG}}|{{TEAM_NAME}}|{{TEAM_TITLE}}{{FOOTER}}", encoding="utf-8")
     (tmp_path / "js").mkdir()
     (tmp_path / "js" / "league.js").write_text("// league", encoding="utf-8")
     (tmp_path / "data").mkdir()
@@ -70,3 +71,11 @@ def test_build_creates_all_seven_team_pages(tmp_path, monkeypatch):
     _build(tmp_path, monkeypatch)
     for slug in ["formosa", "lions", "aquas", "leopards", "braves", "kings", "warriors"]:
         assert (tmp_path / "dist" / slug / "index.html").exists(), f"missing {slug}/index.html"
+
+def test_build_creates_calibration_page(tmp_path, monkeypatch):
+    _setup(tmp_path)
+    _build(tmp_path, monkeypatch)
+    assert (tmp_path / "dist" / "formosa" / "calibration" / "index.html").exists()
+    c = (tmp_path / "dist" / "formosa" / "calibration" / "index.html").read_text(encoding="utf-8")
+    assert "formosa" in c
+    assert "{{TEAM_SLUG}}" not in c
