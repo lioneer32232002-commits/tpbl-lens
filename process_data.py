@@ -670,6 +670,7 @@ def generate_calibration(games, all_game_data, team_id, team_name, slug):
                 continue
             opp_gp += 1
             lt = opp_side["teams"]["total"]
+            # won_score = this side's points, lost_score = opponent's points (confusing name, matches parse_games)
             if lt.get("won_score", 0) > lt.get("lost_score", 0):
                 opp_wins += 1
 
