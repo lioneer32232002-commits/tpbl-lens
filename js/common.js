@@ -21,8 +21,12 @@ function deferChart(el, factory) {
     _obs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
-        const item = _deferred.find(d => d.el === e.target);
-        if (item) { item.factory(); _obs.unobserve(e.target); }
+        const idx = _deferred.findIndex(d => d.el === e.target);
+        if (idx !== -1) {
+          _deferred[idx].factory();
+          _obs.unobserve(e.target);
+          _deferred.splice(idx, 1);
+        }
       });
     }, { rootMargin: '200px' });
   }

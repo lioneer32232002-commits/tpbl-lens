@@ -42,16 +42,18 @@ fetch('/data/league_2526.json', { cache: 'no-store' })
 function renderLeagueStandings(standings) {
   const tbody = document.getElementById('standings-body');
   if (!tbody || !standings) return;
+  let html = '';
   standings.forEach((t, i) => {
     const wr = t.gp > 0 ? (t.wins / t.gp * 100).toFixed(1) + '%' : '—';
     const pillCls = i < 3 ? 'r-in' : i < 5 ? 'r-pi' : 'r-out';
     const cut = i === 2 ? 'playoff-cut' : '';
-    tbody.innerHTML += `<tr class="${cut}">
+    html += `<tr class="${cut}">
       <td><span class="rank-pill ${pillCls}">${i + 1}</span></td>
       <td>${short(t.name)}</td>
       <td><strong>${t.wins}</strong></td><td>${t.losses}</td><td>${wr}</td>
     </tr>`;
   });
+  tbody.innerHTML = html;
 }
 
 function renderLeagueRtg(rtgData) {
@@ -112,15 +114,17 @@ function renderTeamCards(standings) {
   const grid = document.getElementById('team-cards-grid');
   if (!grid || !standings) return;
   const ROUTES = { '福爾摩沙夢想家': '/formosa/', '新竹御嵿攻城獅': '/lions/' };
+  let html = '';
   standings.forEach(t => {
     const href = ROUTES[t.name] || '#';
     const wr = t.gp > 0 ? (t.wins / t.gp * 100).toFixed(0) + '%' : '—';
     const baseStyle = 'display:block;text-decoration:none;color:inherit';
     const extraStyle = href === '#' ? 'opacity:.45;pointer-events:none;' : '';
-    grid.innerHTML += `<a href="${href}" class="vs-card" style="${extraStyle}${baseStyle}">
+    html += `<a href="${href}" class="vs-card" style="${extraStyle}${baseStyle}">
       <div style="font-size:.82rem;color:var(--text2);margin-bottom:.4rem">${short(t.name)}</div>
       <div class="vs-record"><span class="w">${t.wins}</span><span style="color:var(--text2)">W </span><span class="l">${t.losses}</span><span style="color:var(--text2)">L</span></div>
       <div style="font-size:.76rem;color:var(--text2);margin-top:.2rem">${wr} 勝率${href !== '#' ? ' →' : ''}</div>
     </a>`;
   });
+  grid.innerHTML = html;
 }
