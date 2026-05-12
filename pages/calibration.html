@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <title>{{TEAM_TITLE}}</title>
+  <meta name="description" content="{{TEAM_NAME}} 2025-26 預測校準紀錄｜TPBL-Lens">
+  <meta name="robots" content="noindex, nofollow">
+  {{HEAD}}
+</head>
+<body>
+{{NAV}}
+<main data-team="{{TEAM_SLUG}}">
+
+  <section id="cal-header">
+    <h1 style="font-size:1.3rem;font-weight:900;color:var(--accent);margin-bottom:.4rem">預測校準紀錄 2025-26</h1>
+    <p style="color:var(--text2);font-size:.9rem">{{TEAM_NAME}}｜常規賽</p>
+  </section>
+
+  <section id="brier-summary">
+    <h2>Brier Score</h2>
+    <div id="brier-summary-content" class="card"></div>
+  </section>
+
+  <section id="brier-trend">
+    <h2>Brier Score 累積趨勢</h2>
+    <div class="card chart-wrap"><canvas id="chart-brier-trend" style="max-height:260px"></canvas></div>
+  </section>
+
+  <section id="cal-bins">
+    <h2>Calibration Plot — 分桶</h2>
+    <div class="card chart-wrap"><canvas id="chart-bins" style="max-height:300px"></canvas></div>
+  </section>
+
+  <section id="cal-scatter">
+    <h2>Calibration Plot — 逐場散點</h2>
+    <div class="card chart-wrap"><canvas id="chart-scatter" style="max-height:300px"></canvas></div>
+  </section>
+
+  <section id="predictions-table">
+    <h2>預測紀錄</h2>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th><th>對手</th><th>主客</th>
+            <th>預測勝率</th><th>實際</th><th>比分</th>
+          </tr>
+        </thead>
+        <tbody id="predictions-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+{{FOOTER}}
+<script src="/js/common.js"></script>
+<script src="/js/calibration.js"></script>
+</body>
+</html>
