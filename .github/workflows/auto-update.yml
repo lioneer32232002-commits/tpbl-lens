@@ -1,0 +1,37 @@
+name: TPBL-lens Auto Update
+
+on:
+  schedule:
+    - cron: '30 14 * * *'  # 22:30 CST = 14:30 UTC
+  workflow_dispatch:        # manual trigger via GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run auto_update
+        run: python auto_update.py
+        env:
+          PYTHONIOENCODING: utf-8
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "data: auto-update $(date '+%Y-%m-%d')"
+          git push
