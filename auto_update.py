@@ -11,6 +11,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 from config import TEAMS, ALLGAME_FILE
 from fetch_games import sync_new_games, update_team_stats, load_schedule
+from build import build as run_build
 
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -99,6 +100,10 @@ def main():
 
     log("Generating league JSON...")
     run_generate_league(args.dry_run)
+
+    if not args.dry_run:
+        run_build()
+        print("[auto_update] build complete")
 
     log("=" * 50)
     if errors:
