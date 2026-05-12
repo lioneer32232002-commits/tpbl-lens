@@ -17,9 +17,9 @@ fetch(`/data/calibration_${team}_2526.json`, { cache: 'no-store' })
 function renderBrierCard(summary) {
   const el = document.getElementById('brier-summary-content');
   if (!el || !summary) return;
-  const bs = summary.brier_score.toFixed(3);
-  const n  = summary.n_games;
-  const w  = summary.games_won;
+  const bs = (summary.brier_score ?? 0).toFixed(3);
+  const n  = summary.n_games ?? 0;
+  const w  = summary.games_won ?? 0;
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
       <div style="text-align:center">
@@ -156,10 +156,10 @@ function renderCalibrationScatter(predictions) {
 
   const sorted = [...predictions].sort((a, b) => a.predicted_win_prob - b.predicted_win_prob);
 
-  const window = 5;
+  const winSize = 5;
   const maLine = sorted.map((_, i) => {
-    const start = Math.max(0, i - Math.floor(window / 2));
-    const end   = Math.min(sorted.length, start + window);
+    const start = Math.max(0, i - Math.floor(winSize / 2));
+    const end   = Math.min(sorted.length, start + winSize);
     const slice = sorted.slice(start, end);
     const avgWin = slice.reduce((s, p) => s + (p.actual_win ? 1 : 0), 0) / slice.length;
     return { x: sorted[i].predicted_win_prob, y: parseFloat(avgWin.toFixed(3)) };
