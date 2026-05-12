@@ -107,10 +107,10 @@
     main { padding: 1rem; }
     nav { gap: .5rem; }
     h2 { font-size: .95rem; }
-    .hm-cell { width: 50px; height: 30px; font-size: .74rem; }
-    .hm-name { font-size: .74rem; padding: .3rem .4rem; }
+    .hm-cell { width: 48px; height: 30px; font-size: .72rem; }
+    .hm-name { font-size: .72rem; padding: .3rem .4rem; }
     table { font-size: .8rem; }
-    th, td { padding: .35rem .45rem; white-space: nowrap; }
+    th, td { padding: .35rem .4rem; white-space: nowrap; }
     .card { padding: .85rem; }
     .vs-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .45rem; }
     .vs-card { padding: .5rem .35rem; }
@@ -121,6 +121,11 @@
     .ha-unit { display: none; }
     .ha-wl .ha-sep::before { content: "-"; color: var(--text2); margin: 0 .15rem; }
     .ha-wl { white-space: nowrap; }
+    /* 滑動提示 */
+    .heatmap-wrap { position: relative; }
+    .heatmap-wrap::after { content: "← 左右滑動 →"; display: block; text-align: center; font-size: .68rem; color: var(--text2); margin-top: .4rem; }
+    /* pace small multiples: 兩欄 */
+    .pace-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 
