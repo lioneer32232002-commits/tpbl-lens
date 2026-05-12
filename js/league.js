@@ -116,7 +116,12 @@ function renderLeagueScoring(scoringData) {
 function renderTeamCards(standings) {
   const grid = document.getElementById('team-cards-grid');
   if (!grid || !standings) return;
-  const ROUTES = { '福爾摩沙夢想家': '/formosa/', '新竹御嵿攻城獅': '/lions/' };
+  const ROUTES = {
+    '福爾摩沙夢想家': '/formosa/',  '新竹御嵿攻城獅': '/lions/',
+    '高雄全家海神':   '/aquas/',    '桃園台啤永豐雲豹': '/leopards/',
+    '新北中信特攻':   '/braves/',   '新北國王': '/kings/',
+    '臺北台新戰神':   '/warriors/',
+  };
   let html = '';
   standings.forEach(t => {
     const href = ROUTES[t.name] || '#';

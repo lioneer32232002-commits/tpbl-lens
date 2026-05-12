@@ -8,8 +8,13 @@ DATA_DIR  = "data"
 DIST      = "dist"
 
 TEAM_PAGES = [
-    {"slug": "formosa", "name": "福爾摩沙夢想家", "title": "夢想家 2025-26 賽季分析｜TPBL-Lens"},
-    {"slug": "lions",   "name": "新竹御嵿攻城獅",  "title": "攻城獅 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "formosa",  "name": "福爾摩沙夢想家",   "title": "夢想家 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "lions",    "name": "新竹御嵿攻城獅",    "title": "攻城獅 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "aquas",    "name": "高雄全家海神",       "title": "海神 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "leopards", "name": "桃園台啤永豐雲豹",   "title": "雲豹 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "braves",   "name": "新北中信特攻",       "title": "特攻 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "kings",    "name": "新北國王",           "title": "國王 2025-26 賽季分析｜TPBL-Lens"},
+    {"slug": "warriors", "name": "臺北台新戰神",       "title": "戰神 2025-26 賽季分析｜TPBL-Lens"},
 ]
 
 def _read(path):

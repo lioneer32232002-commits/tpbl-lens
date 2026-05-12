@@ -64,3 +64,9 @@ def test_build_copies_data_json(tmp_path, monkeypatch):
     _setup(tmp_path)
     _build(tmp_path, monkeypatch)
     assert (tmp_path / "dist" / "data" / "league_2526.json").exists()
+
+def test_build_creates_all_seven_team_pages(tmp_path, monkeypatch):
+    _setup(tmp_path)
+    _build(tmp_path, monkeypatch)
+    for slug in ["formosa", "lions", "aquas", "leopards", "braves", "kings", "warriors"]:
+        assert (tmp_path / "dist" / slug / "index.html").exists(), f"missing {slug}/index.html"
