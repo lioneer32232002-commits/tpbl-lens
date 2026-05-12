@@ -100,7 +100,7 @@ function renderLeagueRtg(rtgData, teamName) {
       labels: rtgData.map(t => short(t.name)),
       datasets: [
         { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(0,212,255,0.9)' : 'rgba(0,212,255,0.3)') },
-        { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(255,107,53,0.9)' : 'rgba(255,107,53,0.3)') },
+        { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(240,98,146,0.9)' : 'rgba(240,98,146,0.3)') },
       ]
     },
     options: {
@@ -247,7 +247,7 @@ function renderScenario(scenarioChart) {
       labels: scenarioChart.map(s => s.label),
       datasets: [
         { label: '本隊均分', data: scenarioChart.map(s => s.team_mean ?? s.lion_mean), backgroundColor: 'rgba(0,212,255,0.75)' },
-        { label: '對手均分', data: scenarioChart.map(s => s.opp_mean), backgroundColor: 'rgba(255,107,53,0.65)' },
+        { label: '對手均分', data: scenarioChart.map(s => s.opp_mean), backgroundColor: 'rgba(240,98,146,0.65)' },
         { label: '勝率', data: scenarioChart.map(s => +(s.win_rate * 100).toFixed(1)), type: 'line', yAxisID: 'yWr', borderColor: '#ffd700', backgroundColor: 'transparent', pointRadius: 4 },
       ]
     },

@@ -65,7 +65,7 @@ function renderBrierTrend(predictions) {
           {
             label: '隨機猜基準 (0.25)',
             data: points.map(p => ({ x: p.x, y: 0.25 })),
-            borderColor: 'rgba(255,107,53,.4)',
+            borderColor: 'rgba(240,98,146,.4)',
             backgroundColor: 'transparent',
             pointRadius: 0,
             borderWidth: 1,
@@ -185,7 +185,7 @@ function renderCalibrationScatter(predictions) {
             label: '移動平均（窗口 5）',
             data: maLine,
             type: 'line',
-            borderColor: '#ff6b35',
+            borderColor: '#f06292',
             backgroundColor: 'transparent',
             pointRadius: 0,
             borderWidth: 2,

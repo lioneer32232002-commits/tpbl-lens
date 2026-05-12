@@ -483,14 +483,15 @@ def calc_scenario_chart(game_team_stats, games):
             },
         })
 
-    last_comp = float(composite[-1])
+    last_idx = max(range(len(games)), key=lambda i: games[i]["date"])
+    last_comp = float(composite[last_idx])
     if   last_comp >= q75: last_label = "Best"
     elif last_comp >= q50: last_label = "Ideal"
     elif last_comp >= q25: last_label = "Fair"
     else:                  last_label = "Low"
     pred   = next(r for r in results if r["label"] == last_label)
-    last_g = games[-1]
-    last_s = game_team_stats[-1]
+    last_g = games[last_idx]
+    last_s = game_team_stats[last_idx]
     last_hint = {
         "date":       last_g["date"],
         "opp":        last_g["opp"],
