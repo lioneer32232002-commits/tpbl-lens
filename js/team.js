@@ -1,6 +1,8 @@
 // team.js — team detail page
 
-const team = document.querySelector('main').dataset.team;
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const team = document.querySelector('main')?.dataset.team;
+if (!team) { console.error('[team.js] No team slug found on <main>'); }
 
 fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
   .then(r => r.json())
@@ -48,7 +50,8 @@ fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
       document.getElementById('last-game').style.display = '';
       renderLastGame(data.last_game_hint);
     }
-  });
+  })
+  .catch(err => console.error('[team.js] Failed to load team data:', err));
 
 function renderStatsSummary(ts, meta) {
   const el = document.getElementById('stats-summary-content');
@@ -71,17 +74,20 @@ function renderStatsSummary(ts, meta) {
 function renderStandings(standings, teamName) {
   const tbody = document.getElementById('standings-body');
   if (!tbody || !standings) return;
+  const name = teamName ?? '';
+  let html = '';
   standings.forEach((t, i) => {
     const wr = t.gp > 0 ? (t.wins / t.gp * 100).toFixed(1) + '%' : '—';
-    const isSelf = t.name === teamName;
+    const isSelf = t.name === name;
     const pillCls = i < 3 ? 'r-in' : i < 5 ? 'r-pi' : 'r-out';
     const cut = i === 2 ? 'playoff-cut' : '';
-    tbody.innerHTML += `<tr class="${isSelf ? 'highlight' : ''} ${cut}">
+    html += `<tr class="${isSelf ? 'highlight' : ''} ${cut}">
       <td><span class="rank-pill ${pillCls}">${i + 1}</span></td>
-      <td>${short(t.name)}${isSelf ? ' ◀' : ''}</td>
+      <td>${esc(short(t.name))}${isSelf ? ' ◀' : ''}</td>
       <td><strong>${t.wins}</strong></td><td>${t.losses}</td><td>${wr}</td>
     </tr>`;
   });
+  tbody.innerHTML = html;
 }
 
 function renderLeagueRtg(rtgData, teamName) {
@@ -111,28 +117,33 @@ function renderLeagueRtg(rtgData, teamName) {
 function renderVsCards(vs) {
   const grid = document.getElementById('vs-grid');
   if (!grid || !vs) return;
+  let html = '';
   Object.entries(vs).forEach(([opp, r]) => {
     const total = r.w + r.l;
     const wr = total > 0 ? (r.w / total * 100).toFixed(0) + '%' : '—';
-    grid.innerHTML += `<div class="vs-card">
-      <div style="font-size:.78rem;color:var(--text2);margin-bottom:.3rem">${short(opp)}</div>
+    html += `<div class="vs-card">
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:.3rem">${esc(short(opp))}</div>
       <div class="vs-record"><span class="w">${r.w}</span><span style="color:var(--text2)">勝</span><span class="l">${r.l}</span><span style="color:var(--text2)">敗</span></div>
-      <div style="font-size:.74rem;color:var(--text2);margin-top:.2rem">${wr} · 均${r.avg_team.toFixed(1)}分</div>
+      <div style="font-size:.74rem;color:var(--text2);margin-top:.2rem">${wr} · 均${(+(r.avg_team ?? 0)).toFixed(1)}分</div>
     </div>`;
   });
+  grid.innerHTML = html;
 }
 
 function renderHomeAway(ha) {
   const el = document.getElementById('home-away-content');
   if (!el || !ha) return;
   const row = (label, d) => {
-    const net = d.avg_pts - d.avg_opp;
+    const winRate = +(d.win_rate ?? 0);
+    const avgPts = +(d.avg_pts ?? 0);
+    const avgOpp = +(d.avg_opp ?? 0);
+    const net = avgPts - avgOpp;
     return `<tr>
       <td><strong>${label}</strong></td>
       <td>${d.gp} 場</td>
       <td>${d.wins} 勝 ${d.losses} 敗</td>
-      <td>${(d.win_rate * 100).toFixed(1)}%</td>
-      <td>${d.avg_pts.toFixed(1)} / ${d.avg_opp.toFixed(1)}</td>
+      <td>${(winRate * 100).toFixed(1)}%</td>
+      <td>${avgPts.toFixed(1)} / ${avgOpp.toFixed(1)}</td>
       <td style="color:${net >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${net >= 0 ? '+' : ''}${net.toFixed(1)}</td>
     </tr>`;
   };
@@ -145,21 +156,23 @@ function renderHomeAway(ha) {
 function renderPlayerTable(playerAvg) {
   const tbody = document.getElementById('player-tbody');
   if (!tbody || !playerAvg) return;
+  let html = '';
   Object.entries(playerAvg)
     .sort((a, b) => (b[1].score || 0) - (a[1].score || 0))
     .forEach(([name, s]) => {
-      const pm = +(s.plus_minus || 0);
+      const pm = +(s.plus_minus ?? 0);
       const pmCls = pm >= 5 ? 'color:var(--accent)' : pm <= -5 ? 'color:var(--accent2)' : 'color:var(--text2)';
-      tbody.innerHTML += `<tr>
-        <td>${name}</td>
-        <td>${s.score.toFixed(1)}</td><td>${s.rebounds.toFixed(1)}</td><td>${s.assists.toFixed(1)}</td>
-        <td>${s.steals.toFixed(1)}</td><td>${s.blocks.toFixed(1)}</td><td>${s.turnovers.toFixed(1)}</td>
+      html += `<tr>
+        <td>${esc(name)}</td>
+        <td>${(+(s.score ?? 0)).toFixed(1)}</td><td>${(+(s.rebounds ?? 0)).toFixed(1)}</td><td>${(+(s.assists ?? 0)).toFixed(1)}</td>
+        <td>${(+(s.steals ?? 0)).toFixed(1)}</td><td>${(+(s.blocks ?? 0)).toFixed(1)}</td><td>${(+(s.turnovers ?? 0)).toFixed(1)}</td>
         <td style="${pmCls}">${pm >= 0 ? '+' : ''}${pm.toFixed(1)}</td>
-        <td>${s.efficiency.toFixed(1)}</td>
-        <td>${s.tsp.toFixed(1)}%</td><td>${s.usg.toFixed(1)}%</td>
+        <td>${(+(s.efficiency ?? 0)).toFixed(1)}</td>
+        <td>${(+(s.tsp ?? 0)).toFixed(1)}%</td><td>${(+(s.usg ?? 0)).toFixed(1)}%</td>
         <td style="color:var(--text2)">${s.games}</td>
       </tr>`;
     });
+  tbody.innerHTML = html;
 }
 
 function renderSimulation(sim) {
@@ -172,13 +185,15 @@ function renderSimulation(sim) {
     { id: 'fi', prob: sim.prob_final,    label: '打總冠軍賽（Bo7）',          cls: '' },
     { id: 'ch', prob: sim.prob_champ,    label: '🏆 拿下總冠軍',             cls: 'bar-ch' },
   ];
+  let html = '';
   items.forEach(item => {
     const pct = Math.round((item.prob || 0) * 100);
-    container.innerHTML += `<div class="prob-row">
+    html += `<div class="prob-row">
       <label><strong>${item.label}</strong><span class="pct-val">${pct}%</span></label>
       <div class="prob-bar-bg"><div class="prob-bar-fill ${item.cls}" id="pbar-${item.id}" style="width:0%"></div></div>
     </div>`;
   });
+  container.innerHTML = html;
   setTimeout(() => {
     items.forEach(item => {
       const el = document.getElementById(`pbar-${item.id}`);
@@ -269,19 +284,21 @@ function renderQuarter(qa) {
 function renderMannWhitney(mw) {
   const tbody = document.getElementById('mw-tbody');
   if (!tbody || !mw) return;
+  let html = '';
   mw.forEach(item => {
     const sig = item.significant
-      ? `<span style="color:var(--accent);font-weight:700">✓ p=${item.p_value.toFixed(4)}</span>`
+      ? `<span style="color:var(--accent);font-weight:700">✓ p=${(+(item.p_value ?? 0)).toFixed(4)}</span>`
       : `<span style="color:var(--text2)">—</span>`;
-    tbody.innerHTML += `<tr>
-      <td>${item.stat}</td>
-      <td>${item.p_value.toFixed(4)}</td>
-      <td>${item.effect_r.toFixed(3)}</td>
+    html += `<tr>
+      <td>${esc(item.stat)}</td>
+      <td>${(+(item.p_value ?? 0)).toFixed(4)}</td>
+      <td>${(+(item.effect_r ?? 0)).toFixed(3)}</td>
       <td>${sig}</td>
-      <td>${item.wins_median.toFixed(1)}</td>
-      <td>${item.losses_median.toFixed(1)}</td>
+      <td>${(+(item.wins_median ?? 0)).toFixed(1)}</td>
+      <td>${(+(item.losses_median ?? 0)).toFixed(1)}</td>
     </tr>`;
   });
+  tbody.innerHTML = html;
 }
 
 function renderRoc(roc) {
@@ -294,7 +311,7 @@ function renderRoc(roc) {
     div.style.marginBottom = '.75rem';
     const canvas = document.createElement('canvas');
     canvas.style.maxHeight = '200px';
-    div.innerHTML = `<div style="font-size:.84rem;color:var(--text2);margin-bottom:.5rem">${stat} · AUC = <strong style="color:var(--accent)">${data.auc.toFixed(3)}</strong></div>`;
+    div.innerHTML = `<div style="font-size:.84rem;color:var(--text2);margin-bottom:.5rem">${esc(stat)} · AUC = <strong style="color:var(--accent)">${data.auc.toFixed(3)}</strong></div>`;
     div.appendChild(canvas);
     container.appendChild(div);
     deferChart(canvas, () => new Chart(canvas, {
@@ -326,22 +343,26 @@ function renderLastGame(lg) {
   const ha = lg.is_home ? '主場' : '客場';
   const result = lg.won ? '<span style="color:var(--accent)">勝</span>' : '<span style="color:var(--accent2)">敗</span>';
   const diff = lg.team_score - lg.opp_score;
+  const teamPred = +(lg.team_pred ?? 0);
+  const oppPred = +(lg.opp_pred ?? 0);
+  const teamDiff = +(lg.team_diff ?? 0);
+  const oppDiff = +(lg.opp_diff ?? 0);
   el.innerHTML = `
     <div style="margin-bottom:1rem">
-      <div style="color:var(--text2);font-size:.84rem">${dateStr} · ${ha} vs ${short(lg.opp)}</div>
+      <div style="color:var(--text2);font-size:.84rem">${dateStr} · ${ha} vs ${esc(short(lg.opp))}</div>
       <div style="font-size:1.5rem;font-weight:900;margin:.3rem 0">
         ${lg.team_score} : ${lg.opp_score} ${result}
         <span style="font-size:.88rem;color:${diff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">(${diff >= 0 ? '+' : ''}${diff})</span>
       </div>
-      <div style="font-size:.8rem;color:var(--text2)">情境：${lg.scenario}</div>
+      <div style="font-size:.8rem;color:var(--text2)">情境：${esc(lg.scenario)}</div>
     </div>
     <table style="font-size:.84rem">
       <thead><tr><th>項目</th><th>預測</th><th>實際</th><th>差值</th></tr></thead>
       <tbody>
-        <tr><td>本隊得分</td><td>${lg.team_pred.toFixed(1)}</td><td>${lg.team_score}</td>
-          <td style="color:${lg.team_diff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${lg.team_diff >= 0 ? '+' : ''}${lg.team_diff.toFixed(1)}</td></tr>
-        <tr><td>對手得分</td><td>${lg.opp_pred.toFixed(1)}</td><td>${lg.opp_score}</td>
-          <td style="color:${lg.opp_diff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${lg.opp_diff >= 0 ? '+' : ''}${lg.opp_diff.toFixed(1)}</td></tr>
+        <tr><td>本隊得分</td><td>${teamPred.toFixed(1)}</td><td>${lg.team_score}</td>
+          <td style="color:${teamDiff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${teamDiff >= 0 ? '+' : ''}${teamDiff.toFixed(1)}</td></tr>
+        <tr><td>對手得分</td><td>${oppPred.toFixed(1)}</td><td>${lg.opp_score}</td>
+          <td style="color:${oppDiff >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${oppDiff >= 0 ? '+' : ''}${oppDiff.toFixed(1)}</td></tr>
       </tbody>
     </table>`;
 }
