@@ -1,0 +1,128 @@
+[
+  {
+    "game_id": 9001,
+    "game_date": "2025-10-26",
+    "home_team": {
+      "id": 4, "name": "新竹御嵿攻城獅",
+      "teams": {
+        "total": {
+          "won_score": 95, "lost_score": 88,
+          "field_goals_attempted": 80, "offensive_rebounds": 10,
+          "turnovers": 12, "free_throws_attempted": 20,
+          "free_throws_made": 15, "field_goals_made": 35,
+          "three_pointers_made": 10, "points_in_paint": 30,
+          "fast_break_points": 10, "second_chance_points": 8
+        },
+        "rounds": {
+          "1": {"won_score": 28, "lost_score": 22, "field_goals_attempted": 20, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 5},
+          "2": {"won_score": 22, "lost_score": 25, "field_goals_attempted": 20, "offensive_rebounds": 3, "turnovers": 3, "free_throws_attempted": 4},
+          "3": {"won_score": 24, "lost_score": 20, "field_goals_attempted": 20, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 5},
+          "4": {"won_score": 21, "lost_score": 21, "field_goals_attempted": 20, "offensive_rebounds": 3, "turnovers": 3, "free_throws_attempted": 6}
+        }
+      },
+      "players": {"total": {
+        "101": {"name": "林A", "score": 22, "rebounds": 5, "assists": 3,
+                "steals": 1, "blocks": 0, "turnovers": 2, "plus_minus": 7,
+                "field_goals_percentage": "50.0", "three_pointers_made": 3,
+                "three_pointers_attempted": 6, "free_throws_percentage": "80.0",
+                "efficiency": 20, "tsp": 0.62, "time_on_court": 2400,
+                "field_goals_attempted": 10, "offensive_rebounds": 1,
+                "free_throws_attempted": 5},
+        "102": {"name": "陳B", "score": 18, "rebounds": 8, "assists": 2,
+                "steals": 2, "blocks": 1, "turnovers": 1, "plus_minus": 5,
+                "field_goals_percentage": "45.0", "three_pointers_made": 2,
+                "three_pointers_attempted": 5, "free_throws_percentage": "75.0",
+                "efficiency": 17, "tsp": 0.58, "time_on_court": 2100,
+                "field_goals_attempted": 9, "offensive_rebounds": 2,
+                "free_throws_attempted": 4}
+      }}
+    },
+    "away_team": {
+      "id": 3, "name": "福爾摩沙夢想家",
+      "teams": {
+        "total": {
+          "won_score": 88, "lost_score": 95,
+          "field_goals_attempted": 75, "offensive_rebounds": 8,
+          "turnovers": 14, "free_throws_attempted": 18,
+          "free_throws_made": 12, "field_goals_made": 30,
+          "three_pointers_made": 8, "points_in_paint": 25,
+          "fast_break_points": 8, "second_chance_points": 6
+        },
+        "rounds": {
+          "1": {"won_score": 22, "lost_score": 28, "field_goals_attempted": 18, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 4},
+          "2": {"won_score": 25, "lost_score": 22, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 4, "free_throws_attempted": 5},
+          "3": {"won_score": 20, "lost_score": 24, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 4},
+          "4": {"won_score": 21, "lost_score": 21, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 4, "free_throws_attempted": 5}
+        }
+      },
+      "players": {"total": {
+        "201": {"name": "王C", "score": 20, "rebounds": 6, "assists": 5,
+                "steals": 2, "blocks": 0, "turnovers": 3, "plus_minus": -7,
+                "field_goals_percentage": "48.0", "three_pointers_made": 2,
+                "three_pointers_attempted": 6, "free_throws_percentage": "70.0",
+                "efficiency": 18, "tsp": 0.59, "time_on_court": 2300,
+                "field_goals_attempted": 10, "offensive_rebounds": 1,
+                "free_throws_attempted": 4}
+      }}
+    }
+  },
+  {
+    "game_id": 9002,
+    "game_date": "2025-11-02",
+    "home_team": {
+      "id": 2, "name": "高雄全家海神",
+      "teams": {
+        "total": {
+          "won_score": 102, "lost_score": 90,
+          "field_goals_attempted": 78, "offensive_rebounds": 9,
+          "turnovers": 11, "free_throws_attempted": 22,
+          "free_throws_made": 17, "field_goals_made": 37,
+          "three_pointers_made": 11, "points_in_paint": 32,
+          "fast_break_points": 12, "second_chance_points": 7
+        },
+        "rounds": {
+          "1": {"won_score": 30, "lost_score": 22, "field_goals_attempted": 20, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 5},
+          "2": {"won_score": 24, "lost_score": 23, "field_goals_attempted": 20, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 5},
+          "3": {"won_score": 26, "lost_score": 22, "field_goals_attempted": 19, "offensive_rebounds": 3, "turnovers": 2, "free_throws_attempted": 6},
+          "4": {"won_score": 22, "lost_score": 23, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 6}
+        }
+      },
+      "players": {"total": {}}
+    },
+    "away_team": {
+      "id": 4, "name": "新竹御嵿攻城獅",
+      "teams": {
+        "total": {
+          "won_score": 90, "lost_score": 102,
+          "field_goals_attempted": 76, "offensive_rebounds": 8,
+          "turnovers": 13, "free_throws_attempted": 19,
+          "free_throws_made": 14, "field_goals_made": 32,
+          "three_pointers_made": 9, "points_in_paint": 28,
+          "fast_break_points": 9, "second_chance_points": 5
+        },
+        "rounds": {
+          "1": {"won_score": 22, "lost_score": 30, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 4},
+          "2": {"won_score": 23, "lost_score": 24, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 5},
+          "3": {"won_score": 22, "lost_score": 26, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 4, "free_throws_attempted": 4},
+          "4": {"won_score": 23, "lost_score": 22, "field_goals_attempted": 19, "offensive_rebounds": 2, "turnovers": 3, "free_throws_attempted": 6}
+        }
+      },
+      "players": {"total": {
+        "101": {"name": "林A", "score": 19, "rebounds": 4, "assists": 2,
+                "steals": 0, "blocks": 0, "turnovers": 3, "plus_minus": -12,
+                "field_goals_percentage": "44.0", "three_pointers_made": 2,
+                "three_pointers_attempted": 7, "free_throws_percentage": "75.0",
+                "efficiency": 14, "tsp": 0.55, "time_on_court": 2300,
+                "field_goals_attempted": 9, "offensive_rebounds": 1,
+                "free_throws_attempted": 4},
+        "102": {"name": "陳B", "score": 15, "rebounds": 7, "assists": 1,
+                "steals": 1, "blocks": 0, "turnovers": 2, "plus_minus": -5,
+                "field_goals_percentage": "40.0", "three_pointers_made": 1,
+                "three_pointers_attempted": 4, "free_throws_percentage": "80.0",
+                "efficiency": 12, "tsp": 0.52, "time_on_court": 2000,
+                "field_goals_attempted": 8, "offensive_rebounds": 1,
+                "free_throws_attempted": 3}
+      }}
+    }
+  }
+]

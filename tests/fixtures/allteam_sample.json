@@ -1,0 +1,41 @@
+[
+  {
+    "team": {"id": 4, "name": "新竹御嵿攻城獅"},
+    "game_count": 2,
+    "won_game_count": 1,
+    "lost_game_count": 1,
+    "average_stats": {
+      "won_score": 92.5, "lost_score": 95.0,
+      "field_goals_attempted": 78.0, "offensive_rebounds": 9.0,
+      "turnovers": 12.5, "free_throws_attempted": 19.5,
+      "free_throws_made": 14.5, "field_goals_made": 33.5,
+      "three_pointers_made": 9.5, "points_in_paint": 29.0
+    }
+  },
+  {
+    "team": {"id": 3, "name": "福爾摩沙夢想家"},
+    "game_count": 2,
+    "won_game_count": 1,
+    "lost_game_count": 1,
+    "average_stats": {
+      "won_score": 96.0, "lost_score": 90.0,
+      "field_goals_attempted": 76.0, "offensive_rebounds": 8.5,
+      "turnovers": 13.0, "free_throws_attempted": 18.5,
+      "free_throws_made": 13.0, "field_goals_made": 32.0,
+      "three_pointers_made": 9.0, "points_in_paint": 27.0
+    }
+  },
+  {
+    "team": {"id": 2, "name": "高雄全家海神"},
+    "game_count": 2,
+    "won_game_count": 2,
+    "lost_game_count": 0,
+    "average_stats": {
+      "won_score": 102.0, "lost_score": 89.0,
+      "field_goals_attempted": 79.0, "offensive_rebounds": 9.5,
+      "turnovers": 11.5, "free_throws_attempted": 22.0,
+      "free_throws_made": 17.0, "field_goals_made": 37.0,
+      "three_pointers_made": 11.5, "points_in_paint": 32.5
+    }
+  }
+]
