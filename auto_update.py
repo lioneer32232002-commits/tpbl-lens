@@ -102,8 +102,12 @@ def main():
     run_generate_league(args.dry_run)
 
     if not args.dry_run:
-        run_build()
-        print("[auto_update] build complete")
+        try:
+            run_build()
+            log("build complete")
+        except Exception as e:
+            log(f"[ERROR] build failed: {e}")
+            errors.append("build")
 
     log("=" * 50)
     if errors:
