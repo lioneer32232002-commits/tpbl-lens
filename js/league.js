@@ -37,6 +37,9 @@ fetch('/data/league_2526.json', { cache: 'no-store' })
     renderLeagueRtg(data.league_rtg);
     renderLeagueScoring(data.scoring_sources);
     renderTeamCards(data.standings);
+    renderStyleClusters(data.style_clusters);
+    renderMatchupMatrix(data.matchup_matrix, data.standings);
+    renderPaceTrend(data.pace_trend);
   });
 
 function renderLeagueStandings(standings) {
@@ -127,4 +130,83 @@ function renderTeamCards(standings) {
     </a>`;
   });
   grid.innerHTML = html;
+}
+
+function renderStyleClusters(clusters) {
+  const el = document.getElementById('style-clusters-content');
+  if (!el || !clusters || !clusters.length) return;
+  let html = '<table><thead><tr><th>球隊</th><th>節奏</th><th>三分率</th><th>禁區比例</th><th>助攻/失誤</th><th>風格</th></tr></thead><tbody>';
+  clusters.forEach(t => {
+    html += `<tr>
+      <td>${short(t.name)}</td>
+      <td>${(+(t.pace ?? 0)).toFixed(1)}</td>
+      <td>${((+(t.three_rate ?? 0)) * 100).toFixed(1)}%</td>
+      <td>${((+(t.paint_rate ?? 0)) * 100).toFixed(1)}%</td>
+      <td>${(+(t.ast_to ?? 0)).toFixed(2)}</td>
+      <td><span style="color:var(--accent);font-weight:700">${t.cluster}</span></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function renderMatchupMatrix(matrix, standings) {
+  const tableEl = document.getElementById('matchup-table');
+  if (!tableEl || !matrix || !standings) return;
+  const teams = standings.map(t => t.name);
+  let html = '<thead><tr><th style="text-align:left">↓ vs →</th>';
+  teams.forEach(t => { html += `<th>${short(t)}</th>`; });
+  html += '</tr></thead><tbody>';
+  teams.forEach(rowTeam => {
+    html += `<tr><td class="hm-name">${short(rowTeam)}</td>`;
+    teams.forEach(colTeam => {
+      if (rowTeam === colTeam) {
+        html += `<td class="hm-cell hm-null">—</td>`;
+        return;
+      }
+      const r = (matrix[rowTeam] || {})[colTeam];
+      if (!r) { html += `<td class="hm-cell hm-null">—</td>`; return; }
+      const diff = r.w - r.l;
+      const cls = diff >= 2 ? 'hm-p2' : diff === 1 ? 'hm-p1'
+               : diff === 0 ? 'hm-z'  : diff === -1 ? 'hm-n1' : 'hm-n2';
+      html += `<td class="hm-cell ${cls}">${r.w}-${r.l}</td>`;
+    });
+    html += '</tr>';
+  });
+  tableEl.innerHTML = html + '</tbody>';
+}
+
+const TEAM_COLORS = [
+  'rgba(0,212,255,0.9)',   'rgba(255,107,53,0.9)',
+  'rgba(100,220,120,0.9)', 'rgba(255,215,0,0.9)',
+  'rgba(200,150,255,0.9)', 'rgba(255,180,100,0.9)',
+  'rgba(100,200,255,0.9)',
+];
+
+function renderPaceTrend(trend) {
+  const el = document.getElementById('chart-pace');
+  if (!el || !trend || !trend.length) return;
+  const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
+  deferChart(el, () => new Chart(el, {
+    type: 'line',
+    data: {
+      datasets: trend.map((t, i) => ({
+        label: short(t.name),
+        data:  t.data,
+        borderColor:     TEAM_COLORS[i % TEAM_COLORS.length],
+        backgroundColor: 'transparent',
+        pointRadius: 2,
+        tension: 0.3,
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+      scales: {
+        x: { type: 'linear', title: { display: true, text: '場次', color: axis }, ticks: { color: axis }, grid: { color: grid } },
+        y: { title: { display: true, text: '回合數', color: axis }, ticks: { color: axis }, grid: { color: grid } }
+      },
+      plugins: { legend: { labels: { color: axis } } }
+    }
+  }));
 }

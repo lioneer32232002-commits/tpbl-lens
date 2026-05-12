@@ -32,6 +32,26 @@
     <h2>各隊分析入口</h2>
     <div id="team-cards-grid" class="vs-grid"></div>
   </section>
+
+  <section id="style-clusters">
+    <h2>球隊風格分群</h2>
+    <div id="style-clusters-content" class="card"></div>
+  </section>
+
+  <section id="matchup-matrix">
+    <h2>對戰矩陣</h2>
+    <div class="card">
+      <div class="heatmap-wrap">
+        <table class="heatmap-table" id="matchup-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="pace-trend">
+    <h2>節奏趨勢（每場回合數）</h2>
+    <div class="card chart-wrap"><canvas id="chart-pace" style="max-height:320px"></canvas></div>
+  </section>
+
 </main>
 {{FOOTER}}
 <script src="/js/league.js"></script>
