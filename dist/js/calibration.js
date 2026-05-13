@@ -15,6 +15,19 @@ fetch(`/data/calibration_${team}_2526.json`, { cache: 'no-store' })
   })
   .catch(err => console.error('[calibration.js] Failed to load:', err));
 
+// 在圖表下方插入彩色文字圖例
+function chartLegend(canvas, items) {
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin-top:.5rem;font-size:.78rem;';
+  items.forEach(({ label, color }) => {
+    const span = document.createElement('span');
+    span.textContent = label;
+    span.style.color = color;
+    div.appendChild(span);
+  });
+  canvas.parentNode.insertBefore(div, canvas.nextSibling);
+}
+
 function renderBrierCard(summary) {
   const el = document.getElementById('brier-summary-content');
   if (!el || !summary) return;
@@ -54,7 +67,6 @@ function renderBrierTrend(predictions) {
       data: {
         datasets: [
           {
-            label: '累積 Brier Score',
             data: points,
             borderColor: '#00e5ff',
             backgroundColor: 'rgba(0,229,255,.08)',
@@ -64,9 +76,8 @@ function renderBrierTrend(predictions) {
             tension: 0.3,
           },
           {
-            label: '隨機猜基準 (0.25)',
             data: points.map(p => ({ x: p.x, y: 0.25 })),
-            borderColor: 'rgba(240,98,146,.4)',
+            borderColor: 'rgba(240,98,146,.5)',
             backgroundColor: 'transparent',
             pointRadius: 0,
             borderWidth: 1,
@@ -76,17 +87,17 @@ function renderBrierTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: {
-          legend: {
-            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
-          },
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { min: 0, max: 0.35, title: { display: true, text: 'Brier Score（累積）' } },
         },
       },
     });
+    chartLegend(canvas, [
+      { label: '累積 Brier Score', color: '#00e5ff' },
+      { label: '隨機猜基準 (0.25)', color: 'rgba(240,98,146,.9)' },
+    ]);
   });
 }
 
@@ -105,7 +116,6 @@ function renderEloTrend(predictions) {
       data: {
         datasets: [
           {
-            label: 'Elo 評分',
             data: points,
             borderColor: '#00d4ff',
             backgroundColor: 'rgba(0,212,255,.08)',
@@ -118,7 +128,6 @@ function renderEloTrend(predictions) {
             tension: 0.3,
           },
           {
-            label: '聯盟基準 (1500)',
             data: points.map(p => ({ x: p.x, y: 1500 })),
             borderColor: 'rgba(255,255,255,.2)',
             backgroundColor: 'transparent',
@@ -130,17 +139,17 @@ function renderEloTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: {
-          legend: {
-            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
-          },
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { title: { display: true, text: 'Elo 評分' } },
         },
       },
     });
+    chartLegend(canvas, [
+      { label: 'Elo 評分', color: '#00d4ff' },
+      { label: '聯盟基準 (1500)', color: 'rgba(255,255,255,.45)' },
+    ]);
   });
 }
 
@@ -176,7 +185,6 @@ function renderCalibrationBins(predictions) {
         labels: bins.map(b => b.label),
         datasets: [
           {
-            label: '實際勝率 (%)',
             data: bins.map(b => b.actualRate),
             backgroundColor: bins.map(b =>
               b.actualRate === null ? 'rgba(255,255,255,.15)'
@@ -191,7 +199,6 @@ function renderCalibrationBins(predictions) {
             borderWidth: 1,
           },
           {
-            label: '完美校準',
             data: bins.map(b => b.midPct),
             type: 'line',
             borderColor: 'rgba(255,255,255,.3)',
@@ -204,12 +211,7 @@ function renderCalibrationBins(predictions) {
         ],
       },
       options: {
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { usePointStyle: true, boxWidth: 8, padding: 12 },
-          },
-        },
+        plugins: { legend: { display: false } },
         scales: {
           y: {
             min: 0,
@@ -219,6 +221,11 @@ function renderCalibrationBins(predictions) {
         },
       },
     });
+    chartLegend(canvas, [
+      { label: '青色 = 低估（實際勝率 > 預測）', color: '#00d4ff' },
+      { label: '粉紅 = 高估（實際勝率 < 預測）', color: '#f06292' },
+      { label: '虛線 = 完美校準基準', color: 'rgba(255,255,255,.5)' },
+    ]);
   });
 }
 
@@ -248,13 +255,11 @@ function renderCalibrationScatter(predictions) {
       data: {
         datasets: [
           {
-            label: '實際結果（1=勝, 0=敗）',
             data: scatterData,
             backgroundColor: 'rgba(0,229,255,.5)',
             pointRadius: 5,
           },
           {
-            label: '移動平均（窗口 5）',
             data: maLine,
             type: 'line',
             borderColor: '#f06292',
@@ -264,7 +269,6 @@ function renderCalibrationScatter(predictions) {
             tension: 0.4,
           },
           {
-            label: '完美校準',
             data: [{ x: 0, y: 0 }, { x: 1, y: 1 }],
             type: 'line',
             borderColor: 'rgba(255,255,255,.2)',
@@ -276,11 +280,7 @@ function renderCalibrationScatter(predictions) {
         ],
       },
       options: {
-        plugins: {
-          legend: {
-            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
-          },
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: {
             type: 'linear',
@@ -300,6 +300,11 @@ function renderCalibrationScatter(predictions) {
         },
       },
     });
+    chartLegend(canvas, [
+      { label: '青點 = 實際結果（勝/敗）', color: 'rgba(0,229,255,.85)' },
+      { label: '粉紅線 = 移動平均', color: '#f06292' },
+      { label: '灰色虛線 = 完美校準', color: 'rgba(255,255,255,.45)' },
+    ]);
   });
 }
 
