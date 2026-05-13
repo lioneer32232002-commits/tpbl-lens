@@ -73,7 +73,51 @@ def build():
     for jf in glob.glob(os.path.join(DATA_DIR, "*.json")):
         shutil.copy2(jf, dist_data)
 
+    if os.path.exists("favicon.svg"):
+        shutil.copy2("favicon.svg", os.path.join(DIST, "favicon.svg"))
+
+    _build_robots()
+    _build_sitemap()
+
     print("[build] dist/ updated")
+
+
+BASE_URL = "https://tpbl-lens.pages.dev"
+
+
+def _build_robots():
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /*/calibration/",
+        "",
+        f"Sitemap: {BASE_URL}/sitemap.xml",
+    ]
+    _write(os.path.join(DIST, "robots.txt"), "\n".join(lines) + "\n")
+
+
+def _build_sitemap():
+    urls = [{"loc": f"{BASE_URL}/", "priority": "1.0"}]
+    for t in TEAM_PAGES:
+        urls.append({"loc": f"{BASE_URL}/{t['slug']}/", "priority": "0.8"})
+
+    items = ""
+    for u in urls:
+        items += (
+            f"  <url>\n"
+            f"    <loc>{u['loc']}</loc>\n"
+            f"    <changefreq>daily</changefreq>\n"
+            f"    <priority>{u['priority']}</priority>\n"
+            f"  </url>\n"
+        )
+
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + items
+        + "</urlset>\n"
+    )
+    _write(os.path.join(DIST, "sitemap.xml"), xml)
 
 if __name__ == "__main__":
     build()

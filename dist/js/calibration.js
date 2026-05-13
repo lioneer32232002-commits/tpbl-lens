@@ -56,8 +56,8 @@ function renderBrierTrend(predictions) {
           {
             label: '累積 Brier Score',
             data: points,
-            borderColor: '#00e5ff',
-            backgroundColor: 'rgba(0,229,255,.08)',
+            borderColor: '#00d4ff',
+            backgroundColor: 'rgba(0,212,255,.08)',
             fill: true,
             pointRadius: 0,
             borderWidth: 2,
@@ -167,8 +167,8 @@ function renderCalibrationBins(predictions) {
           {
             label: '實際勝率 (%)',
             data: bins.map(b => b.actualRate),
-            backgroundColor: 'rgba(0,229,255,.65)',
-            borderColor: '#00e5ff',
+            backgroundColor: 'rgba(0,212,255,.65)',
+            borderColor: '#00d4ff',
             borderWidth: 1,
           },
           {
@@ -226,7 +226,7 @@ function renderCalibrationScatter(predictions) {
           {
             label: '實際結果（1=勝, 0=敗）',
             data: scatterData,
-            backgroundColor: 'rgba(0,229,255,.5)',
+            backgroundColor: 'rgba(0,212,255,.5)',
             pointRadius: 5,
           },
           {

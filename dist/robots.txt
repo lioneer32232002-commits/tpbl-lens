@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /*/calibration/
+
+Sitemap: https://tpbl-lens.pages.dev/sitemap.xml
