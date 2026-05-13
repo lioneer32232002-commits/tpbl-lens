@@ -763,83 +763,6 @@ def compute_elo_calibration(_games, all_game_data, team_id, team_name, slug):
     }
 
 
-def generate_calibration(games, all_game_data, team_id, team_name, slug):
-    """
-    For each game i, compute pre-game win probability using only
-    data from games 0..i-1. No look-ahead bias.
-    Win prob formula: same as calc_next_game (team_wr vs opp_wr + HOME_ADV).
-    """
-    results = []
-    for i, game in enumerate(games):
-        game_date = game["date"]  # "YYYYMMDD"
-
-        # Team's win rate before game i
-        games_before = games[:i]
-        team_wins = sum(g["won"] for g in games_before)
-        team_gp = len(games_before)
-        team_wr = team_wins / team_gp if team_gp > 0 else 0.5
-
-        # Opponent's win rate from all_game_data filtered to dates before game_date
-        opp_name = game["opp"]
-        opp_wins = 0
-        opp_gp = 0
-        for gd in all_game_data:
-            gd_date = gd.get("game_date", "").replace("-", "")
-            if not gd_date or gd_date >= game_date:
-                continue
-            ht, at = gd["home_team"], gd["away_team"]
-            if ht.get("name") == opp_name:
-                opp_side = ht
-            elif at.get("name") == opp_name:
-                opp_side = at
-            else:
-                continue
-            opp_gp += 1
-            lt = opp_side["teams"]["total"]
-            # won_score = this side's points, lost_score = opponent's points (confusing name, matches parse_games)
-            if lt.get("won_score", 0) > lt.get("lost_score", 0):
-                opp_wins += 1
-
-        opp_wr = opp_wins / opp_gp if opp_gp > 0 else 0.5
-
-        base = team_wr / (team_wr + opp_wr + 1e-9)
-        prob = float(np.clip(base + (HOME_ADV if game["is_home"] else -HOME_ADV), 0.05, 0.95))
-
-        results.append({
-            "date":               game["date"],
-            "opp":                opp_name,
-            "is_home":            game["is_home"],
-            "predicted_win_prob": round(prob, 4),
-            "actual_win":         bool(game["won"]),
-            "team_score":         game["team_score"],
-            "opp_score":          game["opp_score"],
-            "low_sample":         team_gp < 4,
-        })
-
-    n = len(results)
-    brier = (
-        sum((r["predicted_win_prob"] - (1 if r["actual_win"] else 0)) ** 2
-            for r in results) / n
-        if n > 0 else 0.0
-    )
-
-    return {
-        "meta": {
-            "team_id":   team_id,
-            "team_name": team_name,
-            "season":    "2025-26",
-            "generated": datetime.date.today().isoformat(),
-        },
-        "summary": {
-            "brier_score":        round(brier, 4),
-            "n_games":            n,
-            "games_won":          sum(1 for r in results if r["actual_win"]),
-            "calibration_note":   "每場預測使用該場賽前可用資料，無 look-ahead bias",
-        },
-        "predictions": results,
-    }
-
-
 def load_allteam(allteam_file=None):
     path = allteam_file or ALLTEAM_FILE
     with open(path, encoding="utf-8") as f:
@@ -989,7 +912,7 @@ def process_team(team_id, games_dir=None, allteam_file=None, allgame_file=None):
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f">>> {slug}_2526.json written ({total_wins}W{total_losses}L)")
-    cal_output = generate_calibration(games, all_game_data, team_id, name, slug)
+    cal_output = compute_elo_calibration(games, all_game_data, team_id, name, slug)
     cal_path = os.path.join(out_dir, f"calibration_{slug}_2526.json")
     with open(cal_path, "w", encoding="utf-8") as f:
         json.dump(cal_output, f, ensure_ascii=False, indent=2)
