@@ -82,9 +82,11 @@ function renderStandings(standings, teamName) {
     const pillCls = i < 3 ? 'r-in' : i < 5 ? 'r-pi' : 'r-out';
     const cut = i === 2 ? 'playoff-cut' : '';
     html += `<tr class="${isSelf ? 'highlight' : ''} ${cut}">
-      <td><span class="rank-pill ${pillCls}">${i + 1}</span></td>
+      <td style="text-align:center"><span class="rank-pill ${pillCls}">${i + 1}</span></td>
       <td>${esc(short(t.name))}${isSelf ? ' ◀' : ''}</td>
-      <td><strong>${t.wins}</strong></td><td>${t.losses}</td><td>${wr}</td>
+      <td style="text-align:center"><strong style="color:var(--accent)">${t.wins}</strong></td>
+      <td style="text-align:center;color:var(--accent2)">${t.losses}</td>
+      <td style="text-align:center">${wr}</td>
     </tr>`;
   });
   tbody.innerHTML = html;
@@ -121,9 +123,10 @@ function renderVsCards(vs) {
   Object.entries(vs).forEach(([opp, r]) => {
     const total = r.w + r.l;
     const wr = total > 0 ? (r.w / total * 100).toFixed(0) + '%' : '—';
+    const recColor = r.w > r.l ? 'var(--accent)' : 'var(--accent2)';
     html += `<div class="vs-card">
       <div class="vs-name">${esc(short(opp))}</div>
-      <div class="vs-record"><span class="w">${r.w}</span><span class="sep">-</span><span class="l">${r.l}</span></div>
+      <div class="vs-record" style="color:${recColor}">${r.w}<span class="sep" style="color:${recColor}">-</span>${r.l}</div>
       <div class="vs-meta">${wr} · 均 ${(+(r.avg_team ?? 0)).toFixed(1)}</div>
     </div>`;
   });
@@ -147,7 +150,7 @@ function renderHomeAway(ha) {
       <td style="color:${net >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${net >= 0 ? '+' : ''}${net.toFixed(1)}</td>
     </tr>`;
   };
-  el.innerHTML = `<div style="overflow-x:auto"><table>
+  el.innerHTML = `<div style="overflow-x:auto"><table class="data-nums">
     <thead><tr><th></th><th>場次</th><th>勝負</th><th>勝率</th><th>均得/失</th><th>淨值</th></tr></thead>
     <tbody>${row('主場', ha.home)}${row('客場', ha.away)}</tbody>
   </table></div>`;
@@ -206,14 +209,28 @@ function renderUsgTs(playerAvg) {
   const el = document.getElementById('chart-usg-ts');
   if (!el || !playerAvg) return;
   const entries = Object.entries(playerAvg).filter(([, s]) => s.games >= 5);
+  if (!entries.length) return;
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
+
+  // 以 TS% 中位數區分效率高低；高 TS% → 青色（越好越深），低 TS% → 粉色（越差越深）
+  const tsSorted = entries.map(([, s]) => s.tsp).slice().sort((a, b) => a - b);
+  const mid = Math.floor(tsSorted.length / 2);
+  const tsMed = tsSorted.length % 2 ? tsSorted[mid] : (tsSorted[mid - 1] + tsSorted[mid]) / 2;
+  const tsSpan = Math.max(tsSorted[tsSorted.length - 1] - tsSorted[0], 1);
+  const bgColors = entries.map(([, s]) => {
+    const delta = s.tsp - tsMed;
+    const intensity = Math.min(Math.abs(delta) / (tsSpan * 0.5), 1);
+    const alpha = (0.35 + intensity * 0.6).toFixed(2);
+    return delta >= 0 ? `rgba(0,212,255,${alpha})` : `rgba(240,98,146,${alpha})`;
+  });
+
   deferChart(el, () => new Chart(el, {
     type: 'scatter',
     data: {
       datasets: [{
         data: entries.map(([, s]) => ({ x: s.usg, y: s.tsp })),
-        backgroundColor: 'rgba(0,212,255,0.75)',
-        pointRadius: 6, pointHoverRadius: 9,
+        backgroundColor: bgColors,
+        pointRadius: 7, pointHoverRadius: 10,
       }]
     },
     options: {
@@ -266,7 +283,7 @@ function renderScenario(scenarioChart) {
 function renderQuarter(qa) {
   const el = document.getElementById('quarter-content');
   if (!el || !qa) return;
-  let html = '<table><thead><tr><th>節次</th><th>均得</th><th>均失</th><th>淨值</th><th>勝率</th></tr></thead><tbody>';
+  let html = '<table class="data-nums"><thead><tr><th>節次</th><th>均得</th><th>均失</th><th>淨值</th><th>勝率</th></tr></thead><tbody>';
   ['Q1', 'Q2', 'Q3', 'Q4'].forEach(q => {
     const d = qa[q];
     if (!d) return;

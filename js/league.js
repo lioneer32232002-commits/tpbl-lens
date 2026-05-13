@@ -70,17 +70,15 @@ function renderLeagueRtg(rtgData) {
     data: {
       labels: rtgData.map(t => short(t.name)),
       datasets: [
-        { label: 'ORtg',   data: rtgData.map(t => t.ortg),   backgroundColor: 'rgba(0,212,255,0.75)' },
-        { label: 'DRtg',   data: rtgData.map(t => t.drtg),   backgroundColor: 'rgba(240,98,146,0.75)' },
-        { label: 'NetRtg', data: rtgData.map(t => t.netrtg), backgroundColor: 'rgba(100,220,120,0.8)', type: 'line', yAxisID: 'yNet', borderColor: '#64dc78', pointRadius: 4 },
+        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: 'rgba(0,212,255,0.75)' },
+        { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: 'rgba(240,98,146,0.75)' },
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: true,
       scales: {
-        x:    { ticks: { color: axis }, grid: { color: grid } },
-        y:    { ticks: { color: axis }, grid: { color: grid }, title: { display: true, text: '每百回合', color: axis } },
-        yNet: { position: 'right', ticks: { color: '#64dc78' }, grid: { display: false }, title: { display: true, text: 'Net', color: '#64dc78' } }
+        x: { ticks: { color: axis }, grid: { color: grid } },
+        y: { ticks: { color: axis }, grid: { color: grid }, title: { display: true, text: '每百回合', color: axis } },
       },
       plugins: { legend: { labels: { color: axis } } }
     }
