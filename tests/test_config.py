@@ -7,7 +7,7 @@ def test_all_team_ids_present():
 
 def test_full_depth_teams():
     full = {tid for tid, t in TEAMS.items() if t["full_depth"]}
-    assert full == {3, 4}  # formosa + lions
+    assert full == set(TEAMS.keys())  # all teams enabled
 
 def test_slugs_are_unique():
     slugs = [t["slug"] for t in TEAMS.values()]
