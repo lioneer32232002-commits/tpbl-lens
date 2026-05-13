@@ -314,7 +314,7 @@ function renderMannWhitney(mw) {
       return d.stat + badge;
     });
     const colors = sorted.map(d =>
-      d.effect_r > 0 ? 'rgba(0,212,255,0.78)' : 'rgba(240,98,146,0.78)'
+      d.effect_r <= 0 ? 'rgba(0,229,255,0.78)' : 'rgba(240,98,146,0.78)'
     );
     deferChart(barEl, () => new Chart(barEl, {
       type: 'bar',
