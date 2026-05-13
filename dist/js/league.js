@@ -232,8 +232,8 @@ function renderPaceTrend(trend) {
 
   let html = '';
   enriched.forEach(t => {
-    const color = TEAM_COLORS[t._i % TEAM_COLORS.length];
     const diff = t.avg - leagueAvg;
+    const color = diff >= 0 ? 'rgba(0,212,255,0.9)' : 'rgba(240,98,146,0.9)';
     const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1);
     const diffColor = diff >= 0 ? 'var(--accent)' : 'var(--accent2)';
     html += `<div class="pace-card">

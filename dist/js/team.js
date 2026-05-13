@@ -357,7 +357,7 @@ function renderMannWhitney(mw) {
     }));
   }
 
-  // ── 2. 前 6 指標小卡：勝/敗中位值比較 ──
+  // ── 2. 前 6 指標小卡：點狀圖（個別場次）+ 中位線 ──
   if (!gridEl) return;
   const top6 = sorted.slice(0, 6);
   let html = '';
@@ -366,38 +366,105 @@ function renderMannWhitney(mw) {
       ? '<span class="mw-sig">★ 顯著</span>'
       : d.p_value < 0.1 ? '<span class="mw-trend">▲ 趨勢</span>' : '';
     const rSign = d.effect_r >= 0 ? '+' : '';
+    const wMed = (+(d.wins_median ?? 0)).toFixed(1);
+    const lMed = (+(d.losses_median ?? 0)).toFixed(1);
     html += `<div class="mw-stat-card">
       <div class="mw-stat-head"><span class="mw-stat-name">${esc(d.stat)}</span>${badge}</div>
       <div class="mw-stat-meta">p = ${d.p_value.toFixed(3)} &nbsp;·&nbsp; r = ${rSign}${d.effect_r.toFixed(2)}</div>
-      <canvas data-mw="${i}" height="70"></canvas>
+      <div class="mw-canvas-wrap"><canvas data-mw="${i}"></canvas></div>
+      <div class="mw-medians">
+        <div style="color:#00d4ff">勝中位 ${wMed}</div>
+        <div style="color:#f06292">敗中位 ${lMed}</div>
+      </div>
     </div>`;
   });
   gridEl.innerHTML = html;
 
-  gridEl.querySelectorAll('canvas').forEach(canvas => {
-    const i = +canvas.dataset.mw;
-    const d = top6[i];
-    deferChart(canvas, () => new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: ['勝場', '敗場'],
-        datasets: [{
-          data: [+(d.wins_median??0), +(d.losses_median??0)],
-          backgroundColor: ['rgba(0,212,255,0.75)', 'rgba(240,98,146,0.75)'],
-          borderRadius: 4,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend:{ display:false }, tooltip:{ enabled:true } },
-        scales: {
-          x: { ticks:{ color:axis, font:{size:10} }, grid:{ display:false } },
-          y: { ticks:{ color:axis, font:{size:10} }, grid:{ color:grid }, beginAtZero:false }
-        },
-        animation: { duration: 500 }
-      }
-    }));
+  const mwJitter = (idx, span) =>
+    (Math.sin(idx * 13.7) * 0.5 + Math.cos(idx * 7.3) * 0.5) * span;
+
+  const makeMedianPlugin = (wMed, lMed) => ({
+    id: 'medLines',
+    afterDatasetsDraw(chart) {
+      const { ctx, scales } = chart;
+      const x0 = scales.x.getPixelForValue(0);
+      const x1 = scales.x.getPixelForValue(1);
+      const y0 = scales.y.getPixelForValue(wMed);
+      const y1 = scales.y.getPixelForValue(lMed);
+      [[x0, y0, '#00d4ff'], [x1, y1, '#f06292']].forEach(([x, y, color]) => {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x - 20, y);
+        ctx.lineTo(x + 20, y);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
   });
+
+  setTimeout(() => {
+    gridEl.querySelectorAll('canvas').forEach(canvas => {
+      const i = +canvas.dataset.mw;
+      const d = top6[i];
+      if (!d) return;
+      const wins   = Array.isArray(d.wins)   ? d.wins   : [];
+      const losses = Array.isArray(d.losses) ? d.losses : [];
+      const wMed   = +(d.wins_median ?? 0);
+      const lMed   = +(d.losses_median ?? 0);
+      try {
+        new Chart(canvas, {
+          type: 'scatter',
+          plugins: [makeMedianPlugin(wMed, lMed)],
+          data: {
+            datasets: [
+              {
+                label: '勝場',
+                data: wins.map((y, j) => ({ x: mwJitter(j, 0.14), y })),
+                backgroundColor: 'rgba(0,212,255,0.7)',
+                borderColor: '#00d4ff', borderWidth: 1,
+                pointRadius: 5, pointHoverRadius: 7,
+              },
+              {
+                label: '敗場',
+                data: losses.map((y, j) => ({ x: 1 + mwJitter(j + 50, 0.14), y })),
+                backgroundColor: 'rgba(240,98,146,0.6)',
+                borderColor: '#f06292', borderWidth: 1,
+                pointRadius: 5, pointHoverRadius: 7,
+              },
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 600 },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => (ctx.datasetIndex === 0 ? '勝 ' : '敗 ') + ctx.parsed.y.toFixed(1)
+                }
+              }
+            },
+            scales: {
+              x: {
+                type: 'linear', min: -0.5, max: 1.5,
+                afterBuildTicks: sc => { sc.ticks = [{ value: 0 }, { value: 1 }]; },
+                ticks: { color: axis, font: { size: 11, weight: '700' }, callback: v => v === 0 ? '勝' : '敗' },
+                grid: { display: false }, border: { display: false },
+              },
+              y: {
+                ticks: { color: axis, font: { size: 9 }, maxTicksLimit: 5 },
+                grid: { color: grid, lineWidth: 0.8 },
+              }
+            }
+          }
+        });
+      } catch(e) {
+        console.warn('[mw-card] chart error canvas', i, e.message);
+      }
+    });
+  }, 0);
 }
 
 function renderRoc(roc) {
