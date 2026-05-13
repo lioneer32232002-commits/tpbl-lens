@@ -90,6 +90,9 @@
   .vs-record .l { color: var(--text2); }
   .vs-record .sep { color: var(--text2); margin: 0 .15rem; font-weight: 700; }
   .vs-meta { font-size: .72rem; color: var(--text2); margin-top: .2rem; white-space: nowrap; }
+  /* DATA TABLE: center non-first columns */
+  .data-nums th:not(:first-child),
+  .data-nums td:not(:first-child) { text-align: center; }
   /* PACE SMALL MULTIPLES */
   .pace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .65rem; }
   .pace-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .6rem; }

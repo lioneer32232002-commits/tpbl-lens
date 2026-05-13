@@ -51,9 +51,11 @@ function renderLeagueStandings(standings) {
     const pillCls = i < 3 ? 'r-in' : i < 5 ? 'r-pi' : 'r-out';
     const cut = i === 2 ? 'playoff-cut' : '';
     html += `<tr class="${cut}">
-      <td><span class="rank-pill ${pillCls}">${i + 1}</span></td>
+      <td style="text-align:center"><span class="rank-pill ${pillCls}">${i + 1}</span></td>
       <td>${short(t.name)}</td>
-      <td><strong>${t.wins}</strong></td><td>${t.losses}</td><td>${wr}</td>
+      <td style="text-align:center"><strong>${t.wins}</strong></td>
+      <td style="text-align:center">${t.losses}</td>
+      <td style="text-align:center">${wr}</td>
     </tr>`;
   });
   tbody.innerHTML = html;
@@ -89,11 +91,12 @@ function renderLeagueScoring(scoringData) {
   const el = document.getElementById('chart-scoring');
   if (!el || !scoringData) return;
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
+  // 同色系（深→淺 = 佔比多→少）：禁區 > 三分 > 罰球 > 中距離
   const CATS = [
-    { key: 'three', label: '三分球',     color: 'rgba(100,181,246,0.9)' },
-    { key: 'paint', label: '禁區兩分',   color: 'rgba(41,182,246,0.9)'  },
-    { key: 'mid',   label: '中距離兩分', color: 'rgba(38,166,154,0.9)'  },
-    { key: 'ft',    label: '罰球',       color: 'rgba(129,199,132,0.9)' },
+    { key: 'paint', label: '禁區兩分',   color: 'rgba(0,119,182,0.9)'   },
+    { key: 'three', label: '三分球',     color: 'rgba(0,168,210,0.9)'   },
+    { key: 'ft',    label: '罰球',       color: 'rgba(72,202,228,0.9)'  },
+    { key: 'mid',   label: '中距離兩分', color: 'rgba(144,224,239,0.9)' },
   ];
   deferChart(el, () => new Chart(el, {
     type: 'bar',
@@ -128,10 +131,11 @@ function renderTeamCards(standings) {
     const wr = t.gp > 0 ? (t.wins / t.gp * 100).toFixed(0) + '%' : '—';
     const baseStyle = 'display:block;text-decoration:none;color:inherit';
     const extraStyle = href === '#' ? 'opacity:.45;pointer-events:none;' : '';
+    const recColor = t.wins > t.losses ? 'var(--accent)' : 'var(--accent2)';
     html += `<a href="${href}" class="vs-card" style="${extraStyle}${baseStyle}">
-      <div style="font-size:.82rem;color:var(--text2);margin-bottom:.4rem">${short(t.name)}</div>
-      <div class="vs-record"><span class="w">${t.wins}</span><span style="color:var(--text2)">W </span><span class="l">${t.losses}</span><span style="color:var(--text2)">L</span></div>
-      <div style="font-size:.76rem;color:var(--text2);margin-top:.2rem">${wr} 勝率${href !== '#' ? ' →' : ''}</div>
+      <div class="vs-name">${short(t.name)}</div>
+      <div class="vs-record" style="color:${recColor}">${t.wins}<span class="sep" style="color:${recColor}">-</span>${t.losses}</div>
+      <div class="vs-meta">${wr} 勝率${href !== '#' ? ' →' : ''}</div>
     </a>`;
   });
   grid.innerHTML = html;
@@ -140,7 +144,7 @@ function renderTeamCards(standings) {
 function renderStyleClusters(clusters) {
   const el = document.getElementById('style-clusters-content');
   if (!el || !clusters || !clusters.length) return;
-  let html = '<table><thead><tr><th>球隊</th><th>節奏</th><th>三分率</th><th>禁區比例</th><th>助攻/失誤</th><th>風格</th></tr></thead><tbody>';
+  let html = '<table class="data-nums"><thead><tr><th>球隊</th><th>節奏</th><th>三分率</th><th>禁區比例</th><th>助攻/失誤</th><th>風格</th></tr></thead><tbody>';
   clusters.forEach(t => {
     html += `<tr>
       <td>${short(t.name)}</td>
@@ -188,29 +192,48 @@ const TEAM_COLORS = [
   'rgba(100,200,255,0.9)',
 ];
 
+// 純 SVG sparkline — 零 Chart.js 開銷，不卡頓
+function makePaceSVG(data, yMin, yMax, leagueAvg, color) {
+  if (!data || data.length < 2) return `<svg viewBox="0 0 100 40" width="100%" height="48" style="display:block"></svg>`;
+  const xs = data.map(p => p.x);
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const W = 100, H = 40, pad = 1;
+  const px = v => xMax > xMin ? (pad + (v - xMin) / (xMax - xMin) * (W - 2 * pad)).toFixed(2) : (W / 2).toFixed(2);
+  const py = v => (H - pad - (v - yMin) / (yMax - yMin) * (H - 2 * pad)).toFixed(2);
+  const pts = data.map(p => `${px(p.x)},${py(p.y)}`).join(' ');
+  const ptsArr = pts.split(' ');
+  const [fx] = ptsArr[0].split(',');
+  const [lx] = ptsArr[ptsArr.length - 1].split(',');
+  const fillC = color.replace(/[\d.]+\)$/, '0.12)');
+  const avgY = py(leagueAvg);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="48" style="display:block">
+    <polygon points="${pts} ${lx},${H} ${fx},${H}" fill="${fillC}"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/>
+    <line x1="0" y1="${avgY}" x2="${W}" y2="${avgY}" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+  </svg>`;
+}
+
 function renderPaceTrend(trend) {
   const host = document.getElementById('pace-grid');
   const summary = document.getElementById('pace-summary');
   if (!host || !trend || !trend.length) return;
 
-  // 全聯盟共用 y 軸範圍，方便視覺比較
   const allY = trend.flatMap(t => (t.data || []).map(p => p.y)).filter(v => Number.isFinite(v));
+  if (!allY.length) return;
   const yMin = Math.floor(Math.min(...allY) - 1);
   const yMax = Math.ceil(Math.max(...allY) + 1);
-  const leagueAvg = allY.reduce((a, v) => a + v, 0) / (allY.length || 1);
+  const leagueAvg = allY.reduce((a, v) => a + v, 0) / allY.length;
 
-  // 依平均節奏由快到慢排序
   const enriched = trend.map((t, i) => {
     const ys = (t.data || []).map(p => p.y).filter(v => Number.isFinite(v));
     const avg = ys.length ? ys.reduce((a, v) => a + v, 0) / ys.length : 0;
-    const last = ys.length ? ys[ys.length - 1] : null;
     const min = ys.length ? Math.min(...ys) : 0;
     const max = ys.length ? Math.max(...ys) : 0;
-    return { ...t, _i: i, avg, last, min, max };
+    return { ...t, _i: i, avg, min, max };
   }).sort((a, b) => b.avg - a.avg);
 
   let html = '';
-  enriched.forEach((t, idx) => {
+  enriched.forEach(t => {
     const color = TEAM_COLORS[t._i % TEAM_COLORS.length];
     const diff = t.avg - leagueAvg;
     const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1);
@@ -220,7 +243,7 @@ function renderPaceTrend(trend) {
         <span class="pace-name">${short(t.name)}</span>
         <span class="pace-avg">${t.avg.toFixed(1)}</span>
       </div>
-      <canvas data-idx="${idx}" height="48"></canvas>
+      ${makePaceSVG(t.data, yMin, yMax, leagueAvg, color)}
       <div class="pace-meta">
         <span>區間 ${t.min.toFixed(0)}–${t.max.toFixed(0)}</span>
         <span style="color:${diffColor}">vs 聯盟 ${diffStr}</span>
@@ -231,44 +254,4 @@ function renderPaceTrend(trend) {
   if (summary) {
     summary.textContent = `聯盟平均 ${leagueAvg.toFixed(1)} 回合／場 · y 軸 ${yMin}–${yMax}`;
   }
-
-  // 各隊獨立 sparkline，共用 y 軸範圍
-  host.querySelectorAll('canvas').forEach(canvas => {
-    const idx = +canvas.dataset.idx;
-    const t = enriched[idx];
-    const color = TEAM_COLORS[t._i % TEAM_COLORS.length];
-    deferChart(canvas, () => new Chart(canvas, {
-      type: 'line',
-      data: {
-        datasets: [{
-          data: t.data,
-          borderColor: color,
-          backgroundColor: color.replace('0.9', '0.15'),
-          fill: true,
-          pointRadius: 0,
-          borderWidth: 1.8,
-          tension: 0.35,
-        }, {
-          data: (t.data || []).map(p => ({ x: p.x, y: leagueAvg })),
-          borderColor: 'rgba(255,255,255,0.25)',
-          backgroundColor: 'transparent',
-          borderDash: [3, 3],
-          borderWidth: 1,
-          pointRadius: 0,
-          tension: 0,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-        animation: { duration: 600 },
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: {
-          x: { type: 'linear', display: false },
-          y: { display: false, min: yMin, max: yMax },
-        },
-      }
-    }));
-  });
 }
