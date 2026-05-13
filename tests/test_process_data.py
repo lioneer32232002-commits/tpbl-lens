@@ -141,3 +141,87 @@ class TestEloWinProb:
         from process_data import elo_win_prob
         assert 0.0 < elo_win_prob(2000, 1000, home_a=True) < 1.0
         assert 0.0 < elo_win_prob(1000, 2000, home_a=False) < 1.0
+
+
+class TestComputeEloCalibration:
+    """Uses the 2-game fixture: game_9001 (Lions home beat Formosa) +
+    game_9002 (Aquas home beat Lions)."""
+
+    def _run(self, team_id, team_name, slug):
+        from process_data import compute_elo_calibration, parse_games
+        all_gd = _load_games()
+        games  = parse_games(all_gd, team_id, team_name)
+        return compute_elo_calibration(games, all_gd, team_id, team_name, slug)
+
+    # --- structural checks ---
+
+    def test_returns_required_keys(self):
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        assert {"meta", "summary", "predictions"} == set(out.keys())
+
+    def test_summary_has_final_elo(self):
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert "final_elo" in out["summary"]
+
+    def test_prediction_has_elo_fields(self):
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        p = out["predictions"][0]
+        assert "elo_before" in p
+        assert "elo_after"  in p
+        assert "net_rtg"    in p
+
+    # --- Formosa: 1 game in fixture (away, lost) ---
+
+    def test_formosa_one_prediction(self):
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        assert len(out["predictions"]) == 1
+
+    def test_formosa_first_game_not_extreme(self):
+        """Elo model must NOT produce 0.05 for first game (old model's failure)."""
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        p = out["predictions"][0]["predicted_win_prob"]
+        assert p > 0.30, f"Expected > 0.30, got {p}"
+        assert p < 0.60, f"Expected < 0.60, got {p}"
+
+    def test_formosa_first_game_approx_prob(self):
+        """Both teams at 1500, Formosa away → ~0.4075."""
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        p = out["predictions"][0]["predicted_win_prob"]
+        assert p == pytest.approx(0.4075, abs=0.002)
+
+    def test_formosa_elo_before_is_1500(self):
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        assert out["predictions"][0]["elo_before"] == pytest.approx(1500.0, abs=0.1)
+
+    def test_formosa_low_sample_true_for_first_game(self):
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        assert out["predictions"][0]["low_sample"] is True
+
+    def test_formosa_net_rtg_negative(self):
+        """Formosa lost by 7, so net_rtg should be negative."""
+        out = self._run(3, "福爾摩沙夢想家", "formosa")
+        assert out["predictions"][0]["net_rtg"] < 0
+
+    # --- Lions: 2 games in fixture ---
+
+    def test_lions_two_predictions(self):
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert len(out["predictions"]) == 2
+
+    def test_lions_game1_home_prob_above_half(self):
+        """Lions home, both at 1500 → should be > 0.50."""
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert out["predictions"][0]["predicted_win_prob"] > 0.50
+
+    def test_lions_game2_uses_updated_elo(self):
+        """After winning game 1, Lions Elo > 1500; game 2 elo_before should reflect that."""
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert out["predictions"][1]["elo_before"] > 1500.0
+
+    def test_brier_score_computed(self):
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert 0.0 <= out["summary"]["brier_score"] <= 1.0
+
+    def test_meta_has_model_field(self):
+        out = self._run(4, "新竹御嵿攻城獅", "lions")
+        assert "model" in out["meta"]

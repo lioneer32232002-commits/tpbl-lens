@@ -653,6 +653,114 @@ def calc_simulation(standings_raw, team_name):
     }
 
 
+def compute_elo_calibration(games, all_game_data, team_id, team_name, slug):
+    """
+    Walk-forward Elo calibration using all 7 teams' games.
+    For each of the target team's games, predict win prob using only
+    Elo ratings built from games played strictly before that date.
+    MOV signal: pace-adjusted net rating (pts/possessions × 100).
+    K=20, home_bonus=65 Elo pts.
+    """
+    K = 20.0
+    ELO_START = 1500.0
+
+    all_sorted = sorted(all_game_data, key=lambda g: g.get("game_date", ""))
+    elos = {}          # team_id (int) -> float
+    results = []
+    target_count = 0   # how many target-team games recorded so far
+
+    for raw in all_sorted:
+        date_str = raw.get("game_date", "").replace("-", "")
+        ht = raw["home_team"]
+        at = raw["away_team"]
+        ht_id = ht["id"]
+        at_id = at["id"]
+        ht_total = ht["teams"]["total"]
+        at_total = at["teams"]["total"]
+
+        elo_h = elos.get(ht_id, ELO_START)
+        elo_a = elos.get(at_id, ELO_START)
+        pred_h = elo_win_prob(elo_h, elo_a, home_a=True)
+
+        is_target = (ht_id == team_id or at_id == team_id)
+        if is_target:
+            is_home = (ht_id == team_id)
+            t_total = ht_total if is_home else at_total
+            o_total = at_total if is_home else ht_total
+            opp_name = at["name"] if is_home else ht["name"]
+            pred_prob = pred_h if is_home else (1.0 - pred_h)
+            actual_win = bool(t_total["won_score"] > o_total["won_score"])
+
+            t_poss = calc_possessions(t_total)
+            o_poss = calc_possessions(o_total)
+            net_rtg = round(
+                (t_total["won_score"] / t_poss - o_total["won_score"] / o_poss) * 100, 2
+            )
+
+            results.append({
+                "date":               date_str,
+                "opp":                opp_name,
+                "is_home":            is_home,
+                "predicted_win_prob": round(pred_prob, 4),
+                "actual_win":         actual_win,
+                "team_score":         t_total["won_score"],
+                "opp_score":          o_total["won_score"],
+                "low_sample":         target_count < 4,
+                "elo_before":         round(elos.get(team_id, ELO_START), 1),
+                "net_rtg":            net_rtg,
+            })
+            target_count += 1
+
+        # Update Elos for ALL games (not just target team)
+        ht_pts = ht_total["won_score"]
+        at_pts = at_total["won_score"]
+        ht_poss = calc_possessions(ht_total)
+        at_poss = calc_possessions(at_total)
+        net_rtg_abs = abs((ht_pts / ht_poss - at_pts / at_poss) * 100)
+
+        if ht_pts >= at_pts:  # home wins (or equal, treated as home)
+            w_elo, l_elo = elo_h, elo_a
+            elo_diff = w_elo - l_elo
+            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / (elo_diff * 0.001 + 2.2))
+            delta = K * mov_mult * abs(1.0 - pred_h)
+            elos[ht_id] = elo_h + delta
+            elos[at_id] = elo_a - delta
+        else:  # away wins
+            w_elo, l_elo = elo_a, elo_h
+            elo_diff = w_elo - l_elo
+            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / (elo_diff * 0.001 + 2.2))
+            delta = K * mov_mult * abs(0.0 - pred_h)
+            elos[at_id] = elo_a + delta
+            elos[ht_id] = elo_h - delta
+
+        if is_target:
+            results[-1]["elo_after"] = round(elos.get(team_id, ELO_START), 1)
+
+    n = len(results)
+    brier = (
+        sum((r["predicted_win_prob"] - (1 if r["actual_win"] else 0)) ** 2 for r in results) / n
+        if n > 0 else 0.0
+    )
+
+    return {
+        "meta": {
+            "team_id":   team_id,
+            "team_name": team_name,
+            "season":    "2025-26",
+            "generated": datetime.date.today().isoformat(),
+            "model":     "MOV-adjusted Elo (K=20, home_bonus=65, pace-adjusted net rating)",
+        },
+        "summary": {
+            "brier_score":      round(brier, 4),
+            "n_games":          n,
+            "games_won":        sum(1 for r in results if r["actual_win"]),
+            "final_elo":        round(elos.get(team_id, ELO_START), 1),
+            "calibration_note": "Elo + Pace-adjusted Net Rating；賽前勝率無 look-ahead bias",
+        },
+        "predictions": results,
+    }
+
+
 def generate_calibration(games, all_game_data, team_id, team_name, slug):
     """
     For each game i, compute pre-game win probability using only
