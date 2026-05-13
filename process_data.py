@@ -653,7 +653,7 @@ def calc_simulation(standings_raw, team_name):
     }
 
 
-def compute_elo_calibration(_games, all_game_data, team_id, team_name, slug):
+def compute_elo_calibration(all_game_data, team_id, team_name, slug):
     """
     Walk-forward Elo calibration using all 7 teams' games.
     For each of the target team's games, predict win prob using only
@@ -912,7 +912,7 @@ def process_team(team_id, games_dir=None, allteam_file=None, allgame_file=None):
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f">>> {slug}_2526.json written ({total_wins}W{total_losses}L)")
-    cal_output = compute_elo_calibration(games, all_game_data, team_id, name, slug)
+    cal_output = compute_elo_calibration(all_game_data, team_id, name, slug)
     cal_path = os.path.join(out_dir, f"calibration_{slug}_2526.json")
     with open(cal_path, "w", encoding="utf-8") as f:
         json.dump(cal_output, f, ensure_ascii=False, indent=2)

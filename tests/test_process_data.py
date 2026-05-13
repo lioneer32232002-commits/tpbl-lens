@@ -148,10 +148,9 @@ class TestComputeEloCalibration:
     game_9002 (Aquas home beat Lions)."""
 
     def _run(self, team_id, team_name, slug):
-        from process_data import compute_elo_calibration, parse_games
+        from process_data import compute_elo_calibration
         all_gd = _load_games()
-        games  = parse_games(all_gd, team_id, team_name)
-        return compute_elo_calibration(games, all_gd, team_id, team_name, slug)
+        return compute_elo_calibration(all_gd, team_id, team_name, slug)
 
     # --- structural checks ---
 
