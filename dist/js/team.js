@@ -468,53 +468,136 @@ function renderMannWhitney(mw) {
 }
 
 function renderRoc(roc) {
-  const container = document.getElementById('roc-container');
-  if (!container || !roc) return;
-  const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
-  const palette = ['#00d4ff', '#f06292', '#ffd700', '#80cbc4', '#ce93d8', '#ffb74d', '#a5d6a7', '#90caf9', '#ff8a65', '#bcaaa4'];
-  const entries = Object.entries(roc).sort((a, b) => (b[1].auc || 0) - (a[1].auc || 0));
+  const canvasEl = document.getElementById('chart-roc');
+  const legendEl = document.getElementById('roc-legend');
+  if (!canvasEl || !roc) return;
 
-  const card = document.createElement('div');
-  card.className = 'card chart-wrap';
-  const canvas = document.createElement('canvas');
-  canvas.style.maxHeight = '420px';
-  card.appendChild(canvas);
-  container.innerHTML = '';
-  container.appendChild(card);
+  const PREDICTOR_META = {
+    '三分命中率': { labelEn: '3P%',  unitCh: '%',  dash: []    },
+    '整體命中率': { labelEn: 'FG%',  unitCh: '%',  dash: [4,3] },
+    '阻攻':       { labelEn: 'BLK',  unitCh: '次', dash: []    },
+    '助攻':       { labelEn: 'AST',  unitCh: '次', dash: [6,3] },
+    '失誤數':     { labelEn: 'TOV',  unitCh: '次', dash: [4,3] },
+    '三分命中數': { labelEn: '3PM',  unitCh: '顆', dash: [6,3] },
+  };
 
-  const legendList = document.createElement('div');
-  legendList.style.cssText = 'margin-top:.75rem;font-size:.78rem;color:var(--text2);display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.3rem .75rem';
-  legendList.innerHTML = entries.map(([stat, d], i) =>
-    `<div><span style="display:inline-block;width:10px;height:10px;background:${palette[i % palette.length]};border-radius:2px;margin-right:.4rem;vertical-align:middle"></span>${esc(stat)} · <strong style="color:var(--text)">${d.auc.toFixed(3)}</strong></div>`
-  ).join('');
-  card.appendChild(legendList);
+  const STRONG_COLORS = ['#ffd700', '#ffa000', '#e65100'];
+  const MED_COLORS    = ['#00d4ff', '#26c6da', '#4db6ac'];
+  const WEAK_COLORS   = ['#f06292', '#ce93d8', '#a5d6a7'];
+  const STRONG_TH = 0.75, MED_TH = 0.65;
 
-  deferChart(canvas, () => new Chart(canvas, {
-    type: 'line',
-    data: {
-      datasets: [
-        ...entries.map(([stat, d], i) => ({
-          label: `${stat} (AUC ${d.auc.toFixed(3)})`,
-          data: d.curve.map(p => ({ x: p.fpr, y: p.tpr })),
-          borderColor: palette[i % palette.length],
-          backgroundColor: 'transparent',
-          pointRadius: 0, borderWidth: 2, tension: 0.2,
-        })),
-        { label: '隨機', data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], borderColor: 'rgba(255,255,255,0.25)', borderDash: [4, 4], pointRadius: 0, borderWidth: 1 },
-      ]
-    },
+  const sorted = Object.keys(roc)
+    .map(key => {
+      const meta = PREDICTOR_META[key] || { labelEn: key, unitCh: '', dash: [] };
+      return { key, ...meta, auc: roc[key]?.auc || 0 };
+    })
+    .sort((a, b) => b.auc - a.auc);
+
+  let si = 0, mi = 0, wi = 0;
+  sorted.forEach(p => {
+    if      (p.auc >= STRONG_TH) p.color = STRONG_COLORS[si++ % STRONG_COLORS.length];
+    else if (p.auc >= MED_TH)    p.color = MED_COLORS[mi++    % MED_COLORS.length];
+    else                         p.color = WEAK_COLORS[wi++   % WEAK_COLORS.length];
+  });
+
+  const axisColor = '#8fa3b8', gridColor = 'rgba(255,255,255,0.08)';
+
+  const datasets = [];
+  sorted.forEach(p => {
+    const d = roc[p.key];
+    if (!d) return;
+    datasets.push({
+      label: `${p.labelEn} (AUC = ${d.auc.toFixed(3)})`,
+      data:  d.curve.map(pt => ({ x: pt.fpr, y: pt.tpr })),
+      borderColor: p.color, backgroundColor: 'transparent',
+      showLine: true, tension: 0,
+      pointRadius: 0, borderWidth: 2.2, borderDash: p.dash, order: 2,
+    });
+    if (d.best) {
+      datasets.push({
+        label: `_best_${p.key}`,
+        data: [{ x: d.best.fpr, y: d.best.tpr }],
+        borderColor: p.color, backgroundColor: p.color,
+        showLine: false, pointRadius: 7, pointStyle: 'circle', order: 1,
+        _threshold: d.threshold, _unitCh: p.unitCh, _key: p.key,
+      });
+    }
+  });
+  datasets.push({
+    label: 'Random (AUC=0.500)',
+    data: [{ x: 0, y: 0 }, { x: 1, y: 1 }],
+    borderColor: 'rgba(255,255,255,0.18)', backgroundColor: 'transparent',
+    showLine: true, tension: 0, pointRadius: 0, borderWidth: 1.2,
+    borderDash: [6, 5], order: 3,
+  });
+
+  deferChart(canvasEl, () => new Chart(canvasEl, {
+    type: 'scatter',
+    data: { datasets },
     options: {
-      responsive: true, maintainAspectRatio: true,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { mode: 'nearest', intersect: false },
+        tooltip: {
+          filter: item => !item.dataset.label.startsWith('_best_'),
+          callbacks: {
+            label: item => {
+              const ds = item.dataset;
+              if (ds._threshold !== undefined)
+                return `${ds._key} 切點 = ${ds._threshold}${ds._unitCh}  TPR = ${item.parsed.y.toFixed(2)}  FPR = ${item.parsed.x.toFixed(2)}`;
+              return `TPR = ${item.parsed.y.toFixed(2)}  FPR = ${item.parsed.x.toFixed(2)}`;
+            }
+          }
+        }
       },
       scales: {
-        x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'FPR', color: axis }, ticks: { color: axis }, grid: { color: grid } },
-        y: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'TPR', color: axis }, ticks: { color: axis }, grid: { color: grid } }
+        x: {
+          title: { display: true, text: 'False Positive Rate（1 − 特異度）', color: axisColor, font: { size: 11, weight: '700' } },
+          ticks: { color: axisColor, font: { size: 10 } },
+          grid: { color: gridColor, lineWidth: 0.8 }, min: 0, max: 1,
+        },
+        y: {
+          title: { display: true, text: 'True Positive Rate（敏感度）', color: axisColor, font: { size: 11, weight: '700' } },
+          ticks: { color: axisColor, font: { size: 10 } },
+          grid: { color: gridColor, lineWidth: 0.8 }, min: 0, max: 1,
+        }
       }
     }
   }));
+
+  if (!legendEl) return;
+  const strong = sorted.filter(p => p.auc >= STRONG_TH);
+  const medium = sorted.filter(p => p.auc >= MED_TH && p.auc < STRONG_TH);
+  const weak   = sorted.filter(p => p.auc <  MED_TH);
+
+  function legendGroupHoriz(title, items, icon, titleColor) {
+    if (!items.length) return '';
+    const entries = items.map(p => {
+      const d = roc[p.key]; if (!d) return '';
+      const cutStr = d.threshold != null ? `切點${(+d.threshold).toFixed(1)}${p.unitCh}` : '';
+      return `<span style="display:inline-flex;align-items:center;gap:.35rem;margin-right:.9rem;white-space:nowrap;">
+        <span style="display:inline-block;width:20px;height:3px;background:${p.color};border-radius:2px;flex-shrink:0;"></span>
+        <span style="font-size:.78rem;font-weight:700;color:${p.color};">${p.labelEn}</span>
+        <span style="font-size:.72rem;color:var(--text2);">AUC = ${d.auc.toFixed(3)}</span>
+        ${cutStr ? `<span style="font-size:.7rem;color:var(--text2);opacity:.75;">${cutStr}</span>` : ''}
+      </span>`;
+    }).join('');
+    return `<div style="margin-bottom:.55rem;">
+      <span style="font-size:.75rem;font-weight:700;color:${titleColor};margin-right:.6rem;">${icon} ${title}</span>
+      ${entries}
+    </div>`;
+  }
+
+  legendEl.innerHTML = `
+    <div class="card" style="padding:.75rem 1rem;">
+      ${legendGroupHoriz('強（AUC ≥ 0.75）', strong, '★', '#ffd700')}
+      ${legendGroupHoriz('中（AUC 0.65–0.75）', medium, '◆', '#00d4ff')}
+      ${legendGroupHoriz('弱（AUC < 0.65）', weak, '—', '#f06292')}
+      <div style="display:inline-flex;align-items:center;gap:.35rem;margin-top:.3rem;">
+        <span style="display:inline-block;width:20px;height:2px;background:rgba(255,255,255,0.18);border-radius:2px;"></span>
+        <span style="font-size:.72rem;color:var(--text2);">Random（AUC=0.500）</span>
+      </div>
+    </div>`;
 }
 
 function renderLastGame(lg) {
