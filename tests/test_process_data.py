@@ -91,3 +91,53 @@ class TestCalcHomeAway:
         assert ha["home"]["net"] == 7.0
         # Away: 90-102 = -12
         assert ha["away"]["net"] == -12.0
+
+
+class TestCalcPossessions:
+    def test_standard_formula(self):
+        from process_data import calc_possessions
+        # poss = FGA + 0.44*FTA + TO - OREB = 80 + 8.8 + 12 - 10 = 90.8
+        total = {
+            "field_goals_attempted": 80,
+            "free_throws_attempted": 20,
+            "turnovers": 12,
+            "offensive_rebounds": 10,
+        }
+        assert calc_possessions(total) == pytest.approx(90.8, abs=0.01)
+
+    def test_missing_keys_default_zero(self):
+        from process_data import calc_possessions
+        # all missing → poss = 0, clamped to 1.0
+        assert calc_possessions({}) == pytest.approx(1.0, abs=0.01)
+
+    def test_floor_at_one(self):
+        from process_data import calc_possessions
+        # large OREB could push below zero — must stay ≥ 1.0
+        total = {"field_goals_attempted": 5, "free_throws_attempted": 0,
+                 "turnovers": 0, "offensive_rebounds": 100}
+        assert calc_possessions(total) >= 1.0
+
+
+class TestEloWinProb:
+    def test_equal_elo_home_favored(self):
+        from process_data import elo_win_prob
+        # home +65 Elo bonus → should be > 0.5
+        p = elo_win_prob(1500, 1500, home_a=True)
+        assert p == pytest.approx(0.5925, abs=0.001)
+
+    def test_equal_elo_away_symmetric(self):
+        from process_data import elo_win_prob
+        p_home = elo_win_prob(1500, 1500, home_a=True)
+        p_away = elo_win_prob(1500, 1500, home_a=False)
+        assert p_home + p_away == pytest.approx(1.0, abs=1e-9)
+
+    def test_higher_elo_team_favored(self):
+        from process_data import elo_win_prob
+        # 1600 vs 1500, both neutral → stronger team wins more often
+        p = elo_win_prob(1600, 1500, home_a=False)
+        assert p > 0.5
+
+    def test_output_bounded(self):
+        from process_data import elo_win_prob
+        assert 0.0 < elo_win_prob(2000, 1000, home_a=True) < 1.0
+        assert 0.0 < elo_win_prob(1000, 2000, home_a=False) < 1.0

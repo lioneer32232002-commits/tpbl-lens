@@ -2,7 +2,7 @@
 TPBL per-team data processor.
 Usage: python process_data.py --team-id 3
 """
-import json, os, sys, argparse
+import json, math, os, sys, argparse
 from collections import defaultdict
 import datetime
 
@@ -27,6 +27,21 @@ STAT_KEYS = [
 
 def _mean(x):
     return round(sum(x) / len(x), 2) if x else 0
+
+
+def calc_possessions(total):
+    """Estimate possessions: FGA + 0.44*FTA + TO - OREB. Floor at 1.0."""
+    fga  = total.get("field_goals_attempted", 0) or 0
+    fta  = total.get("free_throws_attempted", 0) or 0
+    to   = total.get("turnovers", 0) or 0
+    oreb = total.get("offensive_rebounds", 0) or 0
+    return max(fga + 0.44 * fta + to - oreb, 1.0)
+
+
+def elo_win_prob(elo_a, elo_b, home_a=True):
+    """P(team A beats team B). home_a=True gives A a +65 Elo home bonus."""
+    home_bonus = 65.0 if home_a else -65.0
+    return 1.0 / (1.0 + 10 ** ((elo_b - elo_a - home_bonus) / 400))
 
 
 def load_game_files(games_dir=None):
