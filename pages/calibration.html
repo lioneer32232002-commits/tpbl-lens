@@ -25,6 +25,11 @@
     <div class="card chart-wrap"><canvas id="chart-brier-trend" style="max-height:260px"></canvas></div>
   </section>
 
+  <section id="elo-trend">
+    <h2>Elo 強度曲線</h2>
+    <div class="card chart-wrap"><canvas id="chart-elo-trend" style="max-height:260px"></canvas></div>
+  </section>
+
   <section id="cal-bins">
     <h2>Calibration Plot — 分桶</h2>
     <div class="card chart-wrap"><canvas id="chart-bins" style="max-height:300px"></canvas></div>
@@ -42,7 +47,7 @@
         <thead>
           <tr>
             <th>日期</th><th>對手</th><th>主客</th>
-            <th>預測勝率</th><th>實際</th><th>比分</th>
+            <th>預測勝率</th><th>實際</th><th>比分</th><th>Net Rtg</th>
           </tr>
         </thead>
         <tbody id="predictions-tbody"></tbody>
