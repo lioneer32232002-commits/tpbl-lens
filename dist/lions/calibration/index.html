@@ -95,14 +95,16 @@
   .vs-record .sep { color: var(--text2); margin: 0 .15rem; font-weight: 700; }
   .vs-meta { font-size: .72rem; color: var(--text2); margin-top: .2rem; white-space: nowrap; }
   /* MHU STAT SMALL MULTIPLES */
-  .mw-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .65rem; margin-top: .75rem; }
-  .mw-stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .65rem; }
-  .mw-stat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .1rem; }
-  .mw-stat-name { font-weight: 700; font-size: .82rem; color: var(--text); }
-  .mw-sig  { font-size: .7rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
-  .mw-trend{ font-size: .7rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
-  .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .3rem; }
-  .mw-stat-card canvas { display: block; max-width: 100%; }
+  .mw-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; margin-top: .75rem; }
+  .mw-stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .6rem .65rem; text-align: center; }
+  .mw-stat-head { display: flex; justify-content: center; align-items: center; gap: .35rem; margin-bottom: .15rem; }
+  .mw-stat-name { font-weight: 700; font-size: .84rem; color: var(--text); }
+  .mw-sig  { font-size: .68rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
+  .mw-trend{ font-size: .68rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
+  .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .35rem; }
+  .mw-canvas-wrap { position: relative; aspect-ratio: 1/1; }
+  .mw-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+  .mw-medians { font-size: .72rem; margin-top: .35rem; line-height: 1.65; }
   /* DATA TABLE: center non-first columns */
   .data-nums th:not(:first-child),
   .data-nums td:not(:first-child) { text-align: center; }
@@ -141,7 +143,7 @@
     .heatmap-wrap::after { content: "← 左右滑動 →"; display: block; text-align: center; font-size: .68rem; color: var(--text2); margin-top: .4rem; }
     /* pace small multiples: 兩欄 */
     .pace-grid { grid-template-columns: repeat(2, 1fr); }
-    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
   }
 </style>
 
