@@ -19,6 +19,7 @@ TEAM_PAGES = [
 
 CAL_PAGES = [
     {"slug": "formosa", "name": "福爾摩沙夢想家", "title": "夢想家預測校準紀錄｜TPBL-Lens"},
+    {"slug": "lions",   "name": "新竹御嵿攻城獅", "title": "攻城獅預測校準紀錄｜TPBL-Lens"},
 ]
 
 def _read(path):
