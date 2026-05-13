@@ -167,8 +167,16 @@ function renderCalibrationBins(predictions) {
           {
             label: '實際勝率 (%)',
             data: bins.map(b => b.actualRate),
-            backgroundColor: 'rgba(0,229,255,.65)',
-            borderColor: '#00e5ff',
+            backgroundColor: bins.map(b =>
+              b.actualRate === null ? 'rgba(255,255,255,.15)'
+              : b.actualRate > b.midPct ? 'rgba(0,212,255,.65)'
+              : 'rgba(240,98,146,.65)'
+            ),
+            borderColor: bins.map(b =>
+              b.actualRate === null ? 'rgba(255,255,255,.3)'
+              : b.actualRate > b.midPct ? '#00d4ff'
+              : '#f06292'
+            ),
             borderWidth: 1,
           },
           {
