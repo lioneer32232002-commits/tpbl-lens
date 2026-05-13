@@ -299,81 +299,105 @@ function renderQuarter(qa) {
 }
 
 function renderMannWhitney(mw) {
-  const el = document.getElementById('chart-mw');
-  if (!el || !mw || !mw.length) return;
+  const barEl = document.getElementById('chart-mw');
+  const gridEl = document.getElementById('mw-stat-grid');
+  if (!mw || !mw.length) return;
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
 
-  const points = mw.map(item => {
-    const p = Math.max(+(item.p_value ?? 1), 1e-6);
-    return {
-      x: +(item.effect_r ?? 0),
-      y: -Math.log10(p),
-      stat: item.stat,
-      p,
-      r: +(item.effect_r ?? 0),
-      sig: !!item.significant,
-      wm: +(item.wins_median ?? 0),
-      lm: +(item.losses_median ?? 0),
-    };
-  });
+  // 依 |r| 由大到小排序
+  const sorted = [...mw].sort((a, b) => Math.abs(b.effect_r) - Math.abs(a.effect_r));
 
-  deferChart(el, () => new Chart(el, {
-    type: 'scatter',
-    data: {
-      datasets: [
-        {
-          label: '顯著差異',
-          data: points.filter(p => p.sig),
-          backgroundColor: 'rgba(0,212,255,0.85)',
-          borderColor: 'rgba(0,212,255,1)',
-          pointRadius: 7, pointHoverRadius: 10,
-        },
-        {
-          label: '未達顯著',
-          data: points.filter(p => !p.sig),
-          backgroundColor: 'rgba(143,163,184,0.45)',
-          borderColor: 'rgba(143,163,184,0.7)',
-          pointRadius: 5, pointHoverRadius: 8,
-        },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      plugins: {
-        legend: { labels: { color: axis } },
-        tooltip: {
-          callbacks: {
-            label: ctx => {
-              const d = ctx.raw;
-              return `${d.stat}  r=${d.r.toFixed(3)}  p=${d.p.toFixed(4)}  勝/敗中位 ${d.wm.toFixed(1)} / ${d.lm.toFixed(1)}`;
+  // ── 1. 效應量總覽橫條圖 ──
+  if (barEl) {
+    const labels = sorted.map(d => {
+      const badge = d.significant ? ' ★' : d.p_value < 0.1 ? ' ▲' : '';
+      return d.stat + badge;
+    });
+    const colors = sorted.map(d =>
+      d.effect_r > 0 ? 'rgba(0,212,255,0.78)' : 'rgba(240,98,146,0.78)'
+    );
+    deferChart(barEl, () => new Chart(barEl, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: sorted.map(d => d.effect_r),
+          backgroundColor: colors,
+          borderRadius: 3,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const d = sorted[ctx.dataIndex];
+                return `r=${d.effect_r.toFixed(3)}  p=${d.p_value.toFixed(4)}  勝/敗中位 ${(+(d.wins_median??0)).toFixed(1)} / ${(+(d.losses_median??0)).toFixed(1)}`;
+              }
+            }
+          },
+          annotation: {
+            annotations: {
+              line03: { type:'line', scaleID:'x', value: 0.3,  borderColor:'rgba(255,255,255,0.2)', borderWidth:1, borderDash:[4,4] },
+              linen03: { type:'line', scaleID:'x', value:-0.3, borderColor:'rgba(255,255,255,0.2)', borderWidth:1, borderDash:[4,4] },
+              line05: { type:'line', scaleID:'x', value: 0.5,  borderColor:'rgba(255,255,255,0.35)', borderWidth:1, borderDash:[4,4] },
+              linen05: { type:'line', scaleID:'x', value:-0.5, borderColor:'rgba(255,255,255,0.35)', borderWidth:1, borderDash:[4,4] },
             }
           }
-        }
-      },
-      scales: {
-        x: {
-          title: { display: true, text: '效應量 r（→ 勝場較高）', color: axis },
-          ticks: { color: axis }, grid: { color: grid },
-          suggestedMin: -1, suggestedMax: 1,
         },
-        y: {
-          title: { display: true, text: '−log10(p)（越高越顯著）', color: axis },
-          ticks: { color: axis }, grid: { color: grid },
-          suggestedMin: 0,
+        scales: {
+          x: { min:-1, max:1, ticks:{ color:axis }, grid:{ color:grid }, title:{ display:true, text:'效應量 r', color:axis } },
+          y: { ticks:{ color:axis }, grid:{ display:false } }
         }
       }
-    }
-  }));
-
-  // 在點圖下方顯示前幾名標籤摘要
-  const labelHost = document.getElementById('mw-labels');
-  if (labelHost) {
-    const top = [...points].sort((a, b) => b.y - a.y).slice(0, 6);
-    labelHost.innerHTML = top.map(d => {
-      const color = d.sig ? 'var(--accent)' : 'var(--text2)';
-      return `<span style="display:inline-block;margin:.15rem .5rem .15rem 0;font-size:.78rem;color:${color}"><strong>${esc(d.stat)}</strong> r=${d.r.toFixed(2)} · p=${d.p.toFixed(3)}</span>`;
-    }).join('');
+    }));
   }
+
+  // ── 2. 前 6 指標小卡：勝/敗中位值比較 ──
+  if (!gridEl) return;
+  const top6 = sorted.slice(0, 6);
+  let html = '';
+  top6.forEach((d, i) => {
+    const badge = d.significant
+      ? '<span class="mw-sig">★ 顯著</span>'
+      : d.p_value < 0.1 ? '<span class="mw-trend">▲ 趨勢</span>' : '';
+    const rSign = d.effect_r >= 0 ? '+' : '';
+    html += `<div class="mw-stat-card">
+      <div class="mw-stat-head"><span class="mw-stat-name">${esc(d.stat)}</span>${badge}</div>
+      <div class="mw-stat-meta">p = ${d.p_value.toFixed(3)} &nbsp;·&nbsp; r = ${rSign}${d.effect_r.toFixed(2)}</div>
+      <canvas data-mw="${i}" height="70"></canvas>
+    </div>`;
+  });
+  gridEl.innerHTML = html;
+
+  gridEl.querySelectorAll('canvas').forEach(canvas => {
+    const i = +canvas.dataset.mw;
+    const d = top6[i];
+    deferChart(canvas, () => new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: ['勝場', '敗場'],
+        datasets: [{
+          data: [+(d.wins_median??0), +(d.losses_median??0)],
+          backgroundColor: ['rgba(0,212,255,0.75)', 'rgba(240,98,146,0.75)'],
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{ display:false }, tooltip:{ enabled:true } },
+        scales: {
+          x: { ticks:{ color:axis, font:{size:10} }, grid:{ display:false } },
+          y: { ticks:{ color:axis, font:{size:10} }, grid:{ color:grid }, beginAtZero:false }
+        },
+        animation: { duration: 500 }
+      }
+    }));
+  });
 }
 
 function renderRoc(roc) {

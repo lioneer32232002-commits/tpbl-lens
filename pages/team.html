@@ -92,10 +92,13 @@
 
   <section id="mann-whitney" style="display:none">
     <h2>Mann-Whitney 勝負差異分析</h2>
-    <div class="card chart-wrap">
-      <canvas id="chart-mw" style="max-height:380px"></canvas>
-      <div id="mw-labels" style="margin-top:.75rem"></div>
+    <div class="card chart-wrap" style="margin-bottom:.75rem">
+      <canvas id="chart-mw" style="min-height:300px;max-height:440px"></canvas>
+      <div style="font-size:.72rem;color:var(--text2);margin-top:.4rem;text-align:center">
+        青色 = 勝場較高・粉色 = 敗場較高　★ 顯著（p &lt; 0.05）　▲ 趨勢（p &lt; 0.10）　虛線：|r| = 0.3 / 0.5 門檻
+      </div>
     </div>
+    <div id="mw-stat-grid" class="mw-stat-grid"></div>
   </section>
 
   <section id="roc" style="display:none">
