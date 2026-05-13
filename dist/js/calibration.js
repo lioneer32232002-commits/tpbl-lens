@@ -222,8 +222,8 @@ function renderCalibrationBins(predictions) {
       },
     });
     chartLegend(canvas, [
-      { label: '青色 = 低估（實際勝率 > 預測）', color: '#00d4ff' },
-      { label: '粉紅 = 高估（實際勝率 < 預測）', color: '#f06292' },
+      { label: '低估（實際勝率 > 預測）', color: '#00d4ff' },
+      { label: '高估（實際勝率 < 預測）', color: '#f06292' },
       { label: '虛線 = 完美校準基準', color: 'rgba(255,255,255,.5)' },
     ]);
   });
@@ -301,8 +301,8 @@ function renderCalibrationScatter(predictions) {
       },
     });
     chartLegend(canvas, [
-      { label: '青點 = 實際結果（勝/敗）', color: 'rgba(0,229,255,.85)' },
-      { label: '粉紅線 = 移動平均', color: '#f06292' },
+      { label: '實際結果（勝／敗）', color: 'rgba(0,229,255,.85)' },
+      { label: '移動平均', color: '#f06292' },
       { label: '灰色虛線 = 完美校準', color: 'rgba(255,255,255,.45)' },
     ]);
   });
