@@ -653,7 +653,7 @@ def calc_simulation(standings_raw, team_name):
     }
 
 
-def compute_elo_calibration(games, all_game_data, team_id, team_name, slug):
+def compute_elo_calibration(_games, all_game_data, team_id, team_name, slug):
     """
     Walk-forward Elo calibration using all 7 teams' games.
     For each of the target team's games, predict win prob using only
@@ -721,14 +721,16 @@ def compute_elo_calibration(games, all_game_data, team_id, team_name, slug):
         if ht_pts >= at_pts:  # home wins (or equal, treated as home)
             w_elo, l_elo = elo_h, elo_a
             elo_diff = w_elo - l_elo
-            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / (elo_diff * 0.001 + 2.2))
+            denom = max(elo_diff * 0.001 + 2.2, 0.1)
+            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / denom)
             delta = K * mov_mult * abs(1.0 - pred_h)
             elos[ht_id] = elo_h + delta
             elos[at_id] = elo_a - delta
         else:  # away wins
             w_elo, l_elo = elo_a, elo_h
             elo_diff = w_elo - l_elo
-            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / (elo_diff * 0.001 + 2.2))
+            denom = max(elo_diff * 0.001 + 2.2, 0.1)
+            mov_mult = math.log(net_rtg_abs + 1) * (2.2 / denom)
             delta = K * mov_mult * abs(0.0 - pred_h)
             elos[at_id] = elo_a + delta
             elos[ht_id] = elo_h - delta
