@@ -133,7 +133,7 @@ class TestEloWinProb:
 
     def test_higher_elo_team_favored(self):
         from process_data import elo_win_prob
-        # 1600 vs 1500, both neutral → stronger team wins more often
+        # 1600 vs 1500, A is away (home_bonus=-65) → stronger team still favored
         p = elo_win_prob(1600, 1500, home_a=False)
         assert p > 0.5
 
