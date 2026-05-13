@@ -282,7 +282,7 @@ function renderPredictionTable(predictions) {
   const fmtDate = d => `${parseInt(d.slice(4, 6))}/${parseInt(d.slice(6, 8))}`;
 
   let html = '';
-  for (const p of predictions) {
+  predictions.forEach((p, i) => {
     const pct   = (p.predicted_win_prob * 100).toFixed(1) + '%';
     const ha    = p.is_home ? '主' : '客';
     const result = p.actual_win
@@ -292,15 +292,18 @@ function renderPredictionTable(predictions) {
     const lowNote = p.low_sample
       ? ' <span style="color:var(--text2);font-size:.75rem">(樣本不足)</span>'
       : '';
+    const netRtgColor = (p.net_rtg ?? 0) >= 0 ? 'var(--accent)' : '#f06292';
+    const netRtgVal = p.net_rtg != null ? (p.net_rtg > 0 ? '+' : '') + p.net_rtg.toFixed(1) : '—';
     html += `<tr${p.low_sample ? ' style="opacity:.6"' : ''}>
+      <td style="text-align:center;color:var(--text2);font-size:.8rem">${i + 1}</td>
       <td>${fmtDate(p.date)}</td>
       <td>${esc(p.opp)}</td>
-      <td>${ha}</td>
-      <td>${pct}${lowNote}</td>
-      <td>${result}</td>
-      <td>${score}</td>
-      <td style="color:${(p.net_rtg ?? 0) >= 0 ? 'var(--accent)' : '#f06292'}">${p.net_rtg != null ? (p.net_rtg > 0 ? '+' : '') + p.net_rtg.toFixed(1) : '—'}</td>
+      <td style="text-align:center">${ha}</td>
+      <td style="text-align:right">${pct}${lowNote}</td>
+      <td style="text-align:center">${result}</td>
+      <td style="text-align:right">${score}</td>
+      <td style="text-align:right;color:${netRtgColor}">${netRtgVal}</td>
     </tr>`;
-  }
+  });
   tbody.innerHTML = html;
 }
