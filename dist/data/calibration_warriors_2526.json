@@ -3,324 +3,484 @@
     "team_id": 8,
     "team_name": "臺北台新戰神",
     "season": "2025-26",
-    "generated": "2026-05-12"
+    "generated": "2026-05-13",
+    "model": "MOV-adjusted Elo (K=20, home_bonus=65, pace-adjusted net rating)"
   },
   "summary": {
-    "brier_score": 0.2661,
-    "n_games": 31,
-    "games_won": 10,
-    "calibration_note": "每場預測使用該場賽前可用資料，無 look-ahead bias"
+    "brier_score": 0.2337,
+    "n_games": 36,
+    "games_won": 11,
+    "final_elo": 1322.0,
+    "calibration_note": "Elo + Pace-adjusted Net Rating；賽前勝率無 look-ahead bias"
   },
   "predictions": [
     {
       "date": "20251019",
       "opp": "新北國王",
       "is_home": false,
-      "predicted_win_prob": 0.4045,
+      "predicted_win_prob": 0.4044,
       "actual_win": true,
       "team_score": 123,
       "opp_score": 120,
-      "low_sample": true
+      "low_sample": true,
+      "elo_before": 1500.0,
+      "net_rtg": 2.59,
+      "elo_after": 1515.2
     },
     {
       "date": "20251025",
       "opp": "新北中信特攻",
       "is_home": false,
-      "predicted_win_prob": 0.55,
+      "predicted_win_prob": 0.3751,
       "actual_win": false,
       "team_score": 78,
       "opp_score": 91,
-      "low_sample": true
+      "low_sample": true,
+      "elo_before": 1515.2,
+      "net_rtg": -16.05,
+      "elo_after": 1494.2
     },
     {
       "date": "20251101",
       "opp": "高雄全家海神",
       "is_home": false,
-      "predicted_win_prob": 0.5214,
+      "predicted_win_prob": 0.474,
       "actual_win": true,
       "team_score": 110,
       "opp_score": 105,
-      "low_sample": true
+      "low_sample": true,
+      "elo_before": 1494.2,
+      "net_rtg": 4.57,
+      "elo_after": 1511.9
+    },
+    {
+      "date": "20251108",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": false,
+      "predicted_win_prob": 0.2944,
+      "actual_win": false,
+      "team_score": 102,
+      "opp_score": 122,
+      "low_sample": true,
+      "elo_before": 1511.9,
+      "net_rtg": -19.18,
+      "elo_after": 1494.9
+    },
+    {
+      "date": "20251115",
+      "opp": "新北國王",
+      "is_home": true,
+      "predicted_win_prob": 0.6253,
+      "actual_win": true,
+      "team_score": 97,
+      "opp_score": 87,
+      "low_sample": false,
+      "elo_before": 1494.9,
+      "net_rtg": 7.48,
+      "elo_after": 1510.7
+    },
+    {
+      "date": "20251116",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": true,
+      "predicted_win_prob": 0.4251,
+      "actual_win": false,
+      "team_score": 102,
+      "opp_score": 112,
+      "low_sample": false,
+      "elo_before": 1510.7,
+      "net_rtg": -13.99,
+      "elo_after": 1488.9
     },
     {
       "date": "20251123",
       "opp": "福爾摩沙夢想家",
       "is_home": false,
-      "predicted_win_prob": 0.4833,
+      "predicted_win_prob": 0.4045,
       "actual_win": false,
       "team_score": 117,
       "opp_score": 128,
-      "low_sample": true
+      "low_sample": false,
+      "elo_before": 1488.9,
+      "net_rtg": -12.48,
+      "elo_after": 1467.8
     },
     {
       "date": "20251203",
       "opp": "新竹御嵿攻城獅",
       "is_home": true,
-      "predicted_win_prob": 0.4875,
+      "predicted_win_prob": 0.4718,
       "actual_win": true,
       "team_score": 100,
       "opp_score": 98,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1467.8,
+      "net_rtg": 3.59,
+      "elo_after": 1484.6
+    },
+    {
+      "date": "20251206",
+      "opp": "新北中信特攻",
+      "is_home": true,
+      "predicted_win_prob": 0.6113,
+      "actual_win": false,
+      "team_score": 104,
+      "opp_score": 108,
+      "low_sample": false,
+      "elo_before": 1484.6,
+      "net_rtg": -8.53,
+      "elo_after": 1456.8
     },
     {
       "date": "20251207",
       "opp": "高雄全家海神",
       "is_home": true,
-      "predicted_win_prob": 0.7274,
+      "predicted_win_prob": 0.622,
       "actual_win": true,
       "team_score": 96,
       "opp_score": 91,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1456.8,
+      "net_rtg": 2.53,
+      "elo_after": 1466.3
     },
     {
       "date": "20251221",
       "opp": "新竹御嵿攻城獅",
       "is_home": false,
-      "predicted_win_prob": 0.5214,
+      "predicted_win_prob": 0.3378,
       "actual_win": true,
       "team_score": 94,
       "opp_score": 83,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1466.3,
+      "net_rtg": 15.39,
+      "elo_after": 1504.2
     },
     {
       "date": "20251227",
       "opp": "福爾摩沙夢想家",
       "is_home": false,
-      "predicted_win_prob": 0.5094,
+      "predicted_win_prob": 0.3916,
       "actual_win": false,
       "team_score": 98,
       "opp_score": 108,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1504.2,
+      "net_rtg": -15.75,
+      "elo_after": 1482.2
     },
     {
       "date": "20260107",
       "opp": "高雄全家海神",
       "is_home": false,
-      "predicted_win_prob": 0.6363,
+      "predicted_win_prob": 0.5783,
       "actual_win": false,
       "team_score": 103,
       "opp_score": 108,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1482.2,
+      "net_rtg": -6.49,
+      "elo_after": 1457.6
     },
     {
       "date": "20260110",
       "opp": "福爾摩沙夢想家",
       "is_home": true,
-      "predicted_win_prob": 0.5397,
+      "predicted_win_prob": 0.486,
       "actual_win": false,
       "team_score": 91,
       "opp_score": 110,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1457.6,
+      "net_rtg": -25.31,
+      "elo_after": 1426.9
+    },
+    {
+      "date": "20260111",
+      "opp": "桃園台啤永豐雲豹",
+      "is_home": true,
+      "predicted_win_prob": 0.3948,
+      "actual_win": true,
+      "team_score": 114,
+      "opp_score": 108,
+      "low_sample": false,
+      "elo_before": 1426.9,
+      "net_rtg": 8.97,
+      "elo_after": 1456.6
     },
     {
       "date": "20260117",
       "opp": "新北中信特攻",
       "is_home": true,
-      "predicted_win_prob": 0.5794,
+      "predicted_win_prob": 0.5233,
       "actual_win": false,
       "team_score": 79,
       "opp_score": 95,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1456.6,
+      "net_rtg": -14.27,
+      "elo_after": 1428.7
     },
     {
       "date": "20260118",
       "opp": "新竹御嵿攻城獅",
       "is_home": true,
-      "predicted_win_prob": 0.4907,
+      "predicted_win_prob": 0.3829,
       "actual_win": false,
       "team_score": 98,
       "opp_score": 101,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1428.7,
+      "net_rtg": -5.75,
+      "elo_after": 1415.0
     },
     {
       "date": "20260125",
       "opp": "新北中信特攻",
       "is_home": false,
-      "predicted_win_prob": 0.4045,
+      "predicted_win_prob": 0.2418,
       "actual_win": true,
       "team_score": 112,
       "opp_score": 104,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1415.0,
+      "net_rtg": 8.92,
+      "elo_after": 1452.0
     },
     {
       "date": "20260201",
       "opp": "桃園台啤永豐雲豹",
       "is_home": false,
-      "predicted_win_prob": 0.3517,
+      "predicted_win_prob": 0.2514,
       "actual_win": false,
       "team_score": 87,
       "opp_score": 98,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1452.0,
+      "net_rtg": -12.97,
+      "elo_after": 1439.5
     },
     {
       "date": "20260207",
       "opp": "新北國王",
       "is_home": true,
-      "predicted_win_prob": 0.5115,
+      "predicted_win_prob": 0.4478,
       "actual_win": false,
       "team_score": 96,
       "opp_score": 98,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1439.5,
+      "net_rtg": 1.82,
+      "elo_after": 1430.6
     },
     {
       "date": "20260208",
       "opp": "福爾摩沙夢想家",
       "is_home": true,
-      "predicted_win_prob": 0.4667,
+      "predicted_win_prob": 0.4849,
       "actual_win": false,
       "team_score": 91,
       "opp_score": 104,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1430.6,
+      "net_rtg": -16.12,
+      "elo_after": 1403.9
     },
     {
       "date": "20260211",
       "opp": "高雄全家海神",
       "is_home": true,
-      "predicted_win_prob": 0.6262,
+      "predicted_win_prob": 0.7031,
       "actual_win": false,
       "team_score": 90,
       "opp_score": 104,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1403.9,
+      "net_rtg": -14.46,
+      "elo_after": 1363.9
     },
     {
       "date": "20260214",
       "opp": "新北國王",
       "is_home": false,
-      "predicted_win_prob": 0.3535,
+      "predicted_win_prob": 0.1909,
       "actual_win": false,
       "team_score": 95,
       "opp_score": 116,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1363.9,
+      "net_rtg": -18.44,
+      "elo_after": 1353.5
     },
     {
       "date": "20260306",
       "opp": "新北國王",
       "is_home": false,
-      "predicted_win_prob": 0.325,
+      "predicted_win_prob": 0.1814,
       "actual_win": false,
       "team_score": 90,
       "opp_score": 93,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1353.5,
+      "net_rtg": -7.04,
+      "elo_after": 1346.5
     },
     {
       "date": "20260311",
       "opp": "新竹御嵿攻城獅",
       "is_home": false,
-      "predicted_win_prob": 0.3167,
+      "predicted_win_prob": 0.1663,
       "actual_win": true,
       "team_score": 102,
       "opp_score": 94,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1346.5,
+      "net_rtg": 8.86,
+      "elo_after": 1388.8
     },
     {
       "date": "20260321",
       "opp": "桃園台啤永豐雲豹",
       "is_home": true,
-      "predicted_win_prob": 0.4151,
+      "predicted_win_prob": 0.3854,
       "actual_win": false,
       "team_score": 73,
       "opp_score": 99,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1388.8,
+      "net_rtg": -26.04,
+      "elo_after": 1365.0
+    },
+    {
+      "date": "20260322",
+      "opp": "福爾摩沙夢想家",
+      "is_home": true,
+      "predicted_win_prob": 0.2561,
+      "actual_win": false,
+      "team_score": 96,
+      "opp_score": 118,
+      "low_sample": false,
+      "elo_before": 1365.0,
+      "net_rtg": -23.4,
+      "elo_after": 1350.3
+    },
+    {
+      "date": "20260328",
+      "opp": "高雄全家海神",
+      "is_home": true,
+      "predicted_win_prob": 0.6357,
+      "actual_win": false,
+      "team_score": 104,
+      "opp_score": 112,
+      "low_sample": false,
+      "elo_before": 1350.3,
+      "net_rtg": -8.62,
+      "elo_after": 1321.1
+    },
+    {
+      "date": "20260329",
+      "opp": "新北國王",
+      "is_home": true,
+      "predicted_win_prob": 0.2932,
+      "actual_win": false,
+      "team_score": 102,
+      "opp_score": 116,
+      "low_sample": false,
+      "elo_before": 1321.1,
+      "net_rtg": -15.38,
+      "elo_after": 1306.2
     },
     {
       "date": "20260401",
       "opp": "新北中信特攻",
       "is_home": false,
-      "predicted_win_prob": 0.3585,
+      "predicted_win_prob": 0.1607,
       "actual_win": true,
       "team_score": 91,
       "opp_score": 89,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1306.2,
+      "net_rtg": 6.93,
+      "elo_after": 1344.8
     },
     {
       "date": "20260405",
       "opp": "桃園台啤永豐雲豹",
       "is_home": false,
-      "predicted_win_prob": 0.3303,
+      "predicted_win_prob": 0.1728,
       "actual_win": false,
       "team_score": 96,
       "opp_score": 107,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1344.8,
+      "net_rtg": -12.6,
+      "elo_after": 1336.6
     },
     {
       "date": "20260412",
       "opp": "高雄全家海神",
       "is_home": false,
-      "predicted_win_prob": 0.5127,
+      "predicted_win_prob": 0.4152,
       "actual_win": true,
       "team_score": 104,
       "opp_score": 93,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1336.6,
+      "net_rtg": 13.16,
+      "elo_after": 1367.5
     },
     {
       "date": "20260418",
       "opp": "福爾摩沙夢想家",
       "is_home": false,
-      "predicted_win_prob": 0.3169,
+      "predicted_win_prob": 0.1207,
       "actual_win": false,
       "team_score": 66,
       "opp_score": 99,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1367.5,
+      "net_rtg": -38.19,
+      "elo_after": 1359.6
     },
     {
       "date": "20260425",
       "opp": "新竹御嵿攻城獅",
       "is_home": true,
-      "predicted_win_prob": 0.4442,
+      "predicted_win_prob": 0.3071,
       "actual_win": false,
       "team_score": 86,
       "opp_score": 104,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1359.6,
+      "net_rtg": -18.89,
+      "elo_after": 1342.9
     },
     {
       "date": "20260426",
       "opp": "新北中信特攻",
       "is_home": true,
-      "predicted_win_prob": 0.4591,
+      "predicted_win_prob": 0.2995,
       "actual_win": false,
       "team_score": 103,
       "opp_score": 111,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1342.9,
+      "net_rtg": -11.76,
+      "elo_after": 1328.9
     },
     {
       "date": "20260502",
       "opp": "新竹御嵿攻城獅",
       "is_home": false,
-      "predicted_win_prob": 0.3184,
+      "predicted_win_prob": 0.1231,
       "actual_win": false,
       "team_score": 73,
       "opp_score": 96,
-      "low_sample": false
-    },
-    {
-      "date": "20260502",
-      "opp": "新竹御嵿攻城獅",
-      "is_home": false,
-      "predicted_win_prob": 0.31,
-      "actual_win": false,
-      "team_score": 73,
-      "opp_score": 96,
-      "low_sample": false
-    },
-    {
-      "date": "20251004",
-      "opp": "新北國王",
-      "is_home": false,
-      "predicted_win_prob": 0.333,
-      "actual_win": true,
-      "team_score": 105,
-      "opp_score": 100,
-      "low_sample": false
-    },
-    {
-      "date": "20251005",
-      "opp": "高雄全家海神",
-      "is_home": true,
-      "predicted_win_prob": 0.95,
-      "actual_win": false,
-      "team_score": 79,
-      "opp_score": 93,
-      "low_sample": false
+      "low_sample": false,
+      "elo_before": 1328.9,
+      "net_rtg": -23.18,
+      "elo_after": 1322.0
     }
   ]
 }

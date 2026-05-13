@@ -3,7 +3,7 @@
     "team_id": 8,
     "team_name": "臺北台新戰神",
     "season": "2025-26",
-    "generated": "2026-05-12",
+    "generated": "2026-05-13",
     "total_games": 36,
     "games_remaining": 0
   },
@@ -12,8 +12,8 @@
     "losses": 25,
     "games_played": 36,
     "games_remaining": 0,
-    "avg_pts": 93.52,
-    "avg_opp_pts": 101.16,
+    "avg_pts": 96.19,
+    "avg_opp_pts": 103.61,
     "win_rate": 0.3056
   },
   "standings": [
@@ -259,6 +259,78 @@
       "ft_made": 19
     },
     {
+      "date": "20251108",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 102,
+      "opp_score": 122,
+      "won": false,
+      "is_home": false,
+      "rounds": {
+        "1": 33,
+        "2": 26,
+        "3": 22,
+        "4": 21
+      },
+      "opp_rounds": {
+        "1": 29,
+        "2": 40,
+        "3": 24,
+        "4": 29
+      },
+      "paint": 50,
+      "fast_break": 4,
+      "second_chance": 22,
+      "ft_made": 13
+    },
+    {
+      "date": "20251115",
+      "opp": "新北國王",
+      "team_score": 97,
+      "opp_score": 87,
+      "won": true,
+      "is_home": true,
+      "rounds": {
+        "1": 30,
+        "2": 24,
+        "3": 18,
+        "4": 25
+      },
+      "opp_rounds": {
+        "1": 19,
+        "2": 18,
+        "3": 21,
+        "4": 29
+      },
+      "paint": 50,
+      "fast_break": 8,
+      "second_chance": 22,
+      "ft_made": 13
+    },
+    {
+      "date": "20251116",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 102,
+      "opp_score": 112,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 17,
+        "2": 31,
+        "3": 20,
+        "4": 34
+      },
+      "opp_rounds": {
+        "1": 33,
+        "2": 24,
+        "3": 26,
+        "4": 29
+      },
+      "paint": 32,
+      "fast_break": 22,
+      "second_chance": 14,
+      "ft_made": 12
+    },
+    {
       "date": "20251123",
       "opp": "福爾摩沙夢想家",
       "team_score": 117,
@@ -305,6 +377,30 @@
       "fast_break": 9,
       "second_chance": 13,
       "ft_made": 26
+    },
+    {
+      "date": "20251206",
+      "opp": "新北中信特攻",
+      "team_score": 104,
+      "opp_score": 108,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 24,
+        "2": 26,
+        "3": 28,
+        "4": 26
+      },
+      "opp_rounds": {
+        "1": 23,
+        "2": 29,
+        "3": 28,
+        "4": 28
+      },
+      "paint": 46,
+      "fast_break": 15,
+      "second_chance": 15,
+      "ft_made": 30
     },
     {
       "date": "20251207",
@@ -427,6 +523,30 @@
       "fast_break": 10,
       "second_chance": 8,
       "ft_made": 26
+    },
+    {
+      "date": "20260111",
+      "opp": "桃園台啤永豐雲豹",
+      "team_score": 114,
+      "opp_score": 108,
+      "won": true,
+      "is_home": true,
+      "rounds": {
+        "1": 40,
+        "2": 23,
+        "3": 23,
+        "4": 28
+      },
+      "opp_rounds": {
+        "1": 23,
+        "2": 32,
+        "3": 24,
+        "4": 29
+      },
+      "paint": 40,
+      "fast_break": 2,
+      "second_chance": 17,
+      "ft_made": 16
     },
     {
       "date": "20260117",
@@ -693,6 +813,78 @@
       "ft_made": 10
     },
     {
+      "date": "20260322",
+      "opp": "福爾摩沙夢想家",
+      "team_score": 96,
+      "opp_score": 118,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 23,
+        "2": 29,
+        "3": 16,
+        "4": 28
+      },
+      "opp_rounds": {
+        "1": 34,
+        "2": 26,
+        "3": 32,
+        "4": 26
+      },
+      "paint": 30,
+      "fast_break": 0,
+      "second_chance": 11,
+      "ft_made": 17
+    },
+    {
+      "date": "20260328",
+      "opp": "高雄全家海神",
+      "team_score": 104,
+      "opp_score": 112,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 31,
+        "2": 22,
+        "3": 21,
+        "4": 30
+      },
+      "opp_rounds": {
+        "1": 27,
+        "2": 30,
+        "3": 25,
+        "4": 30
+      },
+      "paint": 68,
+      "fast_break": 12,
+      "second_chance": 12,
+      "ft_made": 17
+    },
+    {
+      "date": "20260329",
+      "opp": "新北國王",
+      "team_score": 102,
+      "opp_score": 116,
+      "won": false,
+      "is_home": true,
+      "rounds": {
+        "1": 26,
+        "2": 25,
+        "3": 16,
+        "4": 35
+      },
+      "opp_rounds": {
+        "1": 20,
+        "2": 30,
+        "3": 33,
+        "4": 33
+      },
+      "paint": 34,
+      "fast_break": 11,
+      "second_chance": 16,
+      "ft_made": 23
+    },
+    {
       "date": "20260401",
       "opp": "新北中信特攻",
       "team_score": 91,
@@ -859,155 +1051,88 @@
       "fast_break": 10,
       "second_chance": 11,
       "ft_made": 8
-    },
-    {
-      "date": "20260502",
-      "opp": "新竹御嵿攻城獅",
-      "team_score": 73,
-      "opp_score": 96,
-      "won": false,
-      "is_home": false,
-      "rounds": {
-        "1": 25,
-        "2": 14,
-        "3": 17,
-        "4": 17
-      },
-      "opp_rounds": {
-        "1": 29,
-        "2": 24,
-        "3": 19,
-        "4": 24
-      },
-      "paint": 34,
-      "fast_break": 10,
-      "second_chance": 11,
-      "ft_made": 8
-    },
-    {
-      "date": "20251004",
-      "opp": "新北國王",
-      "team_score": 105,
-      "opp_score": 100,
-      "won": true,
-      "is_home": false,
-      "rounds": {
-        "1": 28,
-        "2": 22,
-        "3": 27,
-        "4": 28
-      },
-      "opp_rounds": {
-        "1": 33,
-        "2": 25,
-        "3": 26,
-        "4": 16
-      },
-      "paint": 56,
-      "fast_break": 16,
-      "second_chance": 7,
-      "ft_made": 14
-    },
-    {
-      "date": "20251005",
-      "opp": "高雄全家海神",
-      "team_score": 79,
-      "opp_score": 93,
-      "won": false,
-      "is_home": true,
-      "rounds": {
-        "1": 24,
-        "2": 17,
-        "3": 21,
-        "4": 17
-      },
-      "opp_rounds": {
-        "1": 34,
-        "2": 17,
-        "3": 19,
-        "4": 23
-      },
-      "paint": 30,
-      "fast_break": 13,
-      "second_chance": 10,
-      "ft_made": 14
     }
   ],
   "vs_summary": {
     "新北國王": {
       "w": 2,
-      "l": 3,
-      "avg_team": 101.8,
-      "avg_opp": 105.4
+      "l": 4,
+      "avg_team": 100.5,
+      "avg_opp": 105.0
     },
     "新北中信特攻": {
       "w": 2,
-      "l": 3,
-      "avg_team": 92.6,
-      "avg_opp": 98.0
+      "l": 4,
+      "avg_team": 94.5,
+      "avg_opp": 99.67
     },
     "高雄全家海神": {
       "w": 3,
       "l": 3,
-      "avg_team": 97.0,
-      "avg_opp": 99.0
+      "avg_team": 101.17,
+      "avg_opp": 102.17
+    },
+    "桃園台啤永豐雲豹": {
+      "w": 1,
+      "l": 5,
+      "avg_team": 95.67,
+      "avg_opp": 107.67
     },
     "福爾摩沙夢想家": {
       "w": 0,
-      "l": 5,
-      "avg_team": 92.6,
-      "avg_opp": 109.8
+      "l": 6,
+      "avg_team": 93.17,
+      "avg_opp": 111.17
     },
     "新竹御嵿攻城獅": {
       "w": 3,
-      "l": 4,
-      "avg_team": 89.43,
-      "avg_opp": 96.0
-    },
-    "桃園台啤永豐雲豹": {
-      "w": 0,
       "l": 3,
-      "avg_team": 85.33,
-      "avg_opp": 101.33
+      "avg_team": 92.17,
+      "avg_opp": 96.0
     }
   },
   "home_away": {
     "home": {
-      "gp": 12,
-      "wins": 2,
-      "losses": 10,
-      "win_rate": 0.1667,
-      "avg_pts": 90.17,
-      "avg_opp": 100.67,
-      "net": -10.5
+      "gp": 18,
+      "wins": 4,
+      "losses": 14,
+      "win_rate": 0.2222,
+      "avg_pts": 95.67,
+      "avg_opp": 104.22,
+      "net": -8.5
     },
     "away": {
-      "gp": 19,
-      "wins": 8,
+      "gp": 18,
+      "wins": 7,
       "losses": 11,
-      "win_rate": 0.4211,
-      "avg_pts": 95.63,
-      "avg_opp": 101.47,
-      "net": -5.8
+      "win_rate": 0.3889,
+      "avg_pts": 96.72,
+      "avg_opp": 103.0,
+      "net": -6.3
     }
   },
   "quarter_analysis": {
     "Q1": {
-      "avg_score": 25.1,
-      "avg_opp": 27.29,
-      "win_rate": 0.3548,
-      "games": 31,
+      "avg_score": 25.69,
+      "avg_opp": 26.61,
+      "win_rate": 0.4722,
+      "games": 36,
       "diffs": [
         -2,
         -7,
         -1,
+        4,
+        11,
+        -16,
         -5,
         -4,
+        1,
         -4,
         1,
         -7,
         -6,
         2,
+        17,
         7,
         -3,
         10,
@@ -1019,36 +1144,41 @@
         1,
         -3,
         -5,
+        -11,
+        4,
+        6,
         -14,
         5,
         5,
         3,
         -7,
         6,
-        -4,
-        -4,
-        -5,
-        -10
+        -4
       ],
-      "avg_poss": 23.36,
-      "avg_opp_poss": 23.11
+      "avg_poss": 23.41,
+      "avg_opp_poss": 23.19
     },
     "Q2": {
-      "avg_score": 23.1,
-      "avg_opp": 25.94,
-      "win_rate": 0.2581,
-      "games": 31,
+      "avg_score": 24.14,
+      "avg_opp": 26.86,
+      "win_rate": 0.3056,
+      "games": 36,
       "diffs": [
         -2,
         -3,
         -2,
+        -14,
+        6,
+        7,
         1,
         -4,
+        -3,
         4,
         5,
         -2,
         -1,
         -5,
+        -9,
         -9,
         -1,
         -14,
@@ -1060,36 +1190,41 @@
         -6,
         6,
         -5,
+        3,
+        -8,
+        -5,
         9,
         -13,
         -1,
         -17,
         -7,
         11,
-        -10,
-        -10,
-        -3,
-        0
+        -10
       ],
-      "avg_poss": 23.21,
-      "avg_opp_poss": 23.4
+      "avg_poss": 23.33,
+      "avg_opp_poss": 23.32
     },
     "Q3": {
-      "avg_score": 23.1,
-      "avg_opp": 24.39,
-      "win_rate": 0.3548,
-      "games": 31,
+      "avg_score": 22.64,
+      "avg_opp": 25.14,
+      "win_rate": 0.25,
+      "games": 36,
       "diffs": [
         15,
         -6,
         4,
+        -2,
+        -3,
+        -6,
         -13,
         -2,
+        0,
         0,
         0,
         4,
         5,
         -10,
+        -1,
         -1,
         6,
         11,
@@ -1101,36 +1236,41 @@
         0,
         -10,
         -10,
+        -16,
+        -4,
+        -17,
         8,
         -1,
         -1,
         -15,
         2,
         -7,
-        -2,
-        -2,
-        1,
-        2
+        -2
       ],
-      "avg_poss": 22.85,
-      "avg_opp_poss": 22.89
+      "avg_poss": 22.83,
+      "avg_opp_poss": 22.93
     },
     "Q4": {
-      "avg_score": 21.32,
-      "avg_opp": 22.9,
-      "win_rate": 0.3548,
-      "games": 31,
+      "avg_score": 22.94,
+      "avg_opp": 24.44,
+      "win_rate": 0.3611,
+      "games": 36,
       "diffs": [
         -11,
         3,
         4,
+        -8,
+        -4,
+        5,
         6,
         12,
+        -2,
         0,
         5,
         -5,
         -3,
         -6,
+        -1,
         -13,
         -5,
         1,
@@ -1142,360 +1282,1882 @@
         2,
         15,
         -6,
+        2,
+        0,
+        2,
         -1,
         -2,
         8,
         -4,
         -6,
         -18,
-        -7,
-        -7,
-        12,
-        -6
+        -7
       ],
-      "avg_poss": 22.65,
-      "avg_opp_poss": 22.61
+      "avg_poss": 22.83,
+      "avg_opp_poss": 22.67
     }
   },
   "next_game": {},
-  "heatmap": [],
-  "ppp_heatmap": [],
+  "heatmap": [
+    {
+      "player": "蘇奕晉",
+      "values": {
+        "高雄全家海神": -3.8,
+        "新北國王": 10.0,
+        "新北中信特攻": 1.0,
+        "新竹御嵿攻城獅": 0.17,
+        "福爾摩沙夢想家": 0.0,
+        "桃園台啤永豐雲豹": 1.0
+      }
+    },
+    {
+      "player": "基德",
+      "values": {
+        "高雄全家海神": 5.67,
+        "新北國王": -3.5,
+        "新北中信特攻": 2.0,
+        "新竹御嵿攻城獅": 13.67,
+        "福爾摩沙夢想家": -7.33,
+        "桃園台啤永豐雲豹": -8.0
+      }
+    },
+    {
+      "player": "江均",
+      "values": {
+        "高雄全家海神": 1.0,
+        "新北國王": -3.8,
+        "新北中信特攻": -0.17,
+        "新竹御嵿攻城獅": 0.2,
+        "福爾摩沙夢想家": -5.5,
+        "桃園台啤永豐雲豹": 0.0
+      }
+    },
+    {
+      "player": "張耕淯",
+      "values": {
+        "高雄全家海神": 0.0,
+        "新北國王": null,
+        "新北中信特攻": 0.0,
+        "新竹御嵿攻城獅": -2.5,
+        "福爾摩沙夢想家": -2.0,
+        "桃園台啤永豐雲豹": null
+      }
+    },
+    {
+      "player": "陳冠全",
+      "values": {
+        "高雄全家海神": 0.8,
+        "新北國王": -0.67,
+        "新北中信特攻": -0.75,
+        "新竹御嵿攻城獅": 0.0,
+        "福爾摩沙夢想家": -5.0,
+        "桃園台啤永豐雲豹": -4.75
+      }
+    },
+    {
+      "player": "黃聰翰",
+      "values": {
+        "高雄全家海神": 3.67,
+        "新北國王": -2.17,
+        "新北中信特攻": -3.17,
+        "新竹御嵿攻城獅": 2.33,
+        "福爾摩沙夢想家": -8.17,
+        "桃園台啤永豐雲豹": -3.5
+      }
+    },
+    {
+      "player": "孫思堯",
+      "values": {
+        "高雄全家海神": 0.0,
+        "新北國王": -5.5,
+        "新北中信特攻": 6.0,
+        "新竹御嵿攻城獅": 0.0,
+        "福爾摩沙夢想家": -4.5,
+        "桃園台啤永豐雲豹": -2.67
+      }
+    },
+    {
+      "player": "丁聖儒",
+      "values": {
+        "高雄全家海神": 3.0,
+        "新北國王": -6.5,
+        "新北中信特攻": 0.6,
+        "新竹御嵿攻城獅": 7.2,
+        "福爾摩沙夢想家": -6.4,
+        "桃園台啤永豐雲豹": -11.0
+      }
+    },
+    {
+      "player": "威力斯",
+      "values": {
+        "高雄全家海神": -1.33,
+        "新北國王": -3.67,
+        "新北中信特攻": 1.0,
+        "新竹御嵿攻城獅": 3.0,
+        "福爾摩沙夢想家": -8.0,
+        "桃園台啤永豐雲豹": -0.33
+      }
+    },
+    {
+      "player": "魏芃禾",
+      "values": {
+        "高雄全家海神": -1.2,
+        "新北國王": 1.8,
+        "新北中信特攻": -3.67,
+        "新竹御嵿攻城獅": 0.4,
+        "福爾摩沙夢想家": -6.0,
+        "桃園台啤永豐雲豹": -3.75
+      }
+    },
+    {
+      "player": "劉彥廷",
+      "values": {
+        "高雄全家海神": -1.75,
+        "新北國王": -4.67,
+        "新北中信特攻": -2.4,
+        "新竹御嵿攻城獅": -2.5,
+        "福爾摩沙夢想家": -2.33,
+        "桃園台啤永豐雲豹": 0.8
+      }
+    },
+    {
+      "player": "謝銘駿",
+      "values": {
+        "高雄全家海神": 1.17,
+        "新北國王": -5.5,
+        "新北中信特攻": -1.83,
+        "新竹御嵿攻城獅": -4.17,
+        "福爾摩沙夢想家": -7.5,
+        "桃園台啤永豐雲豹": 2.5
+      }
+    },
+    {
+      "player": "齊曼加",
+      "values": {
+        "高雄全家海神": -1.0,
+        "新北國王": 8.5,
+        "新北中信特攻": -10.5,
+        "新竹御嵿攻城獅": null,
+        "福爾摩沙夢想家": -4.0,
+        "桃園台啤永豐雲豹": -12.0
+      }
+    },
+    {
+      "player": "錢肯尼",
+      "values": {
+        "高雄全家海神": -0.67,
+        "新北國王": -0.4,
+        "新北中信特攻": -4.33,
+        "新竹御嵿攻城獅": -2.67,
+        "福爾摩沙夢想家": -7.67,
+        "桃園台啤永豐雲豹": -2.5
+      }
+    },
+    {
+      "player": "張兆辰",
+      "values": {
+        "高雄全家海神": -4.17,
+        "新北國王": 1.0,
+        "新北中信特攻": -1.83,
+        "新竹御嵿攻城獅": -7.0,
+        "福爾摩沙夢想家": -1.75,
+        "桃園台啤永豐雲豹": -4.5
+      }
+    },
+    {
+      "player": "陳文宏",
+      "values": {
+        "高雄全家海神": -2.83,
+        "新北國王": -6.67,
+        "新北中信特攻": 0.83,
+        "新竹御嵿攻城獅": -4.17,
+        "福爾摩沙夢想家": -5.17,
+        "桃園台啤永豐雲豹": -6.17
+      }
+    },
+    {
+      "player": "梅克",
+      "values": {
+        "高雄全家海神": -0.5,
+        "新北國王": -10.5,
+        "新北中信特攻": 4.67,
+        "新竹御嵿攻城獅": 7.0,
+        "福爾摩沙夢想家": -11.5,
+        "桃園台啤永豐雲豹": -9.67
+      }
+    },
+    {
+      "player": "弗利沙",
+      "values": {
+        "高雄全家海神": null,
+        "新北國王": 1.0,
+        "新北中信特攻": 0.0,
+        "新竹御嵿攻城獅": -11.33,
+        "福爾摩沙夢想家": 0.0,
+        "桃園台啤永豐雲豹": null
+      }
+    },
+    {
+      "player": "雷蒙恩",
+      "values": {
+        "高雄全家海神": -1.8,
+        "新北國王": 0.83,
+        "新北中信特攻": -8.5,
+        "新竹御嵿攻城獅": 4.0,
+        "福爾摩沙夢想家": -15.0,
+        "桃園台啤永豐雲豹": -10.0
+      }
+    },
+    {
+      "player": "洛夫頓",
+      "values": {
+        "高雄全家海神": -1.0,
+        "新北國王": 8.0,
+        "新北中信特攻": -7.0,
+        "新竹御嵿攻城獅": -4.5,
+        "福爾摩沙夢想家": -8.0,
+        "桃園台啤永豐雲豹": -19.5
+      }
+    },
+    {
+      "player": "史東",
+      "values": {
+        "高雄全家海神": -1.0,
+        "新北國王": null,
+        "新北中信特攻": -13.5,
+        "新竹御嵿攻城獅": -2.0,
+        "福爾摩沙夢想家": -14.5,
+        "桃園台啤永豐雲豹": -3.5
+      }
+    },
+    {
+      "player": "恩多",
+      "values": {
+        "高雄全家海神": -2.5,
+        "新北國王": -2.0,
+        "新北中信特攻": -2.0,
+        "新竹御嵿攻城獅": -9.67,
+        "福爾摩沙夢想家": -20.0,
+        "桃園台啤永豐雲豹": -13.0
+      }
+    }
+  ],
+  "ppp_heatmap": [
+    {
+      "player": "錢肯尼",
+      "values": {
+        "高雄全家海神": 1.04,
+        "新北國王": 0.93,
+        "新北中信特攻": 0.87,
+        "新竹御嵿攻城獅": 0.99,
+        "福爾摩沙夢想家": 0.99,
+        "桃園台啤永豐雲豹": 0.81
+      }
+    },
+    {
+      "player": "黃聰翰",
+      "values": {
+        "高雄全家海神": 1.15,
+        "新北國王": 1.23,
+        "新北中信特攻": 0.66,
+        "新竹御嵿攻城獅": 1.75,
+        "福爾摩沙夢想家": 0.72,
+        "桃園台啤永豐雲豹": 1.0
+      }
+    },
+    {
+      "player": "丁聖儒",
+      "values": {
+        "高雄全家海神": 0.96,
+        "新北國王": 0.88,
+        "新北中信特攻": 1.1,
+        "新竹御嵿攻城獅": 1.0,
+        "福爾摩沙夢想家": 0.8,
+        "桃園台啤永豐雲豹": 0.95
+      }
+    },
+    {
+      "player": "雷蒙恩",
+      "values": {
+        "高雄全家海神": 0.91,
+        "新北國王": 0.89,
+        "新北中信特攻": 1.17,
+        "新竹御嵿攻城獅": 1.14,
+        "福爾摩沙夢想家": 0.67,
+        "桃園台啤永豐雲豹": 0.98
+      }
+    },
+    {
+      "player": "謝銘駿",
+      "values": {
+        "高雄全家海神": 0.37,
+        "新北國王": 0.6,
+        "新北中信特攻": 1.05,
+        "新竹御嵿攻城獅": 0.63,
+        "福爾摩沙夢想家": 0.94,
+        "桃園台啤永豐雲豹": 1.33
+      }
+    },
+    {
+      "player": "陳文宏",
+      "values": {
+        "高雄全家海神": 1.7,
+        "新北國王": 1.3,
+        "新北中信特攻": 1.0,
+        "新竹御嵿攻城獅": 1.06,
+        "福爾摩沙夢想家": 0.68,
+        "桃園台啤永豐雲豹": 1.03
+      }
+    },
+    {
+      "player": "魏芃禾",
+      "values": {
+        "高雄全家海神": 0.0,
+        "新北國王": 0.2,
+        "新北中信特攻": 0.1,
+        "新竹御嵿攻城獅": 0.67,
+        "福爾摩沙夢想家": 0.62,
+        "桃園台啤永豐雲豹": 0.91
+      }
+    },
+    {
+      "player": "威力斯",
+      "values": {
+        "高雄全家海神": 1.39,
+        "新北國王": 1.01,
+        "新北中信特攻": 1.19,
+        "新竹御嵿攻城獅": 1.16,
+        "福爾摩沙夢想家": 1.09,
+        "桃園台啤永豐雲豹": 1.12
+      }
+    },
+    {
+      "player": "張兆辰",
+      "values": {
+        "高雄全家海神": 1.07,
+        "新北國王": 1.48,
+        "新北中信特攻": 0.64,
+        "新竹御嵿攻城獅": 0.23,
+        "福爾摩沙夢想家": 0.72,
+        "桃園台啤永豐雲豹": 0.5
+      }
+    },
+    {
+      "player": "基德",
+      "values": {
+        "高雄全家海神": 1.05,
+        "新北國王": 1.09,
+        "新北中信特攻": 1.0,
+        "新竹御嵿攻城獅": 1.1,
+        "福爾摩沙夢想家": 1.0,
+        "桃園台啤永豐雲豹": 1.03
+      }
+    },
+    {
+      "player": "蘇奕晉",
+      "values": {
+        "高雄全家海神": 0.41,
+        "新北國王": 1.34,
+        "新北中信特攻": null,
+        "新竹御嵿攻城獅": 0.5,
+        "福爾摩沙夢想家": 0.66,
+        "桃園台啤永豐雲豹": 2.0
+      }
+    },
+    {
+      "player": "劉彥廷",
+      "values": {
+        "高雄全家海神": 0.82,
+        "新北國王": 1.25,
+        "新北中信特攻": 1.89,
+        "新竹御嵿攻城獅": 0.67,
+        "福爾摩沙夢想家": 1.2,
+        "桃園台啤永豐雲豹": 1.14
+      }
+    },
+    {
+      "player": "陳冠全",
+      "values": {
+        "高雄全家海神": 0.75,
+        "新北國王": 1.87,
+        "新北中信特攻": 0.0,
+        "新竹御嵿攻城獅": 0.64,
+        "福爾摩沙夢想家": 1.44,
+        "桃園台啤永豐雲豹": 0.17
+      }
+    },
+    {
+      "player": "恩多",
+      "values": {
+        "高雄全家海神": 1.22,
+        "新北國王": 1.44,
+        "新北中信特攻": 0.81,
+        "新竹御嵿攻城獅": 1.22,
+        "福爾摩沙夢想家": 1.26,
+        "桃園台啤永豐雲豹": 0.98
+      }
+    },
+    {
+      "player": "梅克",
+      "values": {
+        "高雄全家海神": 1.26,
+        "新北國王": 1.21,
+        "新北中信特攻": 1.07,
+        "新竹御嵿攻城獅": 1.31,
+        "福爾摩沙夢想家": 1.1,
+        "桃園台啤永豐雲豹": 0.85
+      }
+    },
+    {
+      "player": "江均",
+      "values": {
+        "高雄全家海神": 0.0,
+        "新北國王": 0.42,
+        "新北中信特攻": null,
+        "新竹御嵿攻城獅": null,
+        "福爾摩沙夢想家": 0.62,
+        "桃園台啤永豐雲豹": 0.0
+      }
+    },
+    {
+      "player": "洛夫頓",
+      "values": {
+        "高雄全家海神": 0.94,
+        "新北國王": 1.06,
+        "新北中信特攻": 0.75,
+        "新竹御嵿攻城獅": 0.85,
+        "福爾摩沙夢想家": 1.07,
+        "桃園台啤永豐雲豹": 1.06
+      }
+    },
+    {
+      "player": "齊曼加",
+      "values": {
+        "高雄全家海神": 1.16,
+        "新北國王": 3.39,
+        "新北中信特攻": 1.38,
+        "新竹御嵿攻城獅": null,
+        "福爾摩沙夢想家": 2.0,
+        "桃園台啤永豐雲豹": 1.71
+      }
+    },
+    {
+      "player": "史東",
+      "values": {
+        "高雄全家海神": 1.34,
+        "新北國王": null,
+        "新北中信特攻": 0.78,
+        "新竹御嵿攻城獅": 0.64,
+        "福爾摩沙夢想家": 1.27,
+        "桃園台啤永豐雲豹": 1.47
+      }
+    },
+    {
+      "player": "弗利沙",
+      "values": {
+        "高雄全家海神": null,
+        "新北國王": 0.55,
+        "新北中信特攻": null,
+        "新竹御嵿攻城獅": 0.82,
+        "福爾摩沙夢想家": null,
+        "桃園台啤永豐雲豹": null
+      }
+    },
+    {
+      "player": "孫思堯",
+      "values": {
+        "高雄全家海神": null,
+        "新北國王": null,
+        "新北中信特攻": 0.0,
+        "新竹御嵿攻城獅": null,
+        "福爾摩沙夢想家": 0.0,
+        "桃園台啤永豐雲豹": 0.0
+      }
+    }
+  ],
   "player_avg": {
     "洛夫頓": {
-      "score": 24.17,
-      "rebounds": 4.0,
-      "assists": 5.17,
-      "steals": 1.0,
-      "blocks": 0.0,
+      "score": 25.0,
+      "rebounds": 4.33,
+      "assists": 4.78,
+      "steals": 0.78,
+      "blocks": 0.33,
       "turnovers": 3.67,
-      "plus_minus": -3.33,
-      "efficiency": 18.0,
-      "tsp": 52.78,
-      "usg": 22.55,
-      "three_pointers_made": 3.17,
-      "three_pointers_attempted": 8.67,
-      "games": 6
+      "plus_minus": -5.33,
+      "efficiency": 19.11,
+      "tsp": 54.56,
+      "usg": 22.78,
+      "three_pointers_made": 3.44,
+      "three_pointers_attempted": 9.33,
+      "games": 9
     },
     "丁聖儒": {
-      "score": 13.4,
+      "score": 12.86,
       "rebounds": 3.28,
-      "assists": 7.72,
-      "steals": 1.48,
+      "assists": 7.66,
+      "steals": 1.34,
       "blocks": 0.0,
-      "turnovers": 3.08,
-      "plus_minus": -0.24,
-      "efficiency": 16.32,
-      "tsp": 55.96,
-      "usg": 14.14,
-      "three_pointers_made": 2.0,
-      "three_pointers_attempted": 5.12,
-      "games": 25
-    },
-    "魏芃禾": {
-      "score": 2.09,
-      "rebounds": 0.55,
-      "assists": 1.05,
-      "steals": 0.36,
-      "blocks": 0.05,
-      "turnovers": 1.18,
-      "plus_minus": -3.73,
-      "efficiency": 0.55,
-      "tsp": 22.46,
-      "usg": 3.29,
-      "three_pointers_made": 0.32,
-      "three_pointers_attempted": 1.82,
-      "games": 22
-    },
-    "劉彥廷": {
-      "score": 3.24,
-      "rebounds": 3.0,
-      "assists": 0.53,
-      "steals": 0.59,
-      "blocks": 0.0,
-      "turnovers": 0.65,
-      "plus_minus": -4.53,
-      "efficiency": 4.0,
-      "tsp": 44.31,
-      "usg": 3.11,
-      "three_pointers_made": 0.18,
-      "three_pointers_attempted": 0.88,
-      "games": 17
-    },
-    "陳文宏": {
-      "score": 2.96,
-      "rebounds": 1.04,
-      "assists": 0.37,
-      "steals": 0.26,
-      "blocks": 0.04,
-      "turnovers": 0.33,
-      "plus_minus": -3.81,
-      "efficiency": 2.89,
-      "tsp": 55.62,
-      "usg": 2.4,
-      "three_pointers_made": 0.63,
-      "three_pointers_attempted": 1.85,
-      "games": 27
-    },
-    "張兆辰": {
-      "score": 3.89,
-      "rebounds": 1.79,
-      "assists": 0.68,
-      "steals": 0.47,
-      "blocks": 0.11,
-      "turnovers": 0.58,
-      "plus_minus": -7.16,
-      "efficiency": 2.89,
-      "tsp": 32.79,
-      "usg": 3.63,
-      "three_pointers_made": 0.79,
-      "three_pointers_attempted": 2.84,
-      "games": 19
-    },
-    "基德": {
-      "score": 20.4,
-      "rebounds": 7.0,
-      "assists": 2.33,
-      "steals": 1.13,
-      "blocks": 0.27,
-      "turnovers": 2.0,
-      "plus_minus": 2.33,
-      "efficiency": 18.33,
-      "tsp": 54.46,
-      "usg": 17.01,
-      "three_pointers_made": 2.87,
-      "three_pointers_attempted": 8.13,
-      "games": 15
-    },
-    "黃聰翰": {
-      "score": 9.58,
-      "rebounds": 2.38,
-      "assists": 0.54,
-      "steals": 0.96,
-      "blocks": 0.15,
-      "turnovers": 0.62,
-      "plus_minus": -2.62,
-      "efficiency": 8.19,
-      "tsp": 57.44,
-      "usg": 7.29,
-      "three_pointers_made": 2.65,
-      "three_pointers_attempted": 6.92,
-      "games": 26
-    },
-    "謝銘駿": {
-      "score": 5.0,
-      "rebounds": 2.11,
-      "assists": 1.11,
-      "steals": 0.39,
-      "blocks": 0.07,
-      "turnovers": 1.18,
-      "plus_minus": -4.14,
-      "efficiency": 4.25,
-      "tsp": 35.51,
-      "usg": 5.52,
-      "three_pointers_made": 0.5,
-      "three_pointers_attempted": 1.79,
-      "games": 28
-    },
-    "孫思堯": {
-      "score": 0.6,
-      "rebounds": 2.4,
-      "assists": 0.0,
-      "steals": 0.2,
-      "blocks": 0.2,
-      "turnovers": 1.2,
-      "plus_minus": -2.4,
-      "efficiency": 1.2,
-      "tsp": 13.48,
-      "usg": 1.2,
-      "three_pointers_made": 0.0,
-      "three_pointers_attempted": 0.2,
-      "games": 5
-    },
-    "錢肯尼": {
-      "score": 9.03,
-      "rebounds": 2.93,
-      "assists": 1.72,
-      "steals": 0.72,
-      "blocks": 0.21,
-      "turnovers": 1.9,
-      "plus_minus": -4.07,
-      "efficiency": 8.28,
-      "tsp": 52.0,
-      "usg": 9.16,
-      "three_pointers_made": 0.79,
-      "three_pointers_attempted": 2.38,
+      "turnovers": 2.83,
+      "plus_minus": -2.03,
+      "efficiency": 15.66,
+      "tsp": 54.28,
+      "usg": 13.85,
+      "three_pointers_made": 1.93,
+      "three_pointers_attempted": 5.24,
       "games": 29
     },
-    "齊曼加": {
-      "score": 8.29,
-      "rebounds": 10.86,
-      "assists": 0.86,
-      "steals": 1.43,
-      "blocks": 1.0,
-      "turnovers": 3.14,
-      "plus_minus": -0.43,
-      "efficiency": 14.57,
-      "tsp": 58.27,
-      "usg": 9.5,
+    "魏芃禾": {
+      "score": 1.58,
+      "rebounds": 0.71,
+      "assists": 1.04,
+      "steals": 0.46,
+      "blocks": 0.0,
+      "turnovers": 0.75,
+      "plus_minus": -2.83,
+      "efficiency": 1.12,
+      "tsp": 19.33,
+      "usg": 2.4,
+      "three_pointers_made": 0.21,
+      "three_pointers_attempted": 1.38,
+      "games": 24
+    },
+    "劉彥廷": {
+      "score": 3.22,
+      "rebounds": 2.67,
+      "assists": 0.39,
+      "steals": 0.39,
+      "blocks": 0.06,
+      "turnovers": 0.44,
+      "plus_minus": -3.33,
+      "efficiency": 3.89,
+      "tsp": 42.04,
+      "usg": 2.63,
+      "three_pointers_made": 0.22,
+      "three_pointers_attempted": 0.78,
+      "games": 18
+    },
+    "陳文宏": {
+      "score": 2.5,
+      "rebounds": 0.93,
+      "assists": 0.37,
+      "steals": 0.27,
+      "blocks": 0.03,
+      "turnovers": 0.33,
+      "plus_minus": -4.83,
+      "efficiency": 2.4,
+      "tsp": 46.17,
+      "usg": 2.08,
+      "three_pointers_made": 0.53,
+      "three_pointers_attempted": 1.7,
+      "games": 30
+    },
+    "張兆辰": {
+      "score": 3.9,
+      "rebounds": 1.52,
+      "assists": 0.71,
+      "steals": 0.62,
+      "blocks": 0.1,
+      "turnovers": 0.67,
+      "plus_minus": -4.67,
+      "efficiency": 3.19,
+      "tsp": 36.91,
+      "usg": 3.18,
+      "three_pointers_made": 0.86,
+      "three_pointers_attempted": 2.67,
+      "games": 21
+    },
+    "基德": {
+      "score": 21.29,
+      "rebounds": 7.41,
+      "assists": 2.53,
+      "steals": 1.53,
+      "blocks": 0.47,
+      "turnovers": 2.41,
+      "plus_minus": 0.29,
+      "efficiency": 19.06,
+      "tsp": 53.76,
+      "usg": 18.54,
+      "three_pointers_made": 3.0,
+      "three_pointers_attempted": 8.88,
+      "games": 17
+    },
+    "黃聰翰": {
+      "score": 8.23,
+      "rebounds": 2.06,
+      "assists": 0.65,
+      "steals": 0.84,
+      "blocks": 0.19,
+      "turnovers": 0.61,
+      "plus_minus": -2.13,
+      "efficiency": 7.0,
+      "tsp": 51.28,
+      "usg": 6.59,
+      "three_pointers_made": 2.29,
+      "three_pointers_attempted": 6.0,
+      "games": 31
+    },
+    "謝銘駿": {
+      "score": 4.47,
+      "rebounds": 1.97,
+      "assists": 0.97,
+      "steals": 0.44,
+      "blocks": 0.03,
+      "turnovers": 0.97,
+      "plus_minus": -2.88,
+      "efficiency": 4.0,
+      "tsp": 34.94,
+      "usg": 4.76,
+      "three_pointers_made": 0.47,
+      "three_pointers_attempted": 1.53,
+      "games": 32
+    },
+    "孫思堯": {
+      "score": 0.0,
+      "rebounds": 0.33,
+      "assists": 0.0,
+      "steals": 0.17,
+      "blocks": 0.0,
+      "turnovers": 0.67,
+      "plus_minus": -3.67,
+      "efficiency": -0.33,
+      "tsp": 0.0,
+      "usg": 0.41,
       "three_pointers_made": 0.0,
-      "three_pointers_attempted": 0.0,
-      "games": 7
+      "three_pointers_attempted": 0.17,
+      "games": 6
+    },
+    "錢肯尼": {
+      "score": 9.15,
+      "rebounds": 2.88,
+      "assists": 1.91,
+      "steals": 0.82,
+      "blocks": 0.24,
+      "turnovers": 1.82,
+      "plus_minus": -3.21,
+      "efficiency": 8.5,
+      "tsp": 51.51,
+      "usg": 9.31,
+      "three_pointers_made": 0.85,
+      "three_pointers_attempted": 2.65,
+      "games": 34
+    },
+    "齊曼加": {
+      "score": 11.12,
+      "rebounds": 12.75,
+      "assists": 0.88,
+      "steals": 1.75,
+      "blocks": 1.25,
+      "turnovers": 3.5,
+      "plus_minus": -2.75,
+      "efficiency": 19.0,
+      "tsp": 61.41,
+      "usg": 11.2,
+      "three_pointers_made": 0.0,
+      "three_pointers_attempted": 0.12,
+      "games": 8
     },
     "雷蒙恩": {
-      "score": 10.61,
-      "rebounds": 5.04,
-      "assists": 2.3,
-      "steals": 1.09,
-      "blocks": 0.26,
-      "turnovers": 1.78,
-      "plus_minus": -4.17,
-      "efficiency": 10.74,
-      "tsp": 47.62,
-      "usg": 11.8,
-      "three_pointers_made": 1.0,
-      "three_pointers_attempted": 3.35,
-      "games": 23
+      "score": 10.86,
+      "rebounds": 5.31,
+      "assists": 2.59,
+      "steals": 1.17,
+      "blocks": 0.28,
+      "turnovers": 1.83,
+      "plus_minus": -4.9,
+      "efficiency": 11.59,
+      "tsp": 47.31,
+      "usg": 12.03,
+      "three_pointers_made": 0.93,
+      "three_pointers_attempted": 3.52,
+      "games": 29
     },
     "陳冠全": {
-      "score": 2.25,
-      "rebounds": 1.6,
+      "score": 2.1,
+      "rebounds": 1.15,
       "assists": 0.45,
-      "steals": 0.4,
-      "blocks": 0.15,
-      "turnovers": 0.85,
-      "plus_minus": -2.15,
-      "efficiency": 2.45,
-      "tsp": 31.76,
-      "usg": 2.67,
+      "steals": 0.35,
+      "blocks": 0.2,
+      "turnovers": 0.7,
+      "plus_minus": -2.35,
+      "efficiency": 2.25,
+      "tsp": 30.12,
+      "usg": 1.98,
       "three_pointers_made": 0.15,
-      "three_pointers_attempted": 0.55,
+      "three_pointers_attempted": 0.5,
       "games": 20
     },
     "江均": {
-      "score": 1.47,
-      "rebounds": 1.13,
-      "assists": 0.4,
-      "steals": 0.4,
-      "blocks": 0.07,
-      "turnovers": 0.53,
-      "plus_minus": -3.33,
-      "efficiency": 0.67,
-      "tsp": 8.81,
-      "usg": 1.5,
-      "three_pointers_made": 0.2,
-      "three_pointers_attempted": 1.0,
-      "games": 15
-    },
-    "威力斯": {
-      "score": 23.17,
-      "rebounds": 13.67,
-      "assists": 1.67,
-      "steals": 1.5,
-      "blocks": 0.33,
-      "turnovers": 2.42,
-      "plus_minus": -1.25,
-      "efficiency": 27.33,
-      "tsp": 55.45,
-      "usg": 20.75,
-      "three_pointers_made": 1.5,
-      "three_pointers_attempted": 3.67,
-      "games": 12
-    },
-    "蘇奕晉": {
-      "score": 2.06,
-      "rebounds": 1.18,
-      "assists": 0.88,
-      "steals": 0.47,
-      "blocks": 0.18,
-      "turnovers": 0.71,
-      "plus_minus": 0.53,
-      "efficiency": 2.88,
-      "tsp": 32.83,
-      "usg": 1.63,
-      "three_pointers_made": 0.35,
-      "three_pointers_attempted": 0.94,
+      "score": 0.94,
+      "rebounds": 0.71,
+      "assists": 0.29,
+      "steals": 0.29,
+      "blocks": 0.06,
+      "turnovers": 0.41,
+      "plus_minus": -2.71,
+      "efficiency": 0.47,
+      "tsp": 10.08,
+      "usg": 0.98,
+      "three_pointers_made": 0.18,
+      "three_pointers_attempted": 0.71,
       "games": 17
     },
-    "史東": {
-      "score": 13.29,
-      "rebounds": 5.86,
-      "assists": 0.57,
-      "steals": 0.86,
-      "blocks": 0.57,
-      "turnovers": 1.43,
-      "plus_minus": -9.29,
-      "efficiency": 11.57,
-      "tsp": 47.53,
-      "usg": 13.81,
-      "three_pointers_made": 1.71,
-      "three_pointers_attempted": 4.14,
-      "games": 7
+    "威力斯": {
+      "score": 23.06,
+      "rebounds": 12.56,
+      "assists": 1.89,
+      "steals": 1.33,
+      "blocks": 0.39,
+      "turnovers": 2.39,
+      "plus_minus": -2.06,
+      "efficiency": 26.11,
+      "tsp": 55.31,
+      "usg": 20.95,
+      "three_pointers_made": 1.44,
+      "three_pointers_attempted": 4.06,
+      "games": 18
     },
-    "梅克": {
-      "score": 25.5,
-      "rebounds": 13.88,
-      "assists": 3.12,
-      "steals": 1.12,
-      "blocks": 0.75,
-      "turnovers": 4.25,
-      "plus_minus": -1.88,
-      "efficiency": 27.0,
-      "tsp": 53.51,
-      "usg": 21.73,
-      "three_pointers_made": 2.5,
-      "three_pointers_attempted": 8.62,
+    "蘇奕晉": {
+      "score": 1.95,
+      "rebounds": 0.95,
+      "assists": 0.84,
+      "steals": 0.47,
+      "blocks": 0.16,
+      "turnovers": 0.63,
+      "plus_minus": 1.16,
+      "efficiency": 2.74,
+      "tsp": 34.64,
+      "usg": 1.41,
+      "three_pointers_made": 0.32,
+      "three_pointers_attempted": 0.79,
+      "games": 19
+    },
+    "史東": {
+      "score": 15.12,
+      "rebounds": 6.62,
+      "assists": 0.62,
+      "steals": 0.75,
+      "blocks": 0.62,
+      "turnovers": 1.38,
+      "plus_minus": -8.25,
+      "efficiency": 14.5,
+      "tsp": 51.51,
+      "usg": 14.35,
+      "three_pointers_made": 1.75,
+      "three_pointers_attempted": 4.12,
       "games": 8
     },
-    "弗利沙": {
-      "score": 6.4,
-      "rebounds": 2.4,
-      "assists": 3.2,
-      "steals": 1.2,
-      "blocks": 0.2,
-      "turnovers": 1.2,
-      "plus_minus": -8.8,
-      "efficiency": 5.6,
-      "tsp": 37.58,
-      "usg": 6.29,
-      "three_pointers_made": 0.4,
-      "three_pointers_attempted": 2.4,
-      "games": 5
-    },
-    "恩多": {
-      "score": 17.55,
-      "rebounds": 14.73,
-      "assists": 1.82,
+    "梅克": {
+      "score": 26.18,
+      "rebounds": 13.0,
+      "assists": 3.36,
       "steals": 1.0,
       "blocks": 0.64,
-      "turnovers": 2.09,
-      "plus_minus": -9.36,
-      "efficiency": 24.91,
-      "tsp": 55.25,
-      "usg": 17.22,
-      "three_pointers_made": 0.45,
-      "three_pointers_attempted": 1.73,
+      "turnovers": 3.73,
+      "plus_minus": -4.82,
+      "efficiency": 27.82,
+      "tsp": 55.39,
+      "usg": 22.25,
+      "three_pointers_made": 2.55,
+      "three_pointers_attempted": 8.45,
       "games": 11
     },
-    "張耕淯": {
-      "score": 0.0,
-      "rebounds": 1.33,
-      "assists": 0.0,
-      "steals": 0.67,
-      "blocks": 0.0,
-      "turnovers": 0.67,
-      "plus_minus": -4.0,
-      "efficiency": -0.67,
-      "tsp": 0.0,
-      "usg": 1.37,
-      "three_pointers_made": 0.0,
-      "three_pointers_attempted": 1.33,
-      "games": 3
+    "弗利沙": {
+      "score": 7.0,
+      "rebounds": 2.0,
+      "assists": 3.0,
+      "steals": 1.25,
+      "blocks": 0.25,
+      "turnovers": 1.25,
+      "plus_minus": -8.0,
+      "efficiency": 5.5,
+      "tsp": 40.73,
+      "usg": 5.87,
+      "three_pointers_made": 0.5,
+      "three_pointers_attempted": 2.5,
+      "games": 4
+    },
+    "恩多": {
+      "score": 14.62,
+      "rebounds": 12.08,
+      "assists": 1.54,
+      "steals": 0.69,
+      "blocks": 0.54,
+      "turnovers": 1.85,
+      "plus_minus": -8.31,
+      "efficiency": 20.23,
+      "tsp": 59.45,
+      "usg": 14.48,
+      "three_pointers_made": 0.31,
+      "three_pointers_attempted": 1.46,
+      "games": 13
     }
   },
-  "simulation": {},
-  "roc": {},
-  "mann_whitney": [],
-  "scenario_chart": [],
-  "last_game_hint": {},
+  "simulation": {
+    "prob_play_in": 0.0,
+    "prob_playoff": 0.0,
+    "prob_semif": 0.0,
+    "prob_final": 0.0,
+    "prob_champ": 0.0,
+    "n_simulations": 300000,
+    "rules": {
+      "regular_season": "36場（18主18客），前3直接進季後賽",
+      "play_in": "第4 vs 第5，Bo3，第4先獲1勝",
+      "semifinal": "Bo5（5戰3勝），主場分配 2-2-1",
+      "championship": "Bo7（7戰4勝），主場分配 2-2-1-1-1"
+    }
+  },
+  "roc": {
+    "三分命中率": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.2727
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.24,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.28,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.32,
+          "tpr": 0.5455
+        },
+        {
+          "fpr": 0.36,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.44,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.48,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.56,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.6,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.64,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.68,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.72,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.76,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.8,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.84,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.88,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.92,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.96,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.7455,
+      "best": {
+        "fpr": 0.08,
+        "tpr": 0.4545,
+        "threshold": 41.699000000000005
+      },
+      "threshold": 41.699000000000005
+    },
+    "整體命中率": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.5455
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.2,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.24,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.28,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.32,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.36,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.4,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.44,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.48,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.52,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.6,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.64,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.68,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.72,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.76,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.8,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.84,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.88,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.92,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.96,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.7764,
+      "best": {
+        "fpr": 0.24,
+        "tpr": 0.7273,
+        "threshold": 43.599000000000004
+      },
+      "threshold": 43.599000000000004
+    },
+    "阻攻": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.0909
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.2727
+        },
+        {
+          "fpr": 0.4,
+          "tpr": 0.2727
+        },
+        {
+          "fpr": 0.68,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.88,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.5091,
+      "best": {
+        "fpr": 0.88,
+        "tpr": 1.0,
+        "threshold": 0.999
+      },
+      "threshold": 0.999
+    },
+    "助攻": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0909
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.1818
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.1818
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.2,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.24,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.28,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.32,
+          "tpr": 0.5455
+        },
+        {
+          "fpr": 0.36,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.4,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.52,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.64,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.76,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.84,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.88,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.96,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.6673,
+      "best": {
+        "fpr": 0.4,
+        "tpr": 0.8182,
+        "threshold": 18.999
+      },
+      "threshold": 18.999
+    },
+    "失誤數": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.0909
+        },
+        {
+          "fpr": 0.2,
+          "tpr": 0.2727
+        },
+        {
+          "fpr": 0.28,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.36,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.44,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.48,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.6,
+          "tpr": 0.7273
+        },
+        {
+          "fpr": 0.64,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.68,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.72,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.88,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 0.96,
+          "tpr": 0.9091
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.5855,
+      "best": {
+        "fpr": 0.68,
+        "tpr": 0.9091,
+        "threshold": 19.001
+      },
+      "threshold": 19.001
+    },
+    "三分命中數": {
+      "curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0909
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.0909
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.3636
+        },
+        {
+          "fpr": 0.24,
+          "tpr": 0.4545
+        },
+        {
+          "fpr": 0.28,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.56,
+          "tpr": 0.6364
+        },
+        {
+          "fpr": 0.6,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.84,
+          "tpr": 0.8182
+        },
+        {
+          "fpr": 0.92,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 0.96,
+          "tpr": 1.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "auc": 0.6364,
+      "best": {
+        "fpr": 0.28,
+        "tpr": 0.6364,
+        "threshold": 11.999
+      },
+      "threshold": 11.999
+    }
+  },
+  "mann_whitney": [
+    {
+      "stat": "三分命中率",
+      "p_value": 0.0318,
+      "effect_r": -0.458,
+      "significant": true,
+      "wins_median": 34.3,
+      "losses_median": 30.0,
+      "wins_mean": 37.2,
+      "losses_mean": 31.4,
+      "wins": [
+        45.5,
+        33.3,
+        27.0,
+        29.4,
+        32.0,
+        33.3,
+        42.4,
+        44.2,
+        46.2,
+        34.3,
+        41.7
+      ],
+      "losses": [
+        27.5,
+        32.4,
+        35.6,
+        53.1,
+        25.8,
+        35.3,
+        44.0,
+        25.0,
+        28.2,
+        36.1,
+        24.2,
+        30.0,
+        32.0,
+        30.0,
+        32.4,
+        25.7,
+        23.7,
+        36.1,
+        14.7,
+        26.9,
+        40.7,
+        28.6,
+        33.3,
+        37.8,
+        26.5
+      ]
+    },
+    {
+      "stat": "三分命中數",
+      "p_value": 0.2394,
+      "effect_r": -0.251,
+      "significant": false,
+      "wins_median": 12.0,
+      "losses_median": 11.0,
+      "wins_mean": 12.4,
+      "losses_mean": 10.9,
+      "wins": [
+        15.0,
+        13.0,
+        10.0,
+        10.0,
+        8.0,
+        8.0,
+        14.0,
+        19.0,
+        12.0,
+        12.0,
+        15.0
+      ],
+      "losses": [
+        11.0,
+        11.0,
+        16.0,
+        17.0,
+        8.0,
+        12.0,
+        11.0,
+        9.0,
+        11.0,
+        13.0,
+        8.0,
+        9.0,
+        16.0,
+        9.0,
+        11.0,
+        9.0,
+        9.0,
+        13.0,
+        5.0,
+        7.0,
+        11.0,
+        10.0,
+        11.0,
+        17.0,
+        9.0
+      ]
+    },
+    {
+      "stat": "整體命中率",
+      "p_value": 0.0128,
+      "effect_r": -0.531,
+      "significant": true,
+      "wins_median": 47.3,
+      "losses_median": 42.0,
+      "wins_mean": 46.5,
+      "losses_mean": 40.5,
+      "wins": [
+        51.7,
+        44.3,
+        38.5,
+        39.5,
+        47.3,
+        40.5,
+        54.5,
+        49.4,
+        50.6,
+        43.6,
+        52.0
+      ],
+      "losses": [
+        29.5,
+        42.9,
+        42.0,
+        50.0,
+        43.4,
+        42.4,
+        44.0,
+        32.6,
+        38.2,
+        41.3,
+        43.8,
+        42.6,
+        32.1,
+        41.3,
+        43.1,
+        37.1,
+        33.3,
+        40.7,
+        48.2,
+        45.6,
+        42.3,
+        30.6,
+        40.6,
+        47.3,
+        37.3
+      ]
+    },
+    {
+      "stat": "失誤數",
+      "p_value": 0.4381,
+      "effect_r": 0.167,
+      "significant": false,
+      "wins_median": 15.0,
+      "losses_median": 17.0,
+      "wins_mean": 16.0,
+      "losses_mean": 16.7,
+      "wins": [
+        19.0,
+        13.0,
+        12.0,
+        15.0,
+        30.0,
+        14.0,
+        17.0,
+        12.0,
+        15.0,
+        18.0,
+        11.0
+      ],
+      "losses": [
+        27.0,
+        17.0,
+        15.0,
+        16.0,
+        21.0,
+        14.0,
+        19.0,
+        14.0,
+        21.0,
+        11.0,
+        21.0,
+        12.0,
+        8.0,
+        15.0,
+        22.0,
+        21.0,
+        17.0,
+        11.0,
+        12.0,
+        13.0,
+        22.0,
+        17.0,
+        13.0,
+        18.0,
+        20.0
+      ]
+    },
+    {
+      "stat": "助攻",
+      "p_value": 0.1173,
+      "effect_r": -0.335,
+      "significant": false,
+      "wins_median": 21.0,
+      "losses_median": 18.0,
+      "wins_mean": 21.5,
+      "losses_mean": 18.6,
+      "wins": [
+        25.0,
+        20.0,
+        13.0,
+        15.0,
+        21.0,
+        20.0,
+        22.0,
+        27.0,
+        25.0,
+        19.0,
+        29.0
+      ],
+      "losses": [
+        9.0,
+        16.0,
+        27.0,
+        13.0,
+        22.0,
+        24.0,
+        19.0,
+        16.0,
+        13.0,
+        17.0,
+        17.0,
+        15.0,
+        16.0,
+        18.0,
+        17.0,
+        25.0,
+        18.0,
+        23.0,
+        21.0,
+        18.0,
+        26.0,
+        14.0,
+        27.0,
+        20.0,
+        15.0
+      ]
+    },
+    {
+      "stat": "籃板",
+      "p_value": 0.0953,
+      "effect_r": -0.356,
+      "significant": false,
+      "wins_median": 50.0,
+      "losses_median": 45.0,
+      "wins_mean": 49.8,
+      "losses_mean": 44.9,
+      "wins": [
+        44.0,
+        50.0,
+        62.0,
+        54.0,
+        52.0,
+        56.0,
+        43.0,
+        43.0,
+        47.0,
+        53.0,
+        44.0
+      ],
+      "losses": [
+        57.0,
+        47.0,
+        36.0,
+        44.0,
+        38.0,
+        42.0,
+        54.0,
+        37.0,
+        35.0,
+        39.0,
+        48.0,
+        36.0,
+        49.0,
+        35.0,
+        49.0,
+        59.0,
+        57.0,
+        45.0,
+        51.0,
+        45.0,
+        52.0,
+        43.0,
+        32.0,
+        43.0,
+        49.0
+      ]
+    },
+    {
+      "stat": "抄截",
+      "p_value": 0.7157,
+      "effect_r": -0.08,
+      "significant": false,
+      "wins_median": 9.0,
+      "losses_median": 8.0,
+      "wins_mean": 8.8,
+      "losses_mean": 8.3,
+      "wins": [
+        10.0,
+        15.0,
+        10.0,
+        11.0,
+        11.0,
+        7.0,
+        7.0,
+        5.0,
+        9.0,
+        8.0,
+        4.0
+      ],
+      "losses": [
+        12.0,
+        10.0,
+        14.0,
+        11.0,
+        13.0,
+        10.0,
+        5.0,
+        10.0,
+        14.0,
+        5.0,
+        6.0,
+        11.0,
+        4.0,
+        9.0,
+        8.0,
+        10.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        5.0,
+        5.0,
+        11.0,
+        5.0,
+        8.0
+      ]
+    },
+    {
+      "stat": "阻攻",
+      "p_value": 0.9437,
+      "effect_r": -0.018,
+      "significant": false,
+      "wins_median": 2.0,
+      "losses_median": 2.0,
+      "wins_mean": 2.4,
+      "losses_mean": 2.3,
+      "wins": [
+        5.0,
+        1.0,
+        4.0,
+        2.0,
+        2.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        2.0,
+        1.0
+      ],
+      "losses": [
+        1.0,
+        5.0,
+        5.0,
+        0.0,
+        3.0,
+        2.0,
+        6.0,
+        3.0,
+        1.0,
+        1.0,
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        2.0,
+        3.0,
+        2.0,
+        4.0,
+        3.0,
+        2.0,
+        1.0,
+        0.0,
+        0.0,
+        2.0
+      ]
+    },
+    {
+      "stat": "禁區得分",
+      "p_value": 0.0019,
+      "effect_r": -0.658,
+      "significant": true,
+      "wins_median": 44.0,
+      "losses_median": 32.0,
+      "wins_mean": 43.5,
+      "losses_mean": 33.1,
+      "wins": [
+        50.0,
+        40.0,
+        50.0,
+        44.0,
+        54.0,
+        40.0,
+        40.0,
+        32.0,
+        44.0,
+        38.0,
+        46.0
+      ],
+      "losses": [
+        18.0,
+        50.0,
+        32.0,
+        48.0,
+        46.0,
+        34.0,
+        38.0,
+        30.0,
+        26.0,
+        24.0,
+        40.0,
+        32.0,
+        14.0,
+        28.0,
+        30.0,
+        34.0,
+        28.0,
+        30.0,
+        68.0,
+        34.0,
+        38.0,
+        18.0,
+        30.0,
+        24.0,
+        34.0
+      ]
+    },
+    {
+      "stat": "快攻得分",
+      "p_value": 0.9178,
+      "effect_r": 0.025,
+      "significant": false,
+      "wins_median": 9.0,
+      "losses_median": 9.0,
+      "wins_mean": 8.7,
+      "losses_mean": 9.5,
+      "wins": [
+        4.0,
+        18.0,
+        8.0,
+        9.0,
+        4.0,
+        11.0,
+        2.0,
+        11.0,
+        15.0,
+        2.0,
+        12.0
+      ],
+      "losses": [
+        3.0,
+        4.0,
+        22.0,
+        10.0,
+        15.0,
+        16.0,
+        26.0,
+        10.0,
+        2.0,
+        0.0,
+        8.0,
+        6.0,
+        3.0,
+        13.0,
+        6.0,
+        17.0,
+        8.0,
+        0.0,
+        12.0,
+        11.0,
+        12.0,
+        9.0,
+        7.0,
+        7.0,
+        10.0
+      ]
+    }
+  ],
+  "scenario_chart": [
+    {
+      "label": "Best",
+      "n": 9,
+      "win_rate": 0.556,
+      "lion_mean": 106.2,
+      "lion_std": 10.8,
+      "opp_mean": 109.0,
+      "opp_std": 11.1,
+      "stats": {
+        "3P%": 42.0,
+        "TO": 14.3,
+        "AST": 24.2,
+        "FG%": 47.9
+      }
+    },
+    {
+      "label": "Ideal",
+      "n": 9,
+      "win_rate": 0.333,
+      "lion_mean": 99.4,
+      "lion_std": 5.4,
+      "opp_mean": 103.1,
+      "opp_std": 10.0,
+      "stats": {
+        "3P%": 35.7,
+        "TO": 15.8,
+        "AST": 20.3,
+        "FG%": 43.5
+      }
+    },
+    {
+      "label": "Fair",
+      "n": 9,
+      "win_rate": 0.111,
+      "lion_mean": 96.9,
+      "lion_std": 5.5,
+      "opp_mean": 106.1,
+      "opp_std": 8.8,
+      "stats": {
+        "3P%": 28.0,
+        "TO": 15.9,
+        "AST": 18.3,
+        "FG%": 41.1
+      }
+    },
+    {
+      "label": "Low",
+      "n": 9,
+      "win_rate": 0.222,
+      "lion_mean": 82.2,
+      "lion_std": 10.4,
+      "opp_mean": 96.2,
+      "opp_std": 6.2,
+      "stats": {
+        "3P%": 27.0,
+        "TO": 19.9,
+        "AST": 15.1,
+        "FG%": 36.8
+      }
+    }
+  ],
+  "last_game_hint": {
+    "date": "20260502",
+    "opp": "新竹御嵿攻城獅",
+    "is_home": false,
+    "won": false,
+    "team_score": 73,
+    "opp_score": 96,
+    "scenario": "Low",
+    "team_pred": 82.2,
+    "opp_pred": 96.2,
+    "team_diff": -9.2,
+    "opp_diff": -0.2,
+    "actual_stats": {
+      "3P%": 26.5,
+      "TO": 20,
+      "AST": 15,
+      "FG%": 37.3
+    },
+    "pred_stats": {
+      "3P%": 27.0,
+      "TO": 19.9,
+      "AST": 15.1,
+      "FG%": 36.8
+    }
+  },
   "playoff_series": {}
 }

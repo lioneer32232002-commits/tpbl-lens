@@ -70,7 +70,7 @@ function renderLeagueRtg(rtgData) {
     data: {
       labels: rtgData.map(t => short(t.name)),
       datasets: [
-        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: 'rgba(0,212,255,0.75)' },
+        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: 'rgba(0,229,255,0.75)' },
         { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: 'rgba(240,98,146,0.75)' },
       ]
     },
@@ -184,7 +184,7 @@ function renderMatchupMatrix(matrix, standings) {
 }
 
 const TEAM_COLORS = [
-  'rgba(0,212,255,0.9)',   'rgba(240,98,146,0.9)',
+  'rgba(0,229,255,0.9)',   'rgba(240,98,146,0.9)',
   'rgba(100,220,120,0.9)', 'rgba(255,215,0,0.9)',
   'rgba(200,150,255,0.9)', 'rgba(255,180,100,0.9)',
   'rgba(100,200,255,0.9)',

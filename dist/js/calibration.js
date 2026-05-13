@@ -8,6 +8,7 @@ fetch(`/data/calibration_${team}_2526.json`, { cache: 'no-store' })
   .then(data => {
     renderBrierCard(data.summary);
     renderBrierTrend(data.predictions);
+    renderEloTrend(data.predictions);
     renderCalibrationBins(data.predictions);
     renderCalibrationScatter(data.predictions);
     renderPredictionTable(data.predictions);
@@ -55,8 +56,8 @@ function renderBrierTrend(predictions) {
           {
             label: '累積 Brier Score',
             data: points,
-            borderColor: '#00d4ff',
-            backgroundColor: 'rgba(0,212,255,.08)',
+            borderColor: '#00e5ff',
+            backgroundColor: 'rgba(0,229,255,.08)',
             fill: true,
             pointRadius: 0,
             borderWidth: 2,
@@ -79,6 +80,53 @@ function renderBrierTrend(predictions) {
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { min: 0, max: 0.35, title: { display: true, text: 'Brier Score（累積）' } },
+        },
+      },
+    });
+  });
+}
+
+function renderEloTrend(predictions) {
+  const canvas = document.getElementById('chart-elo-trend');
+  if (!canvas || !predictions.length) return;
+
+  const points = predictions.map((p, i) => ({
+    x: i + 1,
+    y: p.elo_after ?? p.elo_before,
+  }));
+
+  deferChart(canvas, () => {
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: 'Elo 評分',
+            data: points,
+            borderColor: '#00d4ff',
+            backgroundColor: 'rgba(0,212,255,.08)',
+            fill: true,
+            pointRadius: 3,
+            borderWidth: 2,
+            tension: 0.3,
+          },
+          {
+            label: '聯盟基準 (1500)',
+            data: points.map(p => ({ x: p.x, y: 1500 })),
+            borderColor: 'rgba(255,255,255,.2)',
+            backgroundColor: 'transparent',
+            pointRadius: 0,
+            borderWidth: 1,
+            borderDash: [6, 4],
+          },
+        ],
+      },
+      options: {
+        parsing: false,
+        plugins: { legend: { display: true } },
+        scales: {
+          x: { type: 'linear', title: { display: true, text: '場次' } },
+          y: { title: { display: true, text: 'Elo 評分' } },
         },
       },
     });
@@ -119,8 +167,8 @@ function renderCalibrationBins(predictions) {
           {
             label: '實際勝率 (%)',
             data: bins.map(b => b.actualRate),
-            backgroundColor: 'rgba(0,212,255,.65)',
-            borderColor: '#00d4ff',
+            backgroundColor: 'rgba(0,229,255,.65)',
+            borderColor: '#00e5ff',
             borderWidth: 1,
           },
           {
@@ -178,7 +226,7 @@ function renderCalibrationScatter(predictions) {
           {
             label: '實際結果（1=勝, 0=敗）',
             data: scatterData,
-            backgroundColor: 'rgba(0,212,255,.5)',
+            backgroundColor: 'rgba(0,229,255,.5)',
             pointRadius: 5,
           },
           {
@@ -251,6 +299,7 @@ function renderPredictionTable(predictions) {
       <td>${pct}${lowNote}</td>
       <td>${result}</td>
       <td>${score}</td>
+      <td style="color:${(p.net_rtg ?? 0) >= 0 ? 'var(--accent)' : '#f06292'}">${p.net_rtg != null ? (p.net_rtg > 0 ? '+' : '') + p.net_rtg.toFixed(1) : '—'}</td>
     </tr>`;
   }
   tbody.innerHTML = html;
