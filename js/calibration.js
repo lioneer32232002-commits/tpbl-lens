@@ -8,7 +8,7 @@ fetch(`/data/calibration_${team}_2526.json`, { cache: 'no-store' })
   .then(data => {
     renderBrierCard(data.summary);
     renderBrierTrend(data.predictions);
-    renderEloTrend(data.predictions, data.summary);
+    renderEloTrend(data.predictions);
     renderCalibrationBins(data.predictions);
     renderCalibrationScatter(data.predictions);
     renderPredictionTable(data.predictions);
@@ -86,7 +86,7 @@ function renderBrierTrend(predictions) {
   });
 }
 
-function renderEloTrend(predictions, summary) {
+function renderEloTrend(predictions) {
   const canvas = document.getElementById('chart-elo-trend');
   if (!canvas || !predictions.length) return;
 
