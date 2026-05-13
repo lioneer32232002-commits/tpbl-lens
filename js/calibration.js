@@ -76,7 +76,11 @@ function renderBrierTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { min: 0, max: 0.35, title: { display: true, text: 'Brier Score（累積）' } },
@@ -106,7 +110,10 @@ function renderEloTrend(predictions) {
             borderColor: '#00d4ff',
             backgroundColor: 'rgba(0,212,255,.08)',
             fill: true,
-            pointRadius: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#00d4ff',
+            pointBorderColor: '#00d4ff',
+            pointHoverRadius: 6,
             borderWidth: 2,
             tension: 0.3,
           },
@@ -123,7 +130,11 @@ function renderEloTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { title: { display: true, text: 'Elo 評分' } },
@@ -193,7 +204,12 @@ function renderCalibrationBins(predictions) {
         ],
       },
       options: {
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { usePointStyle: true, boxWidth: 8, padding: 12 },
+          },
+        },
         scales: {
           y: {
             min: 0,
@@ -260,7 +276,11 @@ function renderCalibrationScatter(predictions) {
         ],
       },
       options: {
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: {
             type: 'linear',

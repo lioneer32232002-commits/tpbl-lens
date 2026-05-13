@@ -11,7 +11,7 @@ fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
     renderStandings(data.standings, data.meta.team_name);
     renderLeagueRtg(data.league_rtg, data.meta.team_name);
     renderVsCards(data.vs_summary);
-    renderHomeAway(data.home_away);
+    renderHomeAway(data.home_away, data.team_stats);
     renderPlayerTable(data.player_avg);
 
     if (data.simulation && data.simulation.prob_playoff != null) {
@@ -66,6 +66,7 @@ function renderStatsSummary(ts, meta) {
       <div style="font-size:.9rem;color:var(--text2)">
         <div>勝率 <strong style="color:var(--text)">${wr}</strong></div>
         <div>均得 <strong style="color:var(--text)">${ts.avg_pts}</strong> · 均失 <strong style="color:var(--text)">${ts.avg_opp_pts}</strong></div>
+        <div style="font-size:.75rem;margin-top:.15rem">例行賽 ${ts.games_played} 場（官方數據）</div>
       </div>
       <div style="margin-left:auto;color:var(--text2);font-size:.78rem">更新：${meta.generated ? meta.generated.slice(0, 10) : '—'}</div>
     </div>`;
@@ -101,7 +102,7 @@ function renderLeagueRtg(rtgData, teamName) {
     data: {
       labels: rtgData.map(t => short(t.name)),
       datasets: [
-        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(0,212,255,0.9)' : 'rgba(0,212,255,0.3)') },
+        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(0,229,255,0.9)' : 'rgba(0,229,255,0.3)') },
         { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: rtgData.map(t => t.name === teamName ? 'rgba(240,98,146,0.9)' : 'rgba(240,98,146,0.3)') },
       ]
     },
@@ -120,8 +121,10 @@ function renderVsCards(vs) {
   const grid = document.getElementById('vs-grid');
   if (!grid || !vs) return;
   let html = '';
+  let hasPostseason = false;
   Object.entries(vs).forEach(([opp, r]) => {
     const total = r.w + r.l;
+    if (total > 6) hasPostseason = true;
     const wr = total > 0 ? (r.w / total * 100).toFixed(0) + '%' : '—';
     const recColor = r.w > r.l ? 'var(--accent)' : 'var(--accent2)';
     html += `<div class="vs-card">
@@ -131,12 +134,36 @@ function renderVsCards(vs) {
     </div>`;
   });
   grid.innerHTML = html;
+  // 若有對手場次超過 6 場，代表包含季後賽記錄
+  if (hasPostseason) {
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:.72rem;color:var(--text2);margin-top:.6rem';
+    note.textContent = '★ 部分對戰記錄超過 6 場，含例行賽及季後賽。';
+    grid.insertAdjacentElement('afterend', note);
+  }
 }
 
-function renderHomeAway(ha) {
+function renderHomeAway(ha, teamStats) {
   const el = document.getElementById('home-away-content');
   if (!el || !ha) return;
+
+  const official = teamStats ? (teamStats.games_played || 0) : 0;
+  const homeGp = ha.home ? (ha.home.gp || 0) : 0;
+  const awayGp = ha.away ? (ha.away.gp || 0) : 0;
+  const covered = homeGp + awayGp;
+
+  let coverNote = '';
+  if (official && covered !== official) {
+    const noteStyle = 'font-size:.75rem;color:var(--text2);margin-bottom:.65rem;line-height:1.5';
+    if (covered < official) {
+      coverNote = `<div style="${noteStyle}">⚠️ 主客場資料涵蓋 <strong style="color:var(--text)">${covered}/${official}</strong> 場，部分場次記錄缺失，細項數據僅供參考。</div>`;
+    } else {
+      coverNote = `<div style="${noteStyle}">⚠️ 主客場記錄 <strong style="color:var(--text)">${covered}</strong> 筆，官方例行賽 <strong style="color:var(--text)">${official}</strong> 場，多出場次為季後賽，細項數據僅供參考。</div>`;
+    }
+  }
+
   const row = (label, d) => {
+    if (!d || !d.gp) return `<tr><td><strong>${label}</strong></td><td colspan="5" style="color:var(--text2);text-align:center">—</td></tr>`;
     const winRate = +(d.win_rate ?? 0);
     const avgPts = +(d.avg_pts ?? 0);
     const avgOpp = +(d.avg_opp ?? 0);
@@ -150,7 +177,7 @@ function renderHomeAway(ha) {
       <td style="color:${net >= 0 ? 'var(--accent)' : 'var(--accent2)'}">${net >= 0 ? '+' : ''}${net.toFixed(1)}</td>
     </tr>`;
   };
-  el.innerHTML = `<div style="overflow-x:auto"><table class="data-nums">
+  el.innerHTML = `${coverNote}<div style="overflow-x:auto"><table class="data-nums">
     <thead><tr><th></th><th>場次</th><th>勝負</th><th>勝率</th><th>均得/失</th><th>淨值</th></tr></thead>
     <tbody>${row('主場', ha.home)}${row('客場', ha.away)}</tbody>
   </table></div>`;
@@ -221,7 +248,7 @@ function renderUsgTs(playerAvg) {
     const delta = s.tsp - tsMed;
     const intensity = Math.min(Math.abs(delta) / (tsSpan * 0.5), 1);
     const alpha = (0.35 + intensity * 0.6).toFixed(2);
-    return delta >= 0 ? `rgba(0,212,255,${alpha})` : `rgba(240,98,146,${alpha})`;
+    return delta >= 0 ? `rgba(0,229,255,${alpha})` : `rgba(240,98,146,${alpha})`;
   });
 
   deferChart(el, () => new Chart(el, {
@@ -263,7 +290,7 @@ function renderScenario(scenarioChart) {
     data: {
       labels: scenarioChart.map(s => s.label),
       datasets: [
-        { label: '本隊均分', data: scenarioChart.map(s => s.team_mean ?? s.lion_mean), backgroundColor: 'rgba(0,212,255,0.75)' },
+        { label: '本隊均分', data: scenarioChart.map(s => s.team_mean ?? s.lion_mean), backgroundColor: 'rgba(0,229,255,0.75)' },
         { label: '對手均分', data: scenarioChart.map(s => s.opp_mean), backgroundColor: 'rgba(240,98,146,0.65)' },
         { label: '勝率', data: scenarioChart.map(s => +(s.win_rate * 100).toFixed(1)), type: 'line', yAxisID: 'yWr', borderColor: '#ffd700', backgroundColor: 'transparent', pointRadius: 4 },
       ]
@@ -308,13 +335,14 @@ function renderMannWhitney(mw) {
   const sorted = [...mw].sort((a, b) => Math.abs(b.effect_r) - Math.abs(a.effect_r));
 
   // ── 1. 效應量總覽橫條圖 ──
+  // effect_r < 0 → 勝場較高（青色）；effect_r > 0 → 敗場較高（粉色）
   if (barEl) {
     const labels = sorted.map(d => {
       const badge = d.significant ? ' ★' : d.p_value < 0.1 ? ' ▲' : '';
       return d.stat + badge;
     });
     const colors = sorted.map(d =>
-      d.effect_r > 0 ? 'rgba(0,212,255,0.78)' : 'rgba(240,98,146,0.78)'
+      d.effect_r <= 0 ? 'rgba(0,229,255,0.78)' : 'rgba(240,98,146,0.78)'
     );
     deferChart(barEl, () => new Chart(barEl, {
       type: 'bar',
@@ -373,16 +401,19 @@ function renderMannWhitney(mw) {
       <div class="mw-stat-meta">p = ${d.p_value.toFixed(3)} &nbsp;·&nbsp; r = ${rSign}${d.effect_r.toFixed(2)}</div>
       <div class="mw-canvas-wrap"><canvas data-mw="${i}"></canvas></div>
       <div class="mw-medians">
-        <div style="color:#00d4ff">勝中位 ${wMed}</div>
+        <div style="color:#00e5ff">勝中位 ${wMed}</div>
         <div style="color:#f06292">敗中位 ${lMed}</div>
       </div>
     </div>`;
   });
   gridEl.innerHTML = html;
 
+  // 小卡圖：點狀圖（個別場次值）+ 中位線，setTimeout(0) 確保背景分頁也執行
+  // 確定性 jitter（依索引計算，頁面重整不閃爍）
   const mwJitter = (idx, span) =>
     (Math.sin(idx * 13.7) * 0.5 + Math.cos(idx * 7.3) * 0.5) * span;
 
+  // Chart.js plugin：在 afterDatasetsDraw 畫橫向中位線
   const makeMedianPlugin = (wMed, lMed) => ({
     id: 'medLines',
     afterDatasetsDraw(chart) {
@@ -391,7 +422,7 @@ function renderMannWhitney(mw) {
       const x1 = scales.x.getPixelForValue(1);
       const y0 = scales.y.getPixelForValue(wMed);
       const y1 = scales.y.getPixelForValue(lMed);
-      [[x0, y0, '#00d4ff'], [x1, y1, '#f06292']].forEach(([x, y, color]) => {
+      [[x0, y0, '#00e5ff'], [x1, y1, '#f06292']].forEach(([x, y, color]) => {
         ctx.save();
         ctx.strokeStyle = color;
         ctx.lineWidth = 2.5;
@@ -411,7 +442,7 @@ function renderMannWhitney(mw) {
       if (!d) return;
       const wins   = Array.isArray(d.wins)   ? d.wins   : [];
       const losses = Array.isArray(d.losses) ? d.losses : [];
-      const wMed   = +(d.wins_median ?? 0);
+      const wMed   = +(d.wins_median   ?? 0);
       const lMed   = +(d.losses_median ?? 0);
       try {
         new Chart(canvas, {
@@ -422,8 +453,8 @@ function renderMannWhitney(mw) {
               {
                 label: '勝場',
                 data: wins.map((y, j) => ({ x: mwJitter(j, 0.14), y })),
-                backgroundColor: 'rgba(0,212,255,0.7)',
-                borderColor: '#00d4ff', borderWidth: 1,
+                backgroundColor: 'rgba(0,229,255,0.7)',
+                borderColor: '#00e5ff', borderWidth: 1,
                 pointRadius: 5, pointHoverRadius: 7,
               },
               {
@@ -468,10 +499,11 @@ function renderMannWhitney(mw) {
 }
 
 function renderRoc(roc) {
-  const canvasEl = document.getElementById('chart-roc');
-  const legendEl = document.getElementById('roc-legend');
+  const canvasEl  = document.getElementById('chart-roc');
+  const legendEl  = document.getElementById('roc-legend');
   if (!canvasEl || !roc) return;
 
+  // 已知指標的顯示名稱與虛線樣式
   const PREDICTOR_META = {
     '三分命中率': { labelEn: '3P%',  unitCh: '%',  dash: []    },
     '整體命中率': { labelEn: 'FG%',  unitCh: '%',  dash: [4,3] },
@@ -481,11 +513,13 @@ function renderRoc(roc) {
     '三分命中數': { labelEn: '3PM',  unitCh: '顆', dash: [6,3] },
   };
 
+  // AUC 強→中→弱各一色系
   const STRONG_COLORS = ['#ffd700', '#ffa000', '#e65100'];
-  const MED_COLORS    = ['#00d4ff', '#26c6da', '#4db6ac'];
+  const MED_COLORS    = ['#00e5ff', '#26c6da', '#4db6ac'];
   const WEAK_COLORS   = ['#f06292', '#ce93d8', '#a5d6a7'];
   const STRONG_TH = 0.75, MED_TH = 0.65;
 
+  // 依 AUC 排序並動態分配顏色
   const sorted = Object.keys(roc)
     .map(key => {
       const meta = PREDICTOR_META[key] || { labelEn: key, unitCh: '', dash: [] };
@@ -565,6 +599,7 @@ function renderRoc(roc) {
     }
   }));
 
+  // 分組橫式圖例
   if (!legendEl) return;
   const strong = sorted.filter(p => p.auc >= STRONG_TH);
   const medium = sorted.filter(p => p.auc >= MED_TH && p.auc < STRONG_TH);
@@ -591,7 +626,7 @@ function renderRoc(roc) {
   legendEl.innerHTML = `
     <div class="card" style="padding:.75rem 1rem;">
       ${legendGroupHoriz('強（AUC ≥ 0.75）', strong, '★', '#ffd700')}
-      ${legendGroupHoriz('中（AUC 0.65–0.75）', medium, '◆', '#00d4ff')}
+      ${legendGroupHoriz('中（AUC 0.65–0.75）', medium, '◆', '#00e5ff')}
       ${legendGroupHoriz('弱（AUC < 0.65）', weak, '—', '#f06292')}
       <div style="display:inline-flex;align-items:center;gap:.35rem;margin-top:.3rem;">
         <span style="display:inline-block;width:20px;height:2px;background:rgba(255,255,255,0.18);border-radius:2px;"></span>

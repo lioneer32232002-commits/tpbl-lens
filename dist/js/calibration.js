@@ -56,8 +56,8 @@ function renderBrierTrend(predictions) {
           {
             label: '累積 Brier Score',
             data: points,
-            borderColor: '#00d4ff',
-            backgroundColor: 'rgba(0,212,255,.08)',
+            borderColor: '#00e5ff',
+            backgroundColor: 'rgba(0,229,255,.08)',
             fill: true,
             pointRadius: 0,
             borderWidth: 2,
@@ -76,7 +76,11 @@ function renderBrierTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { min: 0, max: 0.35, title: { display: true, text: 'Brier Score（累積）' } },
@@ -106,7 +110,10 @@ function renderEloTrend(predictions) {
             borderColor: '#00d4ff',
             backgroundColor: 'rgba(0,212,255,.08)',
             fill: true,
-            pointRadius: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#00d4ff',
+            pointBorderColor: '#00d4ff',
+            pointHoverRadius: 6,
             borderWidth: 2,
             tension: 0.3,
           },
@@ -123,7 +130,11 @@ function renderEloTrend(predictions) {
       },
       options: {
         parsing: false,
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: { type: 'linear', title: { display: true, text: '場次' } },
           y: { title: { display: true, text: 'Elo 評分' } },
@@ -167,8 +178,16 @@ function renderCalibrationBins(predictions) {
           {
             label: '實際勝率 (%)',
             data: bins.map(b => b.actualRate),
-            backgroundColor: 'rgba(0,212,255,.65)',
-            borderColor: '#00d4ff',
+            backgroundColor: bins.map(b =>
+              b.actualRate === null ? 'rgba(255,255,255,.15)'
+              : b.actualRate > b.midPct ? 'rgba(0,212,255,.65)'
+              : 'rgba(240,98,146,.65)'
+            ),
+            borderColor: bins.map(b =>
+              b.actualRate === null ? 'rgba(255,255,255,.3)'
+              : b.actualRate > b.midPct ? '#00d4ff'
+              : '#f06292'
+            ),
             borderWidth: 1,
           },
           {
@@ -185,7 +204,12 @@ function renderCalibrationBins(predictions) {
         ],
       },
       options: {
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { usePointStyle: true, boxWidth: 8, padding: 12 },
+          },
+        },
         scales: {
           y: {
             min: 0,
@@ -226,7 +250,7 @@ function renderCalibrationScatter(predictions) {
           {
             label: '實際結果（1=勝, 0=敗）',
             data: scatterData,
-            backgroundColor: 'rgba(0,212,255,.5)',
+            backgroundColor: 'rgba(0,229,255,.5)',
             pointRadius: 5,
           },
           {
@@ -252,7 +276,11 @@ function renderCalibrationScatter(predictions) {
         ],
       },
       options: {
-        plugins: { legend: { display: true } },
+        plugins: {
+          legend: {
+            labels: { usePointStyle: true, boxWidth: 8, padding: 14 },
+          },
+        },
         scales: {
           x: {
             type: 'linear',

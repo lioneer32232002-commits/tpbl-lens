@@ -11,7 +11,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 import numpy as np
 from scipy import stats as sp_stats
 
-from config import TEAMS, TOTAL_GAMES, HOME_ADV, MONTE_CARLO_N, GAMES_DIR, ALLTEAM_FILE
+from config import TEAMS, TOTAL_GAMES, HOME_ADV, MONTE_CARLO_N, GAMES_DIR, ALLTEAM_FILE, SEASON_START, SEASON_END
 
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GAMES_DIR    = os.path.join(_BASE_DIR, GAMES_DIR)
@@ -64,6 +64,7 @@ def parse_games(all_game_data, team_id, team_name):
         rounds, opp_rounds, paint, fast_break, second_chance, ft_made
     """
     games = []
+    seen  = set()   # 去重：(date, opp, team_score, opp_score)
     for d in all_game_data:
         ht = d["home_team"]
         at = d["away_team"]
@@ -78,14 +79,19 @@ def parse_games(all_game_data, team_id, team_name):
         team_score = lt["won_score"]
         opp_score  = lt["lost_score"]
 
+        date_str = d.get("game_date", "")
+        if date_str:
+            date_str = date_str.replace("-", "")
+
+        key = (date_str, opp_team["name"], team_score, opp_score)
+        if key in seen:
+            continue
+        seen.add(key)
+
         rounds_data     = {int(k): v.get("won_score", 0)
                            for k, v in team["teams"]["rounds"].items()}
         opp_rounds_data = {int(k): v.get("won_score", 0)
                            for k, v in opp_team["teams"]["rounds"].items()}
-
-        date_str = d.get("game_date", "")
-        if date_str:
-            date_str = date_str.replace("-", "")
 
         games.append({
             "date":          date_str,
@@ -156,6 +162,7 @@ def collect_player_stats(all_game_data, team_id):
     pm_map  = defaultdict(lambda: defaultdict(list))
     ppp_map = defaultdict(lambda: defaultdict(list))
     stats   = defaultdict(lambda: defaultdict(list))
+    seen    = set()
 
     for d in all_game_data:
         ht = d["home_team"]
@@ -166,6 +173,13 @@ def collect_player_stats(all_game_data, team_id):
             team, opp_team = at, ht
         else:
             continue
+
+        lt = team["teams"]["total"]
+        _key = (d.get("game_date",""), opp_team["name"],
+                lt.get("won_score"), lt.get("lost_score"))
+        if _key in seen:
+            continue
+        seen.add(_key)
 
         opp_name  = opp_team["name"]
         team_poss = sum(
@@ -278,6 +292,7 @@ def calc_quarter_analysis(games, all_game_data, team_id):
         )
 
     q_poss = {q: {"team": [], "opp": []} for q in range(1, 5)}
+    seen   = set()
 
     for d in all_game_data:
         ht, at = d["home_team"], d["away_team"]
@@ -287,6 +302,12 @@ def calc_quarter_analysis(games, all_game_data, team_id):
             team, opp_team = at, ht
         else:
             continue
+        lt = team["teams"]["total"]
+        _key = (d.get("game_date",""), opp_team["name"],
+                lt.get("won_score"), lt.get("lost_score"))
+        if _key in seen:
+            continue
+        seen.add(_key)
         for q in range(1, 5):
             tr  = team["teams"]["rounds"].get(str(q), {})
             or_ = opp_team["teams"]["rounds"].get(str(q), {})
@@ -323,6 +344,7 @@ def calc_game_team_stats(all_game_data, team_id):
         )
 
     result = []
+    seen   = set()
     for d in all_game_data:
         ht, at = d["home_team"], d["away_team"]
         if ht["id"] == team_id:
@@ -336,6 +358,11 @@ def calc_game_team_stats(all_game_data, team_id):
         ot = opp_team["teams"]["total"]
         team_score = lt["won_score"]
         opp_score  = lt["lost_score"]
+
+        _key = (d.get("game_date",""), opp_team["name"], team_score, opp_score)
+        if _key in seen:
+            continue
+        seen.add(_key)
 
         three_att = lt.get("three_pointers_attempted", 0) or 0
         three_pct = (lt.get("three_pointers_made", 0) / three_att * 100
@@ -828,7 +855,12 @@ def process_team(team_id, games_dir=None, allteam_file=None, allgame_file=None):
     name    = cfg["name"]
     is_full = cfg["full_depth"]
 
-    all_game_data = load_game_files(games_dir)
+    all_game_data_raw = load_game_files(games_dir)
+    # 只保留常規賽日期範圍內的比賽，排除季前賽與季後賽
+    all_game_data = [
+        g for g in all_game_data_raw
+        if SEASON_START <= g.get("game_date", "").replace("-", "") <= SEASON_END
+    ]
     allteam_data  = load_allteam(allteam_file)
 
     _allgame_path = allgame_file or os.path.join(_BASE_DIR, "data", "allgame_2526.txt")
