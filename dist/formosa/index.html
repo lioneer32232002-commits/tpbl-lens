@@ -3,22 +3,35 @@
 <head>
   <title>夢想家 2025-26 賽季分析｜TPBL-Lens</title>
   <meta name="description" content="福爾摩沙夢想家 2025-26 賽季進階統計分析｜TPBL-Lens">
+  <link rel="canonical" href="https://tpbl-lens.pages.dev/formosa/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tpbl-lens.pages.dev/formosa/">
+  <meta property="og:title" content="夢想家 2025-26 賽季分析｜TPBL-Lens">
+  <meta property="og:description" content="福爾摩沙夢想家 2025-26 賽季進階統計分析｜TPBL-Lens">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="TPBL-Lens">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="夢想家 2025-26 賽季分析｜TPBL-Lens">
+  <meta name="twitter:description" content="福爾摩沙夢想家 2025-26 賽季進階統計分析｜TPBL-Lens">
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1923">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" defer></script>
 <style>
   :root {
     --bg:      #0f1923;
     --bg2:     #1a2a3a;
     --bg3:     #243447;
-    --accent:  #00e5ff;
+    --accent:  #00d4ff;
     --accent2: #f06292;
     --text:    #e8edf2;
     --text2:   #8fa3b8;
-    --border:  rgba(0,229,255,.18);
+    --border:  rgba(0,212,255,.18);
     --hm-p3:   #0077b6;
     --hm-p2:   #0096c7;
     --hm-p1:   #90e0ef;
@@ -91,17 +104,14 @@
   .vs-record .sep { color: var(--text2); margin: 0 .15rem; font-weight: 700; }
   .vs-meta { font-size: .72rem; color: var(--text2); margin-top: .2rem; white-space: nowrap; }
   /* MHU STAT SMALL MULTIPLES */
-  .mw-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; margin-top: .75rem; }
-  .mw-stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .6rem .65rem; text-align: center; }
-  .mw-stat-head { display: flex; justify-content: center; align-items: center; gap: .35rem; margin-bottom: .15rem; }
-  .mw-stat-name { font-weight: 700; font-size: .84rem; color: var(--text); }
-  .mw-sig  { font-size: .68rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
-  .mw-trend{ font-size: .68rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
-  .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .35rem; }
-  /* canvas 正方形容器 */
-  .mw-canvas-wrap { position: relative; aspect-ratio: 1/1; }
-  .mw-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-  .mw-medians { font-size: .72rem; margin-top: .35rem; line-height: 1.65; }
+  .mw-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .65rem; margin-top: .75rem; }
+  .mw-stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .65rem; }
+  .mw-stat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .1rem; }
+  .mw-stat-name { font-weight: 700; font-size: .82rem; color: var(--text); }
+  .mw-sig  { font-size: .7rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
+  .mw-trend{ font-size: .7rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
+  .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .3rem; }
+  .mw-stat-card canvas { display: block; max-width: 100%; }
   /* DATA TABLE: center non-first columns */
   .data-nums th:not(:first-child),
   .data-nums td:not(:first-child) { text-align: center; }
@@ -140,7 +150,7 @@
     .heatmap-wrap::after { content: "← 左右滑動 →"; display: block; text-align: center; font-size: .68rem; color: var(--text2); margin-top: .4rem; }
     /* pace small multiples: 兩欄 */
     .pace-grid { grid-template-columns: repeat(2, 1fr); }
-    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 
@@ -258,8 +268,7 @@
 
   <section id="roc" style="display:none">
     <h2>ROC 曲線（勝負預測指標）</h2>
-    <div class="card chart-wrap" style="height:360px"><canvas id="chart-roc"></canvas></div>
-    <div id="roc-legend" style="margin-top:.75rem"></div>
+    <div id="roc-container"></div>
   </section>
 
   <section id="last-game" style="display:none">
