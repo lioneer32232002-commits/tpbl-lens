@@ -64,14 +64,15 @@ function renderLeagueStandings(standings) {
 function renderLeagueRtg(rtgData) {
   const el = document.getElementById('chart-rtg');
   if (!el || !rtgData) return;
+  const sorted = [...rtgData].sort((a, b) => b.netrtg - a.netrtg);
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
   deferChart(el, () => new Chart(el, {
     type: 'bar',
     data: {
-      labels: rtgData.map(t => short(t.name)),
+      labels: sorted.map(t => short(t.name)),
       datasets: [
-        { label: 'ORtg', data: rtgData.map(t => t.ortg), backgroundColor: 'rgba(0,229,255,0.75)' },
-        { label: 'DRtg', data: rtgData.map(t => t.drtg), backgroundColor: 'rgba(240,98,146,0.75)' },
+        { label: 'ORtg', data: sorted.map(t => t.ortg), backgroundColor: 'rgba(0,229,255,0.75)' },
+        { label: 'DRtg', data: sorted.map(t => t.drtg), backgroundColor: 'rgba(240,98,146,0.75)' },
       ]
     },
     options: {
