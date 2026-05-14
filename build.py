@@ -1,5 +1,5 @@
 # build.py
-import os, shutil, glob
+import os, shutil, glob, importlib.util
 
 TEMPLATES = "templates"
 PAGES     = "pages"
@@ -78,6 +78,7 @@ def build():
 
     _build_robots()
     _build_sitemap()
+    _build_og_images()
 
     print("[build] dist/ updated")
 
@@ -118,6 +119,16 @@ def _build_sitemap():
         + "</urlset>\n"
     )
     _write(os.path.join(DIST, "sitemap.xml"), xml)
+
+def _build_og_images():
+    try:
+        from generate_og_pace import generate_og_pace
+        generate_og_pace()
+    except ImportError:
+        print("[build] Pillow not installed — skipping OG image (pip install Pillow)")
+    except Exception as e:
+        print(f"[build] OG image generation failed: {e}")
+
 
 if __name__ == "__main__":
     build()

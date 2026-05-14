@@ -191,8 +191,8 @@ const TEAM_COLORS = [
 ];
 
 // 純 SVG sparkline — 零 Chart.js 開銷，不卡頓
-function makePaceSVG(data, yMin, yMax, leagueAvg, color) {
-  if (!data || data.length < 2) return `<svg viewBox="0 0 100 40" width="100%" height="48" style="display:block"></svg>`;
+function makePaceSVG(data, yMin, yMax, leagueAvg, color, dispH = 72) {
+  if (!data || data.length < 2) return `<svg viewBox="0 0 100 40" width="100%" height="${dispH}" style="display:block"></svg>`;
   const xs = data.map(p => p.x);
   const xMin = Math.min(...xs), xMax = Math.max(...xs);
   const W = 100, H = 40, pad = 1;
@@ -204,10 +204,10 @@ function makePaceSVG(data, yMin, yMax, leagueAvg, color) {
   const [lx] = ptsArr[ptsArr.length - 1].split(',');
   const fillC = color.replace(/[\d.]+\)$/, '0.12)');
   const avgY = py(leagueAvg);
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="48" style="display:block">
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${dispH}" style="display:block">
     <polygon points="${pts} ${lx},${H} ${fx},${H}" fill="${fillC}"/>
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="0" y1="${avgY}" x2="${W}" y2="${avgY}" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
+    <line x1="0" y1="${avgY}" x2="${W}" y2="${avgY}" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
   </svg>`;
 }
 
@@ -222,34 +222,34 @@ function renderPaceTrend(trend) {
   const yMax = Math.ceil(Math.max(...allY) + 1);
   const leagueAvg = allY.reduce((a, v) => a + v, 0) / allY.length;
 
-  const enriched = trend.map((t, i) => {
+  const enriched = trend.map(t => {
     const ys = (t.data || []).map(p => p.y).filter(v => Number.isFinite(v));
     const avg = ys.length ? ys.reduce((a, v) => a + v, 0) / ys.length : 0;
-    const min = ys.length ? Math.min(...ys) : 0;
-    const max = ys.length ? Math.max(...ys) : 0;
-    return { ...t, _i: i, avg, min, max };
+    return { ...t, avg };
   }).sort((a, b) => b.avg - a.avg);
 
   let html = '';
-  enriched.forEach(t => {
+  enriched.forEach((t, rank) => {
     const diff = t.avg - leagueAvg;
-    const color = diff >= 0 ? 'rgba(0,212,255,0.9)' : 'rgba(240,98,146,0.9)';
+    const color = diff >= 0 ? 'rgba(0,229,255,0.9)' : 'rgba(240,98,146,0.9)';
     const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1);
     const diffColor = diff >= 0 ? 'var(--accent)' : 'var(--accent2)';
     html += `<div class="pace-card">
       <div class="pace-head">
-        <span class="pace-name">${short(t.name)}</span>
-        <span class="pace-avg">${t.avg.toFixed(1)}</span>
+        <div class="pace-left">
+          <span class="pace-rank">#${rank + 1}</span>
+          <span class="pace-name">${short(t.name)}</span>
+        </div>
+        <div class="pace-right">
+          <span class="pace-avg" style="color:${diffColor}">${t.avg.toFixed(1)}</span>
+          <span class="pace-diff" style="color:${diffColor}">${diffStr}</span>
+        </div>
       </div>
-      ${makePaceSVG(t.data, yMin, yMax, leagueAvg, color)}
-      <div class="pace-meta">
-        <span>區間 ${t.min.toFixed(0)}–${t.max.toFixed(0)}</span>
-        <span style="color:${diffColor}">vs 聯盟 ${diffStr}</span>
-      </div>
+      ${makePaceSVG(t.data, yMin, yMax, leagueAvg, color, 72)}
     </div>`;
   });
   host.innerHTML = html;
   if (summary) {
-    summary.textContent = `聯盟平均 ${leagueAvg.toFixed(1)} 回合／場 · y 軸 ${yMin}–${yMax}`;
+    summary.textContent = `聯盟平均 ${leagueAvg.toFixed(1)} 回合／場`;
   }
 }

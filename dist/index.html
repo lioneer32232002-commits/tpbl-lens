@@ -8,6 +8,9 @@
   <meta property="og:url" content="https://tpbl-lens.pages.dev/">
   <meta property="og:title" content="TPBL-Lens｜全聯盟分析總覽 2025-26">
   <meta property="og:description" content="TPBL 2025-26 全聯盟排名、效率比較、得分來源分析">
+  <meta property="og:image" content="https://tpbl-lens.pages.dev/og/pace-trend.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:locale" content="zh_TW">
   <meta property="og:site_name" content="TPBL-Lens">
   <meta name="twitter:card" content="summary">
@@ -27,11 +30,11 @@
     --bg:      #0f1923;
     --bg2:     #1a2a3a;
     --bg3:     #243447;
-    --accent:  #00d4ff;
+    --accent:  #00e5ff;
     --accent2: #f06292;
     --text:    #e8edf2;
     --text2:   #8fa3b8;
-    --border:  rgba(0,212,255,.18);
+    --border:  rgba(0,229,255,.18);
     --hm-p3:   #0077b6;
     --hm-p2:   #0096c7;
     --hm-p1:   #90e0ef;
@@ -111,20 +114,23 @@
   .mw-sig  { font-size: .68rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
   .mw-trend{ font-size: .68rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
   .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .35rem; }
+  /* canvas 正方形容器 */
   .mw-canvas-wrap { position: relative; aspect-ratio: 1/1; }
   .mw-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
   .mw-medians { font-size: .72rem; margin-top: .35rem; line-height: 1.65; }
   /* DATA TABLE: center non-first columns */
   .data-nums th:not(:first-child),
   .data-nums td:not(:first-child) { text-align: center; }
-  /* PACE SMALL MULTIPLES */
-  .pace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .65rem; }
-  .pace-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .6rem; }
-  .pace-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .15rem; }
-  .pace-name { font-weight: 700; font-size: .82rem; color: var(--text); }
-  .pace-avg { font-size: .78rem; color: var(--accent); font-weight: 700; }
-  .pace-meta { font-size: .68rem; color: var(--text2); margin-top: .2rem; display: flex; justify-content: space-between; }
-  .pace-card canvas { display: block; max-width: 100%; }
+  /* PACE VERTICAL STACK */
+  .pace-grid { display: flex; flex-direction: column; gap: .65rem; }
+  .pace-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem .7rem; }
+  .pace-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .55rem; }
+  .pace-left { display: flex; align-items: center; gap: .6rem; }
+  .pace-rank { font-size: .72rem; font-weight: 700; color: var(--text2); min-width: 1.8rem; }
+  .pace-name { font-weight: 700; font-size: .92rem; color: var(--text); }
+  .pace-right { display: flex; align-items: baseline; gap: .45rem; }
+  .pace-avg { font-size: 1.25rem; font-weight: 900; }
+  .pace-diff { font-size: .75rem; font-weight: 700; }
   /* FOOTER */
   footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; color: var(--text2); font-size: .82rem; margin-top: 3rem; }
   footer a { color: var(--accent); text-decoration: none; }
@@ -150,9 +156,7 @@
     /* 滑動提示 */
     .heatmap-wrap { position: relative; }
     .heatmap-wrap::after { content: "← 左右滑動 →"; display: block; text-align: center; font-size: .68rem; color: var(--text2); margin-top: .4rem; }
-    /* pace small multiples: 兩欄 */
-    .pace-grid { grid-template-columns: repeat(2, 1fr); }
-    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+.mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
   }
 </style>
 

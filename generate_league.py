@@ -1,22 +1,31 @@
 import json, os, sys, datetime, glob as _glob
 sys.stdout.reconfigure(encoding="utf-8")
-from config import ALLTEAM_FILE, SEASON
+from config import ALLTEAM_FILE, SEASON, SEASON_START, SEASON_END
 
 _BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
 ALLTEAM_FILE = os.path.join(_BASE_DIR, ALLTEAM_FILE)
 
 
 def _load_game_files():
+    """Load regular-season game files only (date within SEASON_START..SEASON_END)."""
     game_dir = os.path.join(_BASE_DIR, "data", "games")
     result = []
+    skipped = 0
     if not os.path.exists(game_dir):
         return result
     for fn in sorted(_glob.glob(os.path.join(game_dir, "*.txt"))):
         try:
             with open(fn, encoding="utf-8") as f:
-                result.append(json.load(f))
+                g = json.load(f)
+            date_raw = g.get("game_date", "").replace("-", "")
+            if date_raw < SEASON_START or date_raw > SEASON_END:
+                skipped += 1
+                continue
+            result.append(g)
         except (json.JSONDecodeError, OSError) as e:
             print(f"[generate_league] skipping {fn}: {e}", file=sys.stderr)
+    if skipped:
+        print(f"[generate_league] excluded {skipped} non-regular-season game(s)", file=sys.stderr)
     return result
 
 
