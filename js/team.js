@@ -388,6 +388,9 @@ function renderMannWhitney(mw) {
             }
           }
         },
+        animation: {
+          x: { type: 'number', easing: 'easeOutQuart', duration: 900, from: 0 }
+        },
         scales: {
           x: { min:-1, max:1, ticks:{ color:axis }, grid:{ color:grid }, title:{ display:true, text:'效應量 r', color:axis } },
           y: { ticks:{ color:axis }, grid:{ display:false } }
@@ -447,7 +450,7 @@ function renderMannWhitney(mw) {
   });
 
   setTimeout(() => {
-    gridEl.querySelectorAll('canvas').forEach(canvas => {
+    gridEl.querySelectorAll('canvas').forEach((canvas, cardIdx) => {
       const i = +canvas.dataset.mw;
       const d = top6[i];
       if (!d) return;
@@ -455,7 +458,8 @@ function renderMannWhitney(mw) {
       const losses = Array.isArray(d.losses) ? d.losses : [];
       const wMed   = +(d.wins_median   ?? 0);
       const lMed   = +(d.losses_median ?? 0);
-      try {
+      setTimeout(() => {
+       try {
         new Chart(canvas, {
           type: 'scatter',
           plugins: [makeMedianPlugin(wMed, lMed)],
@@ -479,7 +483,7 @@ function renderMannWhitney(mw) {
           },
           options: {
             responsive: true, maintainAspectRatio: false,
-            animation: { duration: 600 },
+            animation: { duration: 700, easing: 'easeOutBack' },
             plugins: {
               legend: { display: false },
               tooltip: {
@@ -505,6 +509,7 @@ function renderMannWhitney(mw) {
       } catch(e) {
         console.warn('[mw-card] chart error canvas', i, e.message);
       }
+      }, cardIdx * 100);
     });
   }, 0);
 }

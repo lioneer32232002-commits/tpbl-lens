@@ -129,6 +129,8 @@
   .hm-cell.locked  { outline: 1.5px solid var(--accent); border-radius: 5px; }
   tr.locked td     { color: var(--accent) !important; font-weight: 700; }
   .vs-card.locked, .pace-card.locked { border-color: var(--accent) !important; }
+  .mw-stat-card.locked { border-color: var(--accent) !important; }
+  .chart-wrap.locked { border-radius: 10px; }
   /* FX: hover interactions */
   .vs-card { transition: transform .15s ease, border-color .15s ease; cursor: pointer; }
   .vs-card:not([style*="pointer-events:none"]):hover { transform: translateY(-2px); border-color: rgba(0,229,255,.4); }
@@ -193,6 +195,20 @@
       if (vc) { _lock(vc, vc.closest('.vs-grid'), '.vs-card'); return; }
       var pc = e.target.closest('.pace-card');
       if (pc) { _lock(pc, pc.closest('.pace-grid'), '.pace-card'); return; }
+      // mw-stat-card 小卡（含內部 canvas）— 要在 canvas 前判斷
+      var mc = e.target.closest('.mw-stat-card');
+      if (mc) { _lock(mc, mc.closest('.mw-stat-grid'), '.mw-stat-card'); return; }
+      // 主圖 canvas → 鎖 chart-wrap
+      var canvas = e.target.closest('canvas');
+      if (canvas) {
+        var wrap = canvas.closest('.chart-wrap');
+        if (wrap) {
+          var was = wrap.classList.contains('locked');
+          document.querySelectorAll('.chart-wrap.locked').forEach(function (x) { x.classList.remove('locked'); });
+          if (!was) wrap.classList.add('locked');
+        }
+        return;
+      }
       var row = e.target.closest('tbody tr');
       if (row && !row.closest('.heatmap-table')) { _lock(row, row.closest('tbody'), 'tr'); }
     });
