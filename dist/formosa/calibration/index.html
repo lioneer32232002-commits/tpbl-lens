@@ -18,11 +18,11 @@
     --bg:      #0f1923;
     --bg2:     #1a2a3a;
     --bg3:     #243447;
-    --accent:  #00d4ff;
+    --accent:  #00e5ff;
     --accent2: #f06292;
     --text:    #e8edf2;
     --text2:   #8fa3b8;
-    --border:  rgba(0,212,255,.18);
+    --border:  rgba(0,229,255,.18);
     --hm-p3:   #0077b6;
     --hm-p2:   #0096c7;
     --hm-p1:   #90e0ef;
@@ -102,20 +102,46 @@
   .mw-sig  { font-size: .68rem; background: rgba(0,212,255,.15); color: var(--accent); border-radius: 4px; padding: .1rem .3rem; }
   .mw-trend{ font-size: .68rem; background: rgba(240,98,146,.12); color: var(--accent2); border-radius: 4px; padding: .1rem .3rem; }
   .mw-stat-meta { font-size: .7rem; color: var(--text2); margin-bottom: .35rem; }
+  /* canvas 正方形容器 */
   .mw-canvas-wrap { position: relative; aspect-ratio: 1/1; }
   .mw-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
   .mw-medians { font-size: .72rem; margin-top: .35rem; line-height: 1.65; }
   /* DATA TABLE: center non-first columns */
   .data-nums th:not(:first-child),
   .data-nums td:not(:first-child) { text-align: center; }
-  /* PACE SMALL MULTIPLES */
-  .pace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .65rem; }
-  .pace-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .6rem; }
-  .pace-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .15rem; }
-  .pace-name { font-weight: 700; font-size: .82rem; color: var(--text); }
-  .pace-avg { font-size: .78rem; color: var(--accent); font-weight: 700; }
-  .pace-meta { font-size: .68rem; color: var(--text2); margin-top: .2rem; display: flex; justify-content: space-between; }
-  .pace-card canvas { display: block; max-width: 100%; }
+  /* PACE VERTICAL STACK */
+  .pace-grid { display: flex; flex-direction: column; gap: .65rem; }
+  .pace-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem .7rem; transition: border-color .15s ease; cursor: pointer; }
+  .pace-card:hover { border-color: rgba(0,229,255,.35); }
+  .pace-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .55rem; }
+  .pace-left { display: flex; align-items: center; gap: .6rem; }
+  .pace-rank { font-size: .72rem; font-weight: 700; color: var(--text2); min-width: 1.8rem; }
+  .pace-name { font-weight: 700; font-size: .92rem; color: var(--text); }
+  .pace-right { display: flex; align-items: baseline; gap: .45rem; }
+  .pace-avg { font-size: 1.25rem; font-weight: 900; }
+  .pace-diff { font-size: .75rem; font-weight: 700; }
+  /* FX: scroll fade-in */
+  .fx-pre { opacity: 0; transform: translateY(16px); }
+  .fx-in  { transition: opacity .5s ease, transform .5s ease; opacity: 1; transform: none; }
+  /* FX: sparkline draw */
+  .pace-line { stroke-dasharray: 500; stroke-dashoffset: 500; transition: stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1); }
+  .pace-card.fx-pace .pace-line { stroke-dashoffset: 0; }
+  /* FX: click-to-lock glow */
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 0 0 1.5px var(--accent), 0 0 12px rgba(0,229,255,.45); }
+    50%     { box-shadow: 0 0 0 1.5px var(--accent), 0 0 26px rgba(0,229,255,.75); }
+  }
+  .locked { animation: glowPulse 2s ease-in-out infinite; position: relative; z-index: 1; }
+  .hm-cell.locked  { outline: 1.5px solid var(--accent); border-radius: 5px; }
+  tr.locked td     { color: var(--accent) !important; font-weight: 700; }
+  .vs-card.locked, .pace-card.locked { border-color: var(--accent) !important; }
+  /* FX: hover interactions */
+  .vs-card { transition: transform .15s ease, border-color .15s ease; cursor: pointer; }
+  .vs-card:not([style*="pointer-events:none"]):hover { transform: translateY(-2px); border-color: rgba(0,229,255,.4); }
+  .hm-cell:not(.hm-null) { cursor: pointer; transition: filter .12s ease; }
+  .hm-cell:not(.hm-null):hover { filter: brightness(1.3); }
+  tbody tr { cursor: pointer; transition: background .12s ease; }
+  tbody tr:hover { background: rgba(255,255,255,.04); }
   /* FOOTER */
   footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; color: var(--text2); font-size: .82rem; margin-top: 3rem; }
   footer a { color: var(--accent); text-decoration: none; }
@@ -141,11 +167,56 @@
     /* 滑動提示 */
     .heatmap-wrap { position: relative; }
     .heatmap-wrap::after { content: "← 左右滑動 →"; display: block; text-align: center; font-size: .68rem; color: var(--text2); margin-top: .4rem; }
-    /* pace small multiples: 兩欄 */
-    .pace-grid { grid-template-columns: repeat(2, 1fr); }
-    .mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+.mw-stat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
   }
 </style>
+<script>
+(function () {
+  function initFade() {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.remove('fx-pre');
+        e.target.classList.add('fx-in');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.06 });
+    var viewH = window.innerHeight;
+    document.querySelectorAll('main > section').forEach(function (s) {
+      if (s.style.display === 'none') return;
+      if (s.getBoundingClientRect().top >= viewH - 40) {
+        s.classList.add('fx-pre');
+        obs.observe(s);
+      }
+    });
+  }
+
+  function initGlow() {
+    document.addEventListener('click', function (e) {
+      var cell = e.target.closest('.hm-cell:not(.hm-null)');
+      if (cell) { _lock(cell, cell.closest('.heatmap-wrap, .card'), '.hm-cell'); return; }
+      var vc = e.target.closest('.vs-card');
+      if (vc) { _lock(vc, vc.closest('.vs-grid'), '.vs-card'); return; }
+      var pc = e.target.closest('.pace-card');
+      if (pc) { _lock(pc, pc.closest('.pace-grid'), '.pace-card'); return; }
+      var row = e.target.closest('tbody tr');
+      if (row && !row.closest('.heatmap-table')) { _lock(row, row.closest('tbody'), 'tr'); }
+    });
+  }
+
+  function _lock(el, scope, sel) {
+    var was = el.classList.contains('locked');
+    if (scope) scope.querySelectorAll(sel + '.locked').forEach(function (x) { x.classList.remove('locked'); });
+    if (!was) el.classList.add('locked');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { initFade(); initGlow(); });
+  } else {
+    initFade(); initGlow();
+  }
+})();
+</script>
 
 </head>
 <body>
