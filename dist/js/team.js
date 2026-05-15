@@ -15,6 +15,18 @@ function _reveal(id) {
   }));
 }
 
+// 等 section 進入視野才執行 fn（確保圖表動畫在使用者看到時才跑）
+function _deferSection(id, fn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const obs = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) return;
+    obs.disconnect();
+    fn();
+  }, { threshold: 0.1 });
+  obs.observe(el);
+}
+
 fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
   .then(r => r.json())
   .then(data => {
@@ -39,11 +51,11 @@ fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
     }
     if (data.player_avg && Object.keys(data.player_avg).length) {
       _reveal('usg-ts');
-      renderUsgTs(data.player_avg);
+      _deferSection('usg-ts', () => renderUsgTs(data.player_avg));
     }
     if (data.scenario_chart && data.scenario_chart.length) {
       _reveal('scenario');
-      renderScenario(data.scenario_chart);
+      _deferSection('scenario', () => renderScenario(data.scenario_chart));
     }
     if (data.quarter_analysis && Object.keys(data.quarter_analysis).length) {
       _reveal('quarter');
@@ -51,11 +63,11 @@ fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
     }
     if (data.mann_whitney && data.mann_whitney.length) {
       _reveal('mann-whitney');
-      renderMannWhitney(data.mann_whitney);
+      _deferSection('mann-whitney', () => renderMannWhitney(data.mann_whitney));
     }
     if (data.roc && Object.keys(data.roc).length) {
       _reveal('roc');
-      renderRoc(data.roc);
+      _deferSection('roc', () => renderRoc(data.roc));
     }
     if (data.last_game_hint && data.last_game_hint.opp) {
       _reveal('last-game');
@@ -446,17 +458,20 @@ function renderMannWhitney(mw) {
     }
   });
 
-  setTimeout(() => {
-    gridEl.querySelectorAll('canvas').forEach((canvas, cardIdx) => {
-      const i = +canvas.dataset.mw;
-      const d = top6[i];
-      if (!d) return;
-      const wins   = Array.isArray(d.wins)   ? d.wins   : [];
-      const losses = Array.isArray(d.losses) ? d.losses : [];
-      const wMed   = +(d.wins_median   ?? 0);
-      const lMed   = +(d.losses_median ?? 0);
-      setTimeout(() => {
-       try {
+  gridEl.querySelectorAll('canvas[data-mw]').forEach(canvas => {
+    const i = +canvas.dataset.mw;
+    const d = top6[i];
+    if (!d) return;
+    const card   = canvas.closest('.mw-stat-card');
+    if (!card) return;
+    const wins   = Array.isArray(d.wins)   ? d.wins   : [];
+    const losses = Array.isArray(d.losses) ? d.losses : [];
+    const wMed   = +(d.wins_median   ?? 0);
+    const lMed   = +(d.losses_median ?? 0);
+    const obs = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      try {
         new Chart(canvas, {
           type: 'scatter',
           plugins: [makeMedianPlugin(wMed, lMed)],
@@ -506,9 +521,9 @@ function renderMannWhitney(mw) {
       } catch(e) {
         console.warn('[mw-card] chart error canvas', i, e.message);
       }
-      }, cardIdx * 100);
-    });
-  }, 0);
+    }, { threshold: 0.3 });
+    obs.observe(card);
+  });
 }
 
 function renderRoc(roc) {
