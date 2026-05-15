@@ -349,7 +349,7 @@ function renderQuarter(qa) {
 }
 
 function renderMannWhitney(mw) {
-  const barEl = document.getElementById('chart-mw');
+  const barEl = document.getElementById('mw-bar-chart');
   const gridEl = document.getElementById('mw-stat-grid');
   if (!mw || !mw.length) return;
   const axis = '#8fa3b8', grid = 'rgba(255,255,255,0.06)';
@@ -357,55 +357,43 @@ function renderMannWhitney(mw) {
   // 依 |r| 由大到小排序
   const sorted = [...mw].sort((a, b) => Math.abs(b.effect_r) - Math.abs(a.effect_r));
 
-  // ── 1. 效應量總覽橫條圖 ──
-  // effect_r < 0 → 勝場較高（青色）；effect_r > 0 → 敗場較高（粉色）
+  // ── 1. 效應量總覽：自訂 HTML 發散橫條圖（從中心往左/右展開）──
   if (barEl) {
-    const labels = sorted.map(d => {
-      const badge = d.significant ? ' ★' : d.p_value < 0.1 ? ' ▲' : '';
-      return d.stat + badge;
+    let html = '<div class="mw-bar-chart">';
+    sorted.forEach(d => {
+      const badge = d.significant
+        ? ` <span style="color:var(--accent);font-size:.7rem">★</span>`
+        : d.p_value < 0.1 ? ` <span style="color:var(--accent2);font-size:.7rem">▲</span>` : '';
+      const isNeg = d.effect_r <= 0;
+      const w = (Math.min(Math.abs(d.effect_r), 1) * 50).toFixed(1);
+      const fillCls = isNeg ? 'mw-bar-neg' : 'mw-bar-pos';
+      const valColor = isNeg ? 'var(--accent)' : 'var(--accent2)';
+      const rStr = (d.effect_r >= 0 ? '+' : '') + d.effect_r.toFixed(2);
+      const tooltip = `r=${d.effect_r.toFixed(3)}  p=${d.p_value.toFixed(4)}  勝/敗中位 ${(+(d.wins_median??0)).toFixed(1)} / ${(+(d.losses_median??0)).toFixed(1)}`;
+      html += `<div class="mw-bar-row" title="${esc(tooltip)}">
+        <div class="mw-bar-name">${esc(d.stat)}${badge}</div>
+        <div class="mw-bar-track">
+          <div class="mw-bar-ref" style="left:25%"></div>
+          <div class="mw-bar-ref" style="left:35%"></div>
+          <div class="mw-bar-ref" style="left:65%"></div>
+          <div class="mw-bar-ref" style="left:75%"></div>
+          <div class="mw-bar-fill ${fillCls}" data-w="${w}%"></div>
+          <div class="mw-bar-axis"></div>
+        </div>
+        <div class="mw-bar-val" style="color:${valColor}">${rStr}</div>
+      </div>`;
     });
-    const colors = sorted.map(d =>
-      d.effect_r <= 0 ? 'rgba(0,229,255,0.78)' : 'rgba(240,98,146,0.78)'
-    );
-    deferChart(barEl, () => new Chart(barEl, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          data: sorted.map(d => d.effect_r),
-          backgroundColor: colors,
-          borderRadius: 3,
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                const d = sorted[ctx.dataIndex];
-                return `r=${d.effect_r.toFixed(3)}  p=${d.p_value.toFixed(4)}  勝/敗中位 ${(+(d.wins_median??0)).toFixed(1)} / ${(+(d.losses_median??0)).toFixed(1)}`;
-              }
-            }
-          },
-          annotation: {
-            annotations: {
-              line03: { type:'line', scaleID:'x', value: 0.3,  borderColor:'rgba(255,255,255,0.2)', borderWidth:1, borderDash:[4,4] },
-              linen03: { type:'line', scaleID:'x', value:-0.3, borderColor:'rgba(255,255,255,0.2)', borderWidth:1, borderDash:[4,4] },
-              line05: { type:'line', scaleID:'x', value: 0.5,  borderColor:'rgba(255,255,255,0.35)', borderWidth:1, borderDash:[4,4] },
-              linen05: { type:'line', scaleID:'x', value:-0.5, borderColor:'rgba(255,255,255,0.35)', borderWidth:1, borderDash:[4,4] },
-            }
-          }
-        },
-        scales: {
-          x: { min:-1, max:1, ticks:{ color:axis }, grid:{ color:grid }, title:{ display:true, text:'效應量 r', color:axis } },
-          y: { ticks:{ color:axis }, grid:{ display:false } }
-        }
-      }
-    }));
+    html += '</div><div style="font-size:.72rem;color:var(--text2);margin-top:.75rem;text-align:center">青色 = 勝場較高・粉色 = 敗場較高　★ 顯著（p &lt; 0.05）　▲ 趨勢（p &lt; 0.10）　虛線：|r| = 0.3 / 0.5 門檻</div>';
+    barEl.innerHTML = html;
+
+    const barObs = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      barObs.disconnect();
+      barEl.querySelectorAll('.mw-bar-fill').forEach((fill, i) => {
+        setTimeout(() => { fill.style.width = fill.dataset.w; }, i * 40);
+      });
+    }, { threshold: 0.1 });
+    barObs.observe(barEl);
   }
 
   // ── 2. 前 6 指標小卡：點狀圖（個別場次）+ 中位線 ──
