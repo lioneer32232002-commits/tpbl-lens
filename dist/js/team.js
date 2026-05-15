@@ -388,9 +388,6 @@ function renderMannWhitney(mw) {
             }
           }
         },
-        animation: {
-          x: { type: 'number', easing: 'easeOutQuart', duration: 900, from: 0 }
-        },
         scales: {
           x: { min:-1, max:1, ticks:{ color:axis }, grid:{ color:grid }, title:{ display:true, text:'效應量 r', color:axis } },
           y: { ticks:{ color:axis }, grid:{ display:false } }
