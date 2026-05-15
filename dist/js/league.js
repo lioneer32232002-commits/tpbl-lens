@@ -18,7 +18,7 @@ function deferChart(el, factory) {
         const item = _deferred.find(d => d.el === e.target);
         if (item) { item.factory(); _obs.unobserve(e.target); }
       });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '0px' });
   }
   _deferred.push({ el, factory });
   _obs.observe(el);
@@ -207,7 +207,7 @@ function makePaceSVG(data, yMin, yMax, leagueAvg, color, dispH = 72) {
   const avgY = py(leagueAvg);
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${dispH}" style="display:block">
     <polygon points="${pts} ${lx},${H} ${fx},${H}" fill="${fillC}"/>
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
+    <polyline class="pace-line" points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
     <line x1="0" y1="${avgY}" x2="${W}" y2="${avgY}" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
   </svg>`;
 }
@@ -253,4 +253,13 @@ function renderPaceTrend(trend) {
   if (summary) {
     summary.textContent = `聯盟平均 ${leagueAvg.toFixed(1)} 回合／場`;
   }
+
+  const paceObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('fx-pace');
+      paceObs.unobserve(e.target);
+    });
+  }, { threshold: 0.15 });
+  host.querySelectorAll('.pace-card').forEach(c => paceObs.observe(c));
 }

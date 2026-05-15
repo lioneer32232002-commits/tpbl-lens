@@ -48,7 +48,7 @@ function deferChart(el, factory) {
           _deferred.splice(idx, 1);
         }
       });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '0px' });
   }
   _deferred.push({ el, factory });
   _obs.observe(el);

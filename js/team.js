@@ -4,6 +4,17 @@ const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 const team = document.querySelector('main')?.dataset.team;
 if (!team) { console.error('[team.js] No team slug found on <main>'); }
 
+function _reveal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = '';
+  el.classList.add('fx-pre');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    el.classList.remove('fx-pre');
+    el.classList.add('fx-in');
+  }));
+}
+
 fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
   .then(r => r.json())
   .then(data => {
@@ -15,39 +26,39 @@ fetch(`/data/${team}_2526.json`, { cache: 'no-store' })
     renderPlayerTable(data.player_avg);
 
     if (data.simulation && data.simulation.prob_playoff != null) {
-      document.getElementById('simulation').style.display = '';
+      _reveal('simulation');
       renderSimulation(data.simulation);
     }
     if (data.heatmap && data.heatmap.length) {
-      document.getElementById('heatmap').style.display = '';
+      _reveal('heatmap');
       renderHeatmap(document.getElementById('heatmap-table'), data.heatmap);
     }
     if (data.ppp_heatmap && data.ppp_heatmap.length) {
-      document.getElementById('ppp-heatmap').style.display = '';
+      _reveal('ppp-heatmap');
       renderPppHeatmap(document.getElementById('ppp-table'), data.ppp_heatmap);
     }
     if (data.player_avg && Object.keys(data.player_avg).length) {
-      document.getElementById('usg-ts').style.display = '';
+      _reveal('usg-ts');
       renderUsgTs(data.player_avg);
     }
     if (data.scenario_chart && data.scenario_chart.length) {
-      document.getElementById('scenario').style.display = '';
+      _reveal('scenario');
       renderScenario(data.scenario_chart);
     }
     if (data.quarter_analysis && Object.keys(data.quarter_analysis).length) {
-      document.getElementById('quarter').style.display = '';
+      _reveal('quarter');
       renderQuarter(data.quarter_analysis);
     }
     if (data.mann_whitney && data.mann_whitney.length) {
-      document.getElementById('mann-whitney').style.display = '';
+      _reveal('mann-whitney');
       renderMannWhitney(data.mann_whitney);
     }
     if (data.roc && Object.keys(data.roc).length) {
-      document.getElementById('roc').style.display = '';
+      _reveal('roc');
       renderRoc(data.roc);
     }
     if (data.last_game_hint && data.last_game_hint.opp) {
-      document.getElementById('last-game').style.display = '';
+      _reveal('last-game');
       renderLastGame(data.last_game_hint);
     }
   })
