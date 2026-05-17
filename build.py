@@ -108,7 +108,10 @@ def _build_robots():
 
 
 def _build_sitemap():
-    urls = [{"loc": f"{BASE_URL}/", "priority": "1.0"}]
+    urls = [
+        {"loc": f"{BASE_URL}/", "priority": "1.0"},
+        {"loc": f"{BASE_URL}/championship/", "priority": "0.9"},
+    ]
     for t in TEAM_PAGES:
         urls.append({"loc": f"{BASE_URL}/{t['slug']}/", "priority": "0.8"})
 
