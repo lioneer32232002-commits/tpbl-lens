@@ -411,10 +411,10 @@
     });
   }
 
-  /* ⑧ Mann-Whitney 勝負關鍵指標 */
+  /* ⑧ Mann-Whitney 勝負關鍵指標（H2H 對戰場次）*/
   function renderMHU(fm, opp, oppKey) {
-    var fmMhu = D.formosa_mhu;
-    var oppMhu = D[oppKey + '_mhu'];
+    var fmMhu  = D['formosa_h2h_mhu']  || D.formosa_mhu;
+    var oppMhu = D[oppKey + '_h2h_mhu'] || D[oppKey + '_mhu'];
     var container = document.getElementById('mhu-compare');
     container.innerHTML = '';
 
@@ -461,11 +461,15 @@
     });
   }
 
-  /* ⑨ 情境分析（各隊各一張） */
+  /* ⑨ 情境分析（H2H 對戰場次，各隊各一張） */
   function renderScenario(fm, opp, oppKey) {
-    var fmS = D.formosa_scenario;
-    var oppS = D[oppKey + '_scenario'];
+    var fmS  = D['formosa_h2h_scenario']   || D.formosa_scenario;
+    var oppS = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
     var labels = fmS.map(function (s) { return s.label; });
+    // n=0 的情境傳 null，讓 Chart.js 不顯示那格
+    function scVal(arr, key) {
+      return arr.map(function (s) { return (s.n > 0) ? +s[key] : null; });
+    }
 
     var scaleOpts = {
       x: { ticks: { color: '#8fa3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.05)' } },
@@ -492,11 +496,11 @@
         data: {
           labels: labels,
           datasets: [
-            { label: '夢想家 勝率', data: fmS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
-              backgroundColor: 'rgba(0,229,255,.7)', borderColor: 'rgba(0,229,255,1)', borderWidth: 1, yAxisID: 'y' },
-            { label: '夢 均分', data: fmS.map(function (s) { return s.team_mean.toFixed(1); }),
+            { label: '夢想家 勝率', data: scVal(fmS, 'win_rate').map(function (v) { return v === null ? null : (v * 100).toFixed(1); }),
+              backgroundColor: 'rgba(0,229,255,.7)', borderColor: 'rgba(0,229,255,1)', borderWidth: 1, yAxisID: 'y', skipNull: true },
+            { label: '夢 均分', data: scVal(fmS, 'team_mean').map(function (v) { return v === null ? null : (+v).toFixed(1); }),
               type: 'line', borderColor: 'rgba(0,229,255,.6)', borderDash: [4,3],
-              pointBackgroundColor: 'rgba(0,229,255,.9)', fill: false, tension: 0.3, yAxisID: 'y2' }
+              pointBackgroundColor: 'rgba(0,229,255,.9)', fill: false, tension: 0.3, yAxisID: 'y2', spanGaps: false }
           ]
         },
         options: { responsive: true,
@@ -516,11 +520,11 @@
         data: {
           labels: labels,
           datasets: [
-            { label: opp.short + ' 勝率', data: oppS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
-              backgroundColor: hexToRgba(opp.color, .65), borderColor: opp.color, borderWidth: 1, yAxisID: 'y' },
-            { label: opp.short + ' 均分', data: oppS.map(function (s) { return s.team_mean.toFixed(1); }),
+            { label: opp.short + ' 勝率', data: scVal(oppS, 'win_rate').map(function (v) { return v === null ? null : (v * 100).toFixed(1); }),
+              backgroundColor: hexToRgba(opp.color, .65), borderColor: opp.color, borderWidth: 1, yAxisID: 'y', skipNull: true },
+            { label: opp.short + ' 均分', data: scVal(oppS, 'team_mean').map(function (v) { return v === null ? null : (+v).toFixed(1); }),
               type: 'line', borderColor: hexToRgba(opp.color, .6), borderDash: [4,3],
-              pointBackgroundColor: hexToRgba(opp.color, .9), fill: false, tension: 0.3, yAxisID: 'y2' }
+              pointBackgroundColor: hexToRgba(opp.color, .9), fill: false, tension: 0.3, yAxisID: 'y2', spanGaps: false }
           ]
         },
         options: { responsive: true,
@@ -529,16 +533,18 @@
       });
     }
 
-    // 情境 table
+    // 情境 table（只顯示有比賽場次的情境）
     var tbl = document.getElementById('scenario-table');
     var rows = labels.map(function (lbl, i) {
       var fs = fmS[i], os = oppS[i];
+      var fEmpty = !fs || (fs.n === 0);
+      var oEmpty = !os || (os.n === 0);
       return '<tr>' +
         '<td style="font-weight:700;color:var(--text)">' + lbl + '</td>' +
-        '<td style="color:var(--accent)">' + (fs.win_rate * 100).toFixed(0) + '%</td>' +
-        '<td>' + fs.team_mean.toFixed(1) + ' 分</td>' +
-        '<td style="color:var(--opp-color)">' + (os.win_rate * 100).toFixed(0) + '%</td>' +
-        '<td>' + os.team_mean.toFixed(1) + ' 分</td>' +
+        '<td style="color:var(--accent)">' + (fEmpty ? '—' : (fs.win_rate * 100).toFixed(0) + '%') + '</td>' +
+        '<td>' + (fEmpty ? '—' : fs.team_mean.toFixed(1) + ' 分 (' + fs.n + '場)') + '</td>' +
+        '<td style="color:var(--opp-color)">' + (oEmpty ? '—' : (os.win_rate * 100).toFixed(0) + '%') + '</td>' +
+        '<td>' + (oEmpty ? '—' : os.team_mean.toFixed(1) + ' 分 (' + os.n + '場)') + '</td>' +
         '</tr>';
     }).join('');
     tbl.innerHTML =
