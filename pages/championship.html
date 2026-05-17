@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <title>TPBL 2025-26 冠軍戰分析｜TPBL-Lens</title>
+  <meta name="description" content="TPBL 2025-26 冠軍賽對戰分析——效率比較、交手紀錄、勝負關鍵指標、球員效率、預測">
+  <link rel="canonical" href="https://tpbl-lens.pages.dev/championship/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tpbl-lens.pages.dev/championship/">
+  <meta property="og:title" content="TPBL 2025-26 冠軍戰分析｜TPBL-Lens">
+  <meta property="og:description" content="TPBL 2025-26 冠軍賽對戰分析——效率比較、交手紀錄、勝負關鍵指標、球員效率、預測">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="TPBL-Lens">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TPBL 2025-26 冠軍戰分析｜TPBL-Lens">
+  {{HEAD}}
+  <style>
+    /* ── 冠軍戰專屬樣式 ── */
+    .champ-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(0,229,255,.08) 0%, rgba(26,42,58,.0) 50%, rgba(var(--opp-rgb),.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.25rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .champ-hero::before {
+      content: "🏆";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 5rem;
+      opacity: .06;
+      pointer-events: none;
+    }
+    .hero-team { flex: 1; text-align: center; }
+    .hero-name { font-size: .78rem; color: var(--text2); margin-bottom: .35rem; }
+    .hero-short { font-size: 1.6rem; font-weight: 900; margin-bottom: .4rem; }
+    .hero-short.formosa { color: var(--accent); }
+    .hero-short.opponent { color: var(--opp-color, #ffd700); }
+    .hero-record { font-size: 1.15rem; font-weight: 700; color: var(--text); }
+    .hero-netrtg { font-size: .8rem; color: var(--text2); margin-top: .2rem; }
+    .hero-netrtg span { font-weight: 700; }
+    .hero-vs { font-size: 1.4rem; font-weight: 900; color: var(--text2); padding: 0 .5rem; flex-shrink: 0; }
+
+    /* 切換對手 */
+    .opp-toggle { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .opp-btn {
+      padding: .45rem 1.1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: .87rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: inherit;
+    }
+    .opp-btn:hover { border-color: rgba(0,229,255,.4); color: var(--text); }
+    .opp-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,.12); }
+    .opp-btn.pending { border-color: var(--accent2); color: var(--accent2); background: rgba(240,98,146,.1); }
+
+    /* 對決 stat 比較列 */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: .5rem .75rem;
+      align-items: center;
+    }
+    .cmp-label {
+      grid-column: 2;
+      font-size: .75rem;
+      color: var(--text2);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .cmp-val-f { text-align: right; font-weight: 700; font-size: 1.05rem; }
+    .cmp-val-o { text-align: left;  font-weight: 700; font-size: 1.05rem; }
+    .cmp-val-f.better { color: var(--accent); }
+    .cmp-val-o.better { color: var(--opp-color, #ffd700); }
+    .cmp-bar-row {
+      grid-column: 1 / -1;
+      display: flex;
+      height: 7px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg3);
+      margin: -.25rem 0 .35rem;
+    }
+    .cmp-bar-f { background: var(--accent); transition: width .7s cubic-bezier(.4,0,.2,1); }
+    .cmp-bar-o { background: var(--opp-color, #ffd700); transition: width .7s cubic-bezier(.4,0,.2,1); }
+
+    /* H2H 게임 table */
+    .h2h-badge {
+      display: inline-block;
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .h2h-w { background: rgba(0,229,255,.18); color: var(--accent); }
+    .h2h-l { background: rgba(240,98,146,.15); color: var(--accent2); }
+    .h2h-home-tag {
+      display: inline-block;
+      font-size: .66rem;
+      color: var(--text2);
+      border: 1px solid var(--bg3);
+      border-radius: 3px;
+      padding: .05rem .3rem;
+      margin-left: .3rem;
+    }
+
+    /* 得分來源 stacked bar */
+    .score-src-row { margin-bottom: .85rem; }
+    .score-src-label { display: flex; justify-content: space-between; font-size: .78rem; color: var(--text2); margin-bottom: .25rem; }
+    .score-src-label strong { color: var(--text); }
+    .score-src-bar {
+      display: flex;
+      height: 22px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .src-three  { background: #00e5ff; }
+    .src-mid    { background: #4fc3f7; }
+    .src-paint  { background: #f06292; }
+    .src-ft     { background: #ffcc02; }
+    .score-src-legend {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin-top: .65rem;
+      font-size: .72rem;
+      color: var(--text2);
+    }
+    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: .25rem; vertical-align: middle; }
+
+    /* 主客場雙欄 */
+    .ha-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .ha-card { background: var(--bg3); border-radius: 8px; padding: .75rem 1rem; }
+    .ha-team-name { font-size: .78rem; color: var(--text2); margin-bottom: .5rem; }
+    .ha-row { display: flex; justify-content: space-between; margin-bottom: .3rem; font-size: .84rem; }
+    .ha-row .label { color: var(--text2); }
+    .ha-row .value { font-weight: 700; }
+
+    /* 節次比較 */
+    .quarter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .quarter-card { background: var(--bg3); border-radius: 8px; padding: .65rem .5rem; text-align: center; }
+    .quarter-name { font-size: .7rem; color: var(--text2); margin-bottom: .4rem; font-weight: 700; }
+    .quarter-scores { display: flex; justify-content: space-around; align-items: flex-end; gap: .3rem; }
+    .quarter-team { text-align: center; }
+    .quarter-score { font-size: 1.05rem; font-weight: 900; }
+    .quarter-score.formosa { color: var(--accent); }
+    .quarter-score.opponent { color: var(--opp-color, #ffd700); }
+    .quarter-sep { font-size: .78rem; color: var(--text2); margin-bottom: .15rem; }
+    .quarter-winrate { font-size: .68rem; color: var(--text2); margin-top: .2rem; }
+
+    /* 球員表格 */
+    .player-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .player-panel h3 { font-size: .84rem; font-weight: 700; margin-bottom: .65rem; }
+    .player-panel h3.formosa { color: var(--accent); }
+    .player-panel h3.opponent { color: var(--opp-color, #ffd700); }
+
+    /* 勝負預測 */
+    .pred-container { display: flex; flex-direction: column; gap: .85rem; }
+    .pred-bar-wrap { display: flex; align-items: center; gap: .75rem; }
+    .pred-label { font-size: .8rem; color: var(--text2); white-space: nowrap; min-width: 80px; }
+    .pred-bar-bg {
+      flex: 1;
+      height: 28px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg3);
+      display: flex;
+    }
+    .pred-bar-f {
+      background: linear-gradient(90deg, rgba(0,229,255,.9), rgba(0,229,255,.7));
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: .4rem;
+      font-size: .78rem; font-weight: 700; color: #000;
+      transition: width .9s cubic-bezier(.4,0,.2,1);
+    }
+    .pred-bar-o {
+      background: linear-gradient(90deg, rgba(var(--opp-rgb),.7), rgba(var(--opp-rgb),.9));
+      display: flex; align-items: center; justify-content: flex-start;
+      padding-left: .4rem;
+      font-size: .78rem; font-weight: 700; color: #000;
+      transition: width .9s cubic-bezier(.4,0,.2,1);
+    }
+    .pred-note { font-size: .73rem; color: var(--text2); line-height: 1.55; }
+    .pred-factors { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; margin-top: .5rem; }
+    .factor-card { background: var(--bg3); border-radius: 7px; padding: .55rem .75rem; }
+    .factor-name { font-size: .72rem; color: var(--text2); margin-bottom: .15rem; }
+    .factor-edge { font-size: .84rem; font-weight: 700; }
+    .edge-f { color: var(--accent); }
+    .edge-o { color: var(--opp-color, #ffd700); }
+    .edge-tie { color: var(--text2); }
+
+    /* pending 按鈕跳動 */
+    @keyframes pendingPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(240,98,146,.0); border-color: var(--accent2); }
+      50%      { box-shadow: 0 0 0 3px rgba(240,98,146,.25); border-color: rgba(240,98,146,.7); }
+    }
+    .opp-btn.pending { animation: pendingPulse 2s ease-in-out infinite; }
+
+    /* 英雄卡發光邊框（切換對手時） */
+    @keyframes heroBorderPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(0,229,255,.0); }
+      40%  { box-shadow: 0 0 16px 2px rgba(0,229,255,.25); }
+      100% { box-shadow: 0 0 0 0 rgba(0,229,255,.0); }
+    }
+    .champ-hero.glow { animation: heroBorderPulse .7s ease-out; }
+
+    /* MHU / factor card lock glow */
+    .mhu-row.locked    { background: rgba(0,229,255,.07) !important; }
+    .factor-card       { transition: border-color .15s; cursor: pointer; border: 1px solid transparent; }
+    .factor-card:hover { border-color: rgba(0,229,255,.25); }
+    .factor-card.locked { border-color: var(--accent) !important; }
+
+    /* 折疊標題 hover */
+    #extended-toggle:hover { color: var(--text); }
+    #extended-toggle { transition: color .15s; }
+
+    /* pending overlay */
+    .pending-notice {
+      display: none;
+      background: rgba(240,98,146,.1);
+      border: 1px dashed var(--accent2);
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      font-size: .84rem;
+      color: var(--accent2);
+      margin-bottom: 1.5rem;
+    }
+    .pending-notice.show { display: block; }
+
+    /* MHU 並排 */
+    .mhu-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+    .mhu-panel { }
+    .mhu-panel-title { font-size: .8rem; font-weight: 700; margin-bottom: .6rem; }
+    .mhu-row { display: grid; grid-template-columns: 5.5rem 1fr 2.5rem; align-items: center; gap: .3rem .5rem; padding: .22rem 0; border-radius: 4px; cursor: pointer; transition: background .12s; }
+    .mhu-row:hover { background: rgba(255,255,255,.04); }
+    .mhu-stat-name { font-size: .76rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mhu-bar-track { position: relative; height: 14px; background: var(--bg3); border-radius: 3px; }
+    .mhu-bar-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px; transition: width .7s cubic-bezier(.4,0,.2,1); }
+    .mhu-val { font-size: .72rem; font-weight: 700; white-space: nowrap; }
+    .mhu-sig-star { color: var(--accent); }
+
+    /* 情境分析 table */
+    .scenario-tbl { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: .5rem; }
+    .scenario-tbl th { color: var(--text2); font-size: .75rem; padding: .35rem .5rem; border-bottom: 1px solid var(--bg3); text-align: center; }
+    .scenario-tbl td { padding: .35rem .5rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .scenario-tbl tr:last-child td { border-bottom: none; }
+
+    /* 熱力圖並排 */
+    .heatmap-side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .hm-panel { overflow-x: auto; }
+    .hm-panel-title { font-size: .78rem; font-weight: 700; margin-bottom: .5rem; }
+
+    /* mini bar for heatmap */
+    .mini-bar-row { display: grid; grid-template-columns: 5.5rem 1fr 3rem; align-items: center; gap: .3rem .4rem; padding: .18rem 0; }
+    .mini-bar-name { font-size: .74rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-bar-track { height: 12px; background: var(--bg3); border-radius: 3px; position: relative; }
+    .mini-bar-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; transition: width .7s; }
+    .mini-bar-pos { left: 50%; background: var(--accent); }
+    .mini-bar-neg { right: 50%; background: var(--accent2); }
+    .mini-bar-axis { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,.25); }
+    .mini-bar-val { font-size: .7rem; font-weight: 700; text-align: right; white-space: nowrap; }
+
+    @media (max-width: 600px) {
+      .champ-hero { flex-direction: column; gap: .5rem; }
+      .hero-vs { transform: rotate(90deg); }
+      .compare-grid { font-size: .9rem; }
+      .ha-compare { grid-template-columns: 1fr; }
+      .quarter-grid { grid-template-columns: repeat(2, 1fr); }
+      .player-compare { grid-template-columns: 1fr; }
+      .pred-label { min-width: 60px; font-size: .72rem; }
+      .mhu-compare { grid-template-columns: 1fr; }
+      .heatmap-side-by-side { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+{{NAV}}
+<main id="champ-main">
+
+  <!-- 對手切換 -->
+  <section id="opp-select" style="margin-bottom:1.5rem">
+    <div class="card" style="padding:.85rem 1.25rem">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <span style="font-size:.84rem;color:var(--text2);white-space:nowrap">冠軍戰對手：</span>
+        <div class="opp-toggle">
+          <button class="opp-btn pending" data-opp="kings">🆚 新北國王</button>
+          <button class="opp-btn pending" data-opp="leopards">🆚 桃園雲豹</button>
+        </div>
+        <span id="opp-status" style="font-size:.75rem;color:var(--accent2)">等待今晚確認對手…</span>
+      </div>
+    </div>
+  </section>
+
+  <div id="pending-notice" class="pending-notice show">
+    ⏳ 冠軍戰對手尚未確認，以下顯示兩種對陣的完整分析。確定對手後點選上方按鈕即可鎖定。
+  </div>
+
+  <!-- ① 對決英雄區塊 -->
+  <section id="matchup-hero">
+    <h2>對決概況</h2>
+    <div id="hero-card" class="champ-hero card">
+      <div class="hero-team">
+        <div class="hero-name">福爾摩沙夢想家</div>
+        <div class="hero-short formosa">夢想家</div>
+        <div class="hero-record" id="hero-record-f">22 勝 14 敗</div>
+        <div class="hero-netrtg">Net Rtg <span style="color:var(--accent)">+4.7</span></div>
+      </div>
+      <div class="hero-vs">VS</div>
+      <div class="hero-team">
+        <div class="hero-name" id="hero-opp-fullname">—</div>
+        <div class="hero-short opponent" id="hero-opp-short">?</div>
+        <div class="hero-record" id="hero-record-o">—</div>
+        <div class="hero-netrtg" id="hero-netrtg-o">Net Rtg <span>—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 效率比較 -->
+  <section id="efficiency">
+    <h2>每百回合效率比較</h2>
+    <div class="card">
+      <div class="compare-grid" id="eff-compare">
+        <!-- 由 JS 填入 -->
+      </div>
+      <div class="card chart-wrap" style="margin-top:1rem;padding:0;background:transparent;border:none">
+        <canvas id="chart-eff" style="max-height:280px"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 例行賽交手紀錄 -->
+  <section id="h2h">
+    <h2>例行賽交手紀錄</h2>
+    <div class="card">
+      <div id="h2h-summary" style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap"></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>夢想家</th>
+              <th></th>
+              <th id="h2h-opp-col">對手</th>
+              <th>主場</th>
+              <th>勝負</th>
+            </tr>
+          </thead>
+          <tbody id="h2h-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ 得分來源 -->
+  <section id="scoring">
+    <h2>得分來源比較</h2>
+    <div class="card">
+      <div id="scoring-bars"></div>
+      <div class="score-src-legend">
+        <span><span class="legend-dot" style="background:#00e5ff"></span>三分</span>
+        <span><span class="legend-dot" style="background:#4fc3f7"></span>中距離</span>
+        <span><span class="legend-dot" style="background:#f06292"></span>禁區</span>
+        <span><span class="legend-dot" style="background:#ffcc02"></span>罰球</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 主客場 -->
+  <section id="home-away">
+    <h2>主客場優勢</h2>
+    <div class="ha-compare" id="ha-compare"></div>
+  </section>
+
+  <!-- ⑥ 節次分析 -->
+  <section id="quarter">
+    <h2>節次分析（例行賽平均）</h2>
+    <div class="card">
+      <div class="quarter-grid" id="quarter-grid"></div>
+      <div style="margin-top:.75rem;font-size:.72rem;color:var(--text2)">
+        括號內為各節奪得節次比例（該節得分領先場次 / 總場次）
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑦ 球員比較 -->
+  <section id="players">
+    <h2>關鍵球員（例行賽均值）</h2>
+    <div class="player-compare" id="player-compare"></div>
+  </section>
+
+  <!-- ⑧ Mann-Whitney 勝負關鍵指標 -->
+  <section id="mann-whitney">
+    <h2>勝負關鍵指標（Mann-Whitney）</h2>
+    <div class="card" style="margin-bottom:.75rem">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
+        各隊勝場與敗場的指標中位數差異，★ 為統計顯著（p&lt;0.05），顏色深淺代表效應量大小。
+      </div>
+      <div id="mhu-compare" class="mhu-compare"></div>
+    </div>
+  </section>
+
+  <!-- ⑨ 情境分析 -->
+  <section id="scenario">
+    <h2>情境分析（例行賽）</h2>
+    <div class="card">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
+        依例行賽三分命中率 + 助攻數將每場比賽分為 Best / Ideal / Fair / Low 四種情境，看各隊在不同情境下的表現。
+      </div>
+      <div class="card chart-wrap" style="padding:0;background:transparent;border:none">
+        <canvas id="chart-scenario" style="max-height:300px"></canvas>
+      </div>
+      <div id="scenario-table" style="margin-top:1rem"></div>
+    </div>
+  </section>
+
+  <!-- ⑩ USG% vs TS% 散點圖 -->
+  <section id="usg-ts">
+    <h2>球員效率 — USG% vs TS%</h2>
+    <div class="card chart-wrap">
+      <canvas id="chart-usg-ts" style="max-height:380px"></canvas>
+    </div>
+    <div style="font-size:.72rem;color:var(--text2);margin-top:.5rem">
+      右上角為高用球量且高效率。圓圈大小代表場均得分。
+    </div>
+  </section>
+
+  <!-- ⑪ 勝負預測 -->
+  <section id="prediction">
+    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
+    <div class="card">
+      <div class="pred-container">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
+            <span id="pred-team-a-label">夢想家</span><span id="pred-opp-label">對手</span>
+          </div>
+          <div class="pred-bar-bg" id="pred-bar-main">
+            <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
+            <div class="pred-bar-o" id="pred-fill-o" style="width:50%">—%</div>
+          </div>
+        </div>
+        <div class="pred-note" id="pred-note">
+          根據例行賽 Net Rating 差距與對戰紀錄加權估算。
+        </div>
+        <div class="pred-factors" id="pred-factors"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑫ 延伸閱讀（折疊） -->
+  <section id="extended">
+    <h2 style="cursor:pointer" id="extended-toggle" onclick="toggleExtended()">
+      延伸閱讀 — Plus/Minus &amp; PPP 熱力圖
+      <span id="extended-arrow" style="font-size:.8rem;margin-left:.4rem">▼ 展開</span>
+    </h2>
+    <div id="extended-content" style="display:none">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:1rem">
+        僅顯示對本次對手的 Plus/Minus（每36分鐘±值）與 PPP（每回合得分）。
+      </div>
+      <!-- Plus/Minus -->
+      <div style="margin-bottom:1.5rem">
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 Plus/Minus（對本對手）</h3>
+        <div class="heatmap-side-by-side" id="pm-compare"></div>
+      </div>
+      <!-- PPP -->
+      <div>
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 PPP（對本對手）</h3>
+        <div class="heatmap-side-by-side" id="ppp-compare"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+{{FOOTER}}
+<script src="/js/common.js"></script>
+<script src="/js/championship.js"></script>
+<script>
+function toggleExtended() {
+  var c = document.getElementById('extended-content');
+  var a = document.getElementById('extended-arrow');
+  var open = c.style.display !== 'none';
+  c.style.display = open ? 'none' : 'block';
+  a.textContent = open ? '▼ 展開' : '▲ 收起';
+}
+</script>
+</body>
+</html>

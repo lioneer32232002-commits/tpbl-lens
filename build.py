@@ -17,6 +17,10 @@ TEAM_PAGES = [
     {"slug": "warriors", "name": "臺北台新戰神",       "title": "戰神 2025-26 賽季分析｜TPBL-Lens"},
 ]
 
+CHAMP_PAGES = [
+    {"slug": "championship", "title": "夢想家冠軍戰分析 2025-26｜TPBL-Lens"},
+]
+
 CAL_PAGES = [
     {"slug": "formosa", "name": "福爾摩沙夢想家", "title": "夢想家預測校準紀錄｜TPBL-Lens"},
     {"slug": "lions",   "name": "新竹御嵿攻城獅", "title": "攻城獅預測校準紀錄｜TPBL-Lens"},
@@ -52,6 +56,12 @@ def build():
         content = content.replace("{{TEAM_SLUG}}", t["slug"])
         content = content.replace("{{TEAM_NAME}}", t["name"])
         content = content.replace("{{TEAM_TITLE}}", t["title"])
+        _write(os.path.join(DIST, t["slug"], "index.html"), content)
+
+    champ_src = _read(os.path.join(PAGES, "championship.html"))
+    for t in CHAMP_PAGES:
+        content = inject_partials(champ_src, head, nav, footer)
+        content = content.replace("{{TEAM_SLUG}}", t["slug"])
         _write(os.path.join(DIST, t["slug"], "index.html"), content)
 
     cal_src = _read(os.path.join(PAGES, "calibration.html"))
