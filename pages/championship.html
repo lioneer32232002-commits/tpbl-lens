@@ -440,6 +440,41 @@
     .factor-card:hover { border-color: rgba(0,229,255,.25); }
     .factor-card.locked { border-color: var(--accent) !important; }
 
+    /* ── 預測：賽程圓點 ── */
+    .pred-schedule { display:flex; gap:.45rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.25rem; }
+    .pred-game-dot {
+      width:42px; height:42px; border-radius:50%;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-size:.6rem; font-weight:700; line-height:1.3; cursor:default;
+    }
+    .pred-game-dot.home-f { background:rgba(0,229,255,.1); border:1.5px solid var(--accent); color:var(--accent); }
+    .pred-game-dot.home-o { background:rgba(var(--opp-rgb),.1); border:1.5px solid var(--opp-color); color:var(--opp-color); }
+    .pred-game-dot.tbd    { background:rgba(255,255,255,.03); border:1px dashed rgba(255,255,255,.18); color:var(--text2); }
+    /* ── 預測：大機率 ── */
+    .pred-prob-big { display:flex; align-items:center; justify-content:center; gap:2rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+    .pred-prob-team { text-align:center; }
+    .pred-prob-num { font-size:3rem; font-weight:900; line-height:1; margin-bottom:.25rem; }
+    .pred-prob-label { font-size:.78rem; color:var(--text2); }
+    .pred-vs-sep { font-size:1.2rem; color:var(--text2); font-weight:300; }
+    /* ── 預測：G1 效應 ── */
+    .pred-g1-card {
+      background:rgba(0,229,255,.05); border:1px solid rgba(0,229,255,.18);
+      border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1rem;
+    }
+    .pred-g1-title { font-size:.75rem; color:var(--accent); font-weight:700; margin-bottom:.75rem; letter-spacing:.04em; }
+    .pred-g1-row { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:.6rem; }
+    .pred-g1-item { text-align:center; flex:1; min-width:72px; }
+    .pred-g1-num { font-size:2rem; font-weight:900; line-height:1; }
+    .pred-g1-sub { font-size:.68rem; color:var(--text2); margin-top:.2rem; line-height:1.4; }
+    /* ── 預測：路徑分佈 ── */
+    .pred-paths { margin-bottom:1rem; }
+    .pred-path-title { font-size:.73rem; font-weight:700; margin-bottom:.4rem; letter-spacing:.03em; }
+    .pred-path-row { display:flex; align-items:center; gap:.5rem; margin-bottom:.28rem; }
+    .pred-path-label { font-size:.72rem; color:var(--text2); width:44px; text-align:right; flex-shrink:0; }
+    .pred-path-bar-bg { flex:1; height:13px; background:var(--bg3); border-radius:3px; overflow:hidden; }
+    .pred-path-bar-fill { height:100%; border-radius:3px; transition:width .75s cubic-bezier(.25,.46,.45,.94); }
+    .pred-path-val { font-size:.72rem; font-weight:700; width:28px; flex-shrink:0; }
+
     /* 折疊標題 hover */
     #extended-toggle:hover { color: var(--text); }
     #extended-toggle { transition: color .15s; }
@@ -533,22 +568,8 @@
   <!-- ② 勝負預測 -->
   <section id="prediction">
     <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
-    <div class="card">
-      <div class="pred-container">
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
-            <span id="pred-team-a-label">夢想家</span><span id="pred-opp-label">對手</span>
-          </div>
-          <div class="pred-bar-bg" id="pred-bar-main">
-            <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
-            <div class="pred-bar-o" id="pred-fill-o" style="width:50%">—%</div>
-          </div>
-        </div>
-        <div class="pred-note" id="pred-note">
-          根據例行賽 Net Rating 差距與對戰紀錄加權估算。
-        </div>
-        <div class="pred-factors" id="pred-factors"></div>
-      </div>
+    <div class="card" id="pred-card">
+      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
     </div>
   </section>
 
@@ -593,12 +614,7 @@
     <h2>得分來源比較</h2>
     <div class="card">
       <div id="scoring-bars"></div>
-      <div class="score-src-legend">
-        <span><span class="legend-dot" style="background:#00e5ff"></span>三分</span>
-        <span><span class="legend-dot" style="background:#4fc3f7"></span>中距離</span>
-        <span><span class="legend-dot" style="background:#f06292"></span>禁區</span>
-        <span><span class="legend-dot" style="background:#ffcc02"></span>罰球</span>
-      </div>
+      <div class="score-src-legend" id="scoring-legend"></div>
     </div>
   </section>
 

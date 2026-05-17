@@ -47,7 +47,7 @@
     renderPrediction(fm, opp, h2h);
     renderHeatmaps(fm, opp, oppKey);
     // 觸發所有 bar 動畫
-    animateBars('.cmp-bar-f, .cmp-bar-o, .mhu-bar-fill, .pred-bar-f, .pred-bar-o, .mini-bar-fill');
+    animateBars('.cmp-bar-f, .cmp-bar-o, .mhu-bar-fill, .mini-bar-fill');
   }
 
   /* ① 英雄區塊 */
@@ -190,19 +190,25 @@
   }
 
   /* ④ 得分來源 */
+  var SCORE_COLORS = {
+    formosa:  ['#00e5ff', '#0091b8', '#005f80', '#80f0ff'],
+    opponent: ['#ffd700', '#e8a020', '#b07800', '#ffe980']
+  };
+
   function renderScoring(fm, opp) {
     var container = document.getElementById('scoring-bars');
     container.innerHTML = '';
 
     [
-      { label: '夢想家', cls: 'formosa', s: fm.scoring },
-      { label: opp.short, cls: 'opponent', s: opp.scoring }
+      { label: '夢想家', s: fm.scoring,  colors: SCORE_COLORS.formosa },
+      { label: opp.short, s: opp.scoring, colors: SCORE_COLORS.opponent }
     ].forEach(function (item) {
       var total = item.s.total;
-      var threePct  = (item.s.three  / total * 100).toFixed(1);
-      var midPct    = (item.s.mid    / total * 100).toFixed(1);
-      var paintPct  = (item.s.paint  / total * 100).toFixed(1);
-      var ftPct     = (100 - +threePct - +midPct - +paintPct).toFixed(1);
+      var threePct = (item.s.three / total * 100).toFixed(1);
+      var midPct   = (item.s.mid   / total * 100).toFixed(1);
+      var paintPct = (item.s.paint / total * 100).toFixed(1);
+      var ftPct    = (100 - +threePct - +midPct - +paintPct).toFixed(1);
+      var c = item.colors;
 
       var row = document.createElement('div');
       row.className = 'score-src-row';
@@ -212,13 +218,28 @@
           '<span>三分 ' + item.s.three + '　中距 ' + item.s.mid + '　禁區 ' + item.s.paint + '　罰球 ' + item.s.ft + '　共 ' + total + ' 分</span>' +
         '</div>' +
         '<div class="score-src-bar">' +
-          '<div class="src-three"  title="三分 ' + item.s.three + '" style="width:' + threePct  + '%"></div>' +
-          '<div class="src-mid"    title="中距 ' + item.s.mid   + '" style="width:' + midPct    + '%"></div>' +
-          '<div class="src-paint"  title="禁區 ' + item.s.paint + '" style="width:' + paintPct  + '%"></div>' +
-          '<div class="src-ft"     title="罰球 ' + item.s.ft    + '" style="width:' + ftPct     + '%"></div>' +
+          '<div style="width:' + threePct + '%;background:' + c[0] + '" title="三分 ' + item.s.three + '"></div>' +
+          '<div style="width:' + midPct   + '%;background:' + c[1] + '" title="中距 ' + item.s.mid   + '"></div>' +
+          '<div style="width:' + paintPct + '%;background:' + c[2] + '" title="禁區 ' + item.s.paint + '"></div>' +
+          '<div style="width:' + ftPct    + '%;background:' + c[3] + '" title="罰球 ' + item.s.ft    + '"></div>' +
         '</div>';
       container.appendChild(row);
     });
+
+    var legend = document.getElementById('scoring-legend');
+    if (legend) {
+      legend.innerHTML =
+        scoreLegendGroup('夢想家', SCORE_COLORS.formosa) +
+        scoreLegendGroup(opp.short, SCORE_COLORS.opponent);
+    }
+  }
+
+  function scoreLegendGroup(teamLabel, colors) {
+    var labels = ['三分', '中距', '禁區', '罰球'];
+    var dots = labels.map(function (l, i) {
+      return '<span><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + '</span>';
+    }).join('');
+    return '<span style="font-size:.7rem;font-weight:700;color:var(--text2);margin-right:.4rem">' + teamLabel + '：</span>' + dots + '　';
   }
 
   /* ⑤ 主客場 */
@@ -581,89 +602,202 @@
     });
   }
 
-  /* 7 戰 4 勝制系列賽奪冠機率（給定單場勝率） */
-  function seriesWinProb(p) {
-    // P(贏得系列賽) = Σ C(3+k, k) * p^4 * (1-p)^k，k=0..3
-    var q = 1 - p;
-    var total = 0;
-    // k = 對手勝場數 0,1,2,3（總場數 4,5,6,7）
-    for (var k = 0; k <= 3; k++) {
-      total += binom(3 + k, k) * Math.pow(p, 4) * Math.pow(q, k);
+  /* ── 賽程（7戰4勝，夢想家主場優勢）── */
+  var SERIES_SCHEDULE = ['h','h','a','a','h','a','h'];
+  var SERIES_GAMES = [
+    { label: 'G1', date: '5/24', home: 'f', tbd: false },
+    { label: 'G2', date: '5/26', home: 'f', tbd: false },
+    { label: 'G3', date: '5/29', home: 'o', tbd: false },
+    { label: 'G4', date: '5/31', home: 'o', tbd: false },
+    { label: 'G5', date: '6/2',  home: 'f', tbd: true },
+    { label: 'G6', date: '6/4',  home: 'o', tbd: true },
+    { label: 'G7', date: '6/6',  home: 'f', tbd: true }
+  ];
+
+  /* Monte Carlo 模擬（指定主客場勝率） */
+  function simSeries(pHome, pAway, sched, fNeed, kNeed) {
+    var N = 60000;
+    var wins = 0;
+    for (var i = 0; i < N; i++) {
+      var f = 0, k = 0, g = 0;
+      while (f < fNeed && k < kNeed) {
+        var p = sched[g] === 'h' ? pHome : pAway;
+        if (Math.random() < p) { f++; } else { k++; }
+        g++;
+      }
+      if (f >= fNeed) { wins++; }
     }
-    return total;
+    return wins / N;
   }
 
-  function binom(n, k) {
-    if (k === 0 || k === n) return 1;
-    var result = 1;
-    for (var i = 0; i < k; i++) { result = result * (n - i) / (i + 1); }
-    return result;
+  function computePaths(pHome, pAway, sched) {
+    var N = 60000;
+    var f = [0,0,0,0], k = [0,0,0,0];
+    for (var i = 0; i < N; i++) {
+      var fw = 0, kw = 0, g = 0;
+      while (fw < 4 && kw < 4) {
+        var p = sched[g] === 'h' ? pHome : pAway;
+        if (Math.random() < p) { fw++; } else { kw++; }
+        g++;
+      }
+      if (fw >= 4) { f[kw]++; } else { k[fw]++; }
+    }
+    for (var j = 0; j < 4; j++) { f[j] /= N; k[j] /= N; }
+    return { f: f, k: k };
   }
 
   /* ⑪ 勝負預測 */
   function renderPrediction(fm, opp, h2h) {
-    document.getElementById('pred-opp-label').textContent = opp.short;
-    document.getElementById('pred-team-a-label').textContent = '夢想家';
+    var card = document.getElementById('pred-card');
+    if (!card) { return; }
+    card.innerHTML = '';
 
     var wins = h2h.filter(function (g) { return g.won; }).length;
     var h2hWinRate = wins / h2h.length;
-
-    // Net Rtg 換算單場勝率
     var netDiff = fm.netrtg - opp.netrtg;
-    var netProb = 0.5 + netDiff * 0.025;
-    netProb = Math.min(0.82, Math.max(0.18, netProb));
+    var netProb = Math.min(0.82, Math.max(0.18, 0.5 + netDiff * 0.025));
+    var gameProb = Math.min(0.78, Math.max(0.22, netProb * 0.6 + h2hWinRate * 0.4));
+    var HOME_BOOST = 0.10;
+    var pH = Math.min(0.82, gameProb + HOME_BOOST);
+    var pA = Math.max(0.18, gameProb - HOME_BOOST);
 
-    // 加權單場勝率：Net Rtg 60%，H2H 40%
-    var gameProbRaw = netProb * 0.6 + h2hWinRate * 0.4;
-    gameProbRaw = Math.min(0.80, Math.max(0.20, gameProbRaw));
-
-    // 換算成 7 戰 4 勝制系列賽奪冠機率
-    var seriesProb = seriesWinProb(gameProbRaw);
+    var seriesProb = simSeries(pH, pA, SERIES_SCHEDULE, 4, 4);
     var fPct = Math.round(seriesProb * 100);
     var oPct = 100 - fPct;
 
-    var fillF = document.getElementById('pred-fill-f');
-    var fillO = document.getElementById('pred-fill-o');
-    fillF.style.width = fPct + '%';
-    fillO.style.width = oPct + '%';
-    fillF.textContent = fPct + '%';
-    fillO.textContent = oPct + '%';
+    // G1 條件機率（G1 在夢主場，pH）
+    var schedG2on = SERIES_SCHEDULE.slice(1);
+    var afterWin  = simSeries(pH, pA, schedG2on, 3, 4);
+    var afterLose = simSeries(pH, pA, schedG2on, 4, 3);
+    var g1WinPct   = Math.round(pH * 100);
+    var afterWinPct  = Math.round(afterWin  * 100);
+    var afterLosePct = Math.round(afterLose * 100);
 
-    // 文字說明
-    var noteTxt =
-      'Net Rating 差距 ' + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
-      '，例行賽 H2H ' + wins + ' 勝 ' + (h2h.length - wins) + ' 敗。' +
-      '加權估算單場勝率 ' + Math.round(gameProbRaw * 100) + '%，' +
-      '換算 7 戰 4 勝制：夢想家奪冠機率約 ' + fPct + '%（' + opp.short + ' ' + oPct + '%）。' +
-      '僅供參考，季後賽強度與陣容調整可能顯著影響結果。';
-    document.getElementById('pred-note').textContent = noteTxt;
+    // 路徑分佈
+    var paths = computePaths(pH, pA, SERIES_SCHEDULE);
+    var allP = paths.f.concat(paths.k);
+    var maxP = Math.max.apply(null, allP.map(function(v){ return v*100; }));
 
-    // 優劣因子
+    var html = '';
+
+    // ── 賽程圓點 ──
+    html += '<div class="pred-schedule">';
+    SERIES_GAMES.forEach(function (g) {
+      var cls = g.tbd ? 'tbd' : (g.home === 'f' ? 'home-f' : 'home-o');
+      var homeTag = g.home === 'f' ? '夢主場' : opp.short + '主';
+      html +=
+        '<div class="pred-game-dot ' + cls + '" title="' + g.label + ' ' + (g.tbd ? '如需要' : g.date + ' ' + homeTag) + '">' +
+          '<span>' + g.label + '</span>' +
+          '<span style="font-size:.5rem;opacity:.8">' + (g.tbd ? '待定' : g.date) + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+
+    // ── 大機率數字 ──
+    html +=
+      '<div class="pred-prob-big">' +
+        '<div class="pred-prob-team">' +
+          '<div class="pred-prob-num" style="color:var(--accent)">' + fPct + '%</div>' +
+          '<div class="pred-prob-label">福爾摩沙夢想家</div>' +
+        '</div>' +
+        '<div class="pred-vs-sep">vs</div>' +
+        '<div class="pred-prob-team">' +
+          '<div class="pred-prob-num" style="color:var(--opp-color)">' + oPct + '%</div>' +
+          '<div class="pred-prob-label">' + opp.name + '</div>' +
+        '</div>' +
+      '</div>';
+
+    // ── G1 效應 ──
+    html +=
+      '<div class="pred-g1-card">' +
+        '<div class="pred-g1-title">G1 效應・第一場的重量（5/24 夢想家主場 台中）</div>' +
+        '<div class="pred-g1-row">' +
+          '<div class="pred-g1-item">' +
+            '<div class="pred-g1-num" style="color:var(--accent)">' + g1WinPct + '%</div>' +
+            '<div class="pred-g1-sub">夢 G1 主場勝率</div>' +
+          '</div>' +
+          '<div style="color:var(--text2);font-size:1.1rem;align-self:center">⟶</div>' +
+          '<div class="pred-g1-item">' +
+            '<div class="pred-g1-num" style="color:var(--accent)">' + afterWinPct + '%</div>' +
+            '<div class="pred-g1-sub">贏 G1 後<br>奪冠機率</div>' +
+          '</div>' +
+          '<div style="color:var(--text2);font-size:.85rem;align-self:center">╱</div>' +
+          '<div class="pred-g1-item">' +
+            '<div class="pred-g1-num" style="color:var(--accent2)">' + afterLosePct + '%</div>' +
+            '<div class="pred-g1-sub">輸 G1 後<br>奪冠機率</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:.7rem;color:var(--text2);line-height:1.55;border-top:1px solid rgba(255,255,255,.07);padding-top:.5rem">' +
+          'G1、G2、G5、G7 夢想家主場（台中）；G3、G4、G6 ' + opp.short + '主場（新莊）。贏 G1 可守住主場節奏，落後 0-1 則需在客場扳平。' +
+        '</div>' +
+      '</div>';
+
+    // ── 路徑分佈 ──
+    html += '<div class="pred-paths">';
+    html += '<div class="pred-path-title" style="color:var(--accent)">夢想家奪冠路徑　合計 ' + fPct + '%</div>';
+    ['4-0','4-1','4-2','4-3'].forEach(function (lbl, i) {
+      var v = (paths.f[i] * 100).toFixed(0);
+      var bw = maxP > 0 ? (paths.f[i] * 100 / maxP * 100).toFixed(1) : 0;
+      html +=
+        '<div class="pred-path-row">' +
+          '<div class="pred-path-label">夢 ' + lbl + '</div>' +
+          '<div class="pred-path-bar-bg">' +
+            '<div class="pred-path-bar-fill" style="width:' + bw + '%;background:rgba(0,229,255,.75)"></div>' +
+          '</div>' +
+          '<div class="pred-path-val" style="color:var(--accent)">' + v + '%</div>' +
+        '</div>';
+    });
+    html += '<div class="pred-path-title" style="color:var(--opp-color);margin-top:.65rem">' + opp.short + ' 奪冠路徑　合計 ' + oPct + '%</div>';
+    ['4-0','4-1','4-2','4-3'].forEach(function (lbl, i) {
+      var v = (paths.k[i] * 100).toFixed(0);
+      var bw = maxP > 0 ? (paths.k[i] * 100 / maxP * 100).toFixed(1) : 0;
+      html +=
+        '<div class="pred-path-row">' +
+          '<div class="pred-path-label">' + opp.short + ' ' + lbl + '</div>' +
+          '<div class="pred-path-bar-bg">' +
+            '<div class="pred-path-bar-fill" style="width:' + bw + '%;background:rgba(var(--opp-rgb),.75)"></div>' +
+          '</div>' +
+          '<div class="pred-path-val" style="color:var(--opp-color)">' + v + '%</div>' +
+        '</div>';
+    });
+    html += '</div>';
+
+    // ── 說明 ──
+    html +=
+      '<div class="pred-note" style="margin-bottom:.85rem">' +
+        'Net Rating 差距 ' + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
+        '，H2H ' + wins + '勝' + (h2h.length - wins) + '敗。' +
+        '主場勝率 ' + Math.round(pH * 100) + '%・客場 ' + Math.round(pA * 100) + '%。Monte Carlo 6萬次模擬。僅供參考。' +
+      '</div>';
+
+    // ── 優劣因子 ──
+    html += '<div class="pred-factors" id="pred-factors"></div>';
+    card.innerHTML = html;
+
     var factors = [
-      { name: '整體效率 NetRtg', fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true, fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
-      { name: '進攻效率 ORtg',   fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true, fmt: function (v) { return v; } },
+      { name: '整體效率 NetRtg', fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
+      { name: '進攻效率 ORtg',   fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
       { name: '防守效率 DRtg',   fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
-      { name: '主場勝率',        fVal: fm.home.win_rate,  oVal: opp.home.win_rate,  higherBetter: true, fmt: pct },
-      { name: '例行賽 H2H',      fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } },
+      { name: '主場勝率',        fVal: fm.home.win_rate, oVal: opp.home.win_rate, higherBetter: true, fmt: pct },
+      { name: '例行賽 H2H',      fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } }
     ];
-
     var fcont = document.getElementById('pred-factors');
-    fcont.innerHTML = '';
     factors.forEach(function (f) {
       var fBetter = f.higherBetter ? f.fVal > f.oVal : f.fVal < f.oVal;
       var tie = f.fVal === f.oVal;
       var edgeCls = tie ? 'edge-tie' : (fBetter ? 'edge-f' : 'edge-o');
       var edgeLabel = tie ? '平手' : (fBetter ? '夢想家 ▲' : opp.short + ' ▲');
-      var card = document.createElement('div');
-      card.className = 'factor-card';
-      card.innerHTML =
+      var el = document.createElement('div');
+      el.className = 'factor-card';
+      el.innerHTML =
         '<div class="factor-name">' + f.name + '</div>' +
-        '<div style="font-size:.78rem;color:var(--text2);margin-bottom:.15rem">' +
-          '夢 ' + f.fmt(f.fVal) + '　vs　' + opp.short + ' ' + f.fmt(f.oVal) +
-        '</div>' +
+        '<div style="font-size:.78rem;color:var(--text2);margin-bottom:.15rem">夢 ' + f.fmt(f.fVal) + '　vs　' + opp.short + ' ' + f.fmt(f.oVal) + '</div>' +
         '<div class="factor-edge ' + edgeCls + '">' + edgeLabel + '</div>';
-      fcont.appendChild(card);
+      fcont.appendChild(el);
     });
+
+    // 觸發路徑 bar 動畫
+    animateBars('.pred-path-bar-fill');
   }
 
   /* ── Bar 動畫：渲染後用 rAF 觸發 transition ── */
