@@ -530,7 +530,29 @@
     </div>
   </section>
 
-  <!-- ② 效率比較 -->
+  <!-- ② 勝負預測 -->
+  <section id="prediction">
+    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
+    <div class="card">
+      <div class="pred-container">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
+            <span id="pred-team-a-label">夢想家</span><span id="pred-opp-label">對手</span>
+          </div>
+          <div class="pred-bar-bg" id="pred-bar-main">
+            <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
+            <div class="pred-bar-o" id="pred-fill-o" style="width:50%">—%</div>
+          </div>
+        </div>
+        <div class="pred-note" id="pred-note">
+          根據例行賽 Net Rating 差距與對戰紀錄加權估算。
+        </div>
+        <div class="pred-factors" id="pred-factors"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 效率比較 -->
   <section id="efficiency">
     <h2>每百回合效率比較</h2>
     <div class="card">
@@ -639,29 +661,7 @@
     </div>
   </section>
 
-  <!-- ⑪ 勝負預測 -->
-  <section id="prediction">
-    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
-    <div class="card">
-      <div class="pred-container">
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
-            <span id="pred-team-a-label">夢想家</span><span id="pred-opp-label">對手</span>
-          </div>
-          <div class="pred-bar-bg" id="pred-bar-main">
-            <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
-            <div class="pred-bar-o" id="pred-fill-o" style="width:50%">—%</div>
-          </div>
-        </div>
-        <div class="pred-note" id="pred-note">
-          根據例行賽 Net Rating 差距與對戰紀錄加權估算。
-        </div>
-        <div class="pred-factors" id="pred-factors"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ⑫ 延伸閱讀（折疊） -->
+  <!-- ⑪ 延伸閱讀（折疊） -->
   <section id="extended">
     <h2 style="cursor:pointer" id="extended-toggle" onclick="toggleExtended()">
       延伸閱讀 — Plus/Minus &amp; PPP 熱力圖
