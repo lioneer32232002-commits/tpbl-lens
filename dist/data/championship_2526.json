@@ -12,22 +12,124 @@
     "drtg": 103.5,
     "netrtg": 4.7,
     "pace": 93.9,
-    "home": {"gp": 18, "wins": 13, "losses": 5, "win_rate": 0.7222, "avg_pts": 100.89, "avg_opp": 95.39},
-    "away": {"gp": 18, "wins": 9, "losses": 9, "win_rate": 0.5, "avg_pts": 99.94, "avg_opp": 96.89},
-    "scoring": {"three": 35.5, "mid": 6.7, "paint": 39.2, "ft": 19.0, "total": 100.4},
+    "home": {
+      "gp": 18,
+      "wins": 13,
+      "losses": 5,
+      "win_rate": 0.7222,
+      "avg_pts": 100.89,
+      "avg_opp": 95.39
+    },
+    "away": {
+      "gp": 18,
+      "wins": 9,
+      "losses": 9,
+      "win_rate": 0.5,
+      "avg_pts": 99.94,
+      "avg_opp": 96.89
+    },
+    "scoring": {
+      "three": 35.5,
+      "mid": 6.7,
+      "paint": 39.2,
+      "ft": 19.0,
+      "total": 100.4
+    },
     "quarter": {
-      "Q1": {"avg_score": 26.36, "avg_opp": 25.39, "win_rate": 0.5833},
-      "Q2": {"avg_score": 25.94, "avg_opp": 24.36, "win_rate": 0.5278},
-      "Q3": {"avg_score": 24.75, "avg_opp": 24.03, "win_rate": 0.4722},
-      "Q4": {"avg_score": 23.36, "avg_opp": 22.36, "win_rate": 0.5556}
+      "Q1": {
+        "avg_score": 26.36,
+        "avg_opp": 25.39,
+        "win_rate": 0.5833
+      },
+      "Q2": {
+        "avg_score": 25.94,
+        "avg_opp": 24.36,
+        "win_rate": 0.5278
+      },
+      "Q3": {
+        "avg_score": 24.75,
+        "avg_opp": 24.03,
+        "win_rate": 0.4722
+      },
+      "Q4": {
+        "avg_score": 23.36,
+        "avg_opp": 22.36,
+        "win_rate": 0.5556
+      }
     },
     "players": [
-      {"name": "班提爾",   "pts": 18.9, "reb": 10.8, "ast": 3.3, "stl": 1.3, "blk": 0.3, "tov": 3.6, "eff": 20.9, "usg": 19.6, "gp": 18},
-      {"name": "霍爾曼",   "pts": 17.9, "reb": 11.3, "ast": 3.2, "stl": 1.1, "blk": 1.6, "tov": 3.2, "eff": 23.4, "usg": 17.8, "gp": 28},
-      {"name": "恩尼斯",   "pts": 16.7, "reb": 9.3,  "ast": 3.4, "stl": 1.6, "blk": 0.6, "tov": 2.7, "eff": 21.6, "usg": 15.7, "gp": 9},
-      {"name": "湯普金斯", "pts": 16.6, "reb": 9.4,  "ast": 3.1, "stl": 1.8, "blk": 0.7, "tov": 2.2, "eff": 22.3, "usg": 15.4, "gp": 20},
-      {"name": "布依德",   "pts": 15.4, "reb": 7.6,  "ast": 1.9, "stl": 1.6, "blk": 0.4, "tov": 1.7, "eff": 18.3, "usg": 13.2, "gp": 9},
-      {"name": "高柏鎧",   "pts": 12.0, "reb": 10.0, "ast": 0.7, "stl": 0.8, "blk": 2.0, "tov": 2.3, "eff": 18.7, "usg": 10.9, "gp": 23}
+      {
+        "name": "班提爾",
+        "pts": 18.9,
+        "reb": 10.8,
+        "ast": 3.3,
+        "stl": 1.3,
+        "blk": 0.3,
+        "tov": 3.6,
+        "eff": 20.9,
+        "usg": 19.6,
+        "gp": 18
+      },
+      {
+        "name": "霍爾曼",
+        "pts": 17.9,
+        "reb": 11.3,
+        "ast": 3.2,
+        "stl": 1.1,
+        "blk": 1.6,
+        "tov": 3.2,
+        "eff": 23.4,
+        "usg": 17.8,
+        "gp": 28
+      },
+      {
+        "name": "恩尼斯",
+        "pts": 16.7,
+        "reb": 9.3,
+        "ast": 3.4,
+        "stl": 1.6,
+        "blk": 0.6,
+        "tov": 2.7,
+        "eff": 21.6,
+        "usg": 15.7,
+        "gp": 9
+      },
+      {
+        "name": "湯普金斯",
+        "pts": 16.6,
+        "reb": 9.4,
+        "ast": 3.1,
+        "stl": 1.8,
+        "blk": 0.7,
+        "tov": 2.2,
+        "eff": 22.3,
+        "usg": 15.4,
+        "gp": 20
+      },
+      {
+        "name": "布依德",
+        "pts": 15.4,
+        "reb": 7.6,
+        "ast": 1.9,
+        "stl": 1.6,
+        "blk": 0.4,
+        "tov": 1.7,
+        "eff": 18.3,
+        "usg": 13.2,
+        "gp": 9
+      },
+      {
+        "name": "高柏鎧",
+        "pts": 12.0,
+        "reb": 10.0,
+        "ast": 0.7,
+        "stl": 0.8,
+        "blk": 2.0,
+        "tov": 2.3,
+        "eff": 18.7,
+        "usg": 10.9,
+        "gp": 23
+      }
     ]
   },
   "kings": {
@@ -42,23 +144,130 @@
     "drtg": 107.7,
     "netrtg": -1.4,
     "pace": 94.2,
-    "home": {"gp": 18, "wins": 12, "losses": 6, "win_rate": 0.6667, "avg_pts": 100.5, "avg_opp": 98.0},
-    "away": {"gp": 18, "wins": 7, "losses": 11, "win_rate": 0.3889, "avg_pts": 96.56, "avg_opp": 101.61},
-    "scoring": {"three": 34.2, "mid": 9.6, "paint": 40.5, "ft": 14.2, "total": 98.5},
-    "quarter": {
-      "Q1": {"avg_score": 25.44, "avg_opp": 26.31, "win_rate": 0.3611},
-      "Q2": {"avg_score": 24.92, "avg_opp": 25.78, "win_rate": 0.4444},
-      "Q3": {"avg_score": 23.78, "avg_opp": 22.89, "win_rate": 0.4444},
-      "Q4": {"avg_score": 24.06, "avg_opp": 24.42, "win_rate": 0.5}
+    "home": {
+      "gp": 18,
+      "wins": 12,
+      "losses": 6,
+      "win_rate": 0.6667,
+      "avg_pts": 100.5,
+      "avg_opp": 98.0
     },
-    "vs_formosa": {"w": 4, "l": 2, "avg_pts": 101.83, "avg_opp_pts": 100.5},
+    "away": {
+      "gp": 18,
+      "wins": 7,
+      "losses": 11,
+      "win_rate": 0.3889,
+      "avg_pts": 96.56,
+      "avg_opp": 101.61
+    },
+    "scoring": {
+      "three": 34.2,
+      "mid": 9.6,
+      "paint": 40.5,
+      "ft": 14.2,
+      "total": 98.5
+    },
+    "quarter": {
+      "Q1": {
+        "avg_score": 25.44,
+        "avg_opp": 26.31,
+        "win_rate": 0.3611
+      },
+      "Q2": {
+        "avg_score": 24.92,
+        "avg_opp": 25.78,
+        "win_rate": 0.4444
+      },
+      "Q3": {
+        "avg_score": 23.78,
+        "avg_opp": 22.89,
+        "win_rate": 0.4444
+      },
+      "Q4": {
+        "avg_score": 24.06,
+        "avg_opp": 24.42,
+        "win_rate": 0.5
+      }
+    },
+    "vs_formosa": {
+      "w": 4,
+      "l": 2,
+      "avg_pts": 101.83,
+      "avg_opp_pts": 100.5
+    },
     "players": [
-      {"name": "杰倫",   "pts": 25.9, "reb": 5.9,  "ast": 4.9, "stl": 1.1, "blk": 0.4, "tov": 2.3, "eff": 25.4, "usg": 22.9, "gp": 14},
-      {"name": "桑尼",   "pts": 24.6, "reb": 10.6, "ast": 2.6, "stl": 1.0, "blk": 0.2, "tov": 3.2, "eff": 24.6, "usg": 20.9, "gp": 5},
-      {"name": "沃許本", "pts": 18.5, "reb": 10.7, "ast": 1.6, "stl": 1.0, "blk": 1.1, "tov": 1.7, "eff": 24.7, "usg": 16.1, "gp": 26},
-      {"name": "飛米",   "pts": 18.6, "reb": 8.0,  "ast": 2.0, "stl": 0.6, "blk": 0.1, "tov": 2.5, "eff": 19.2, "usg": 17.1, "gp": 15},
-      {"name": "傑登",   "pts": 16.9, "reb": 10.0, "ast": 1.7, "stl": 0.9, "blk": 0.4, "tov": 2.1, "eff": 18.8, "usg": 16.0, "gp": 18},
-      {"name": "喬丹",   "pts": 14.4, "reb": 12.0, "ast": 3.0, "stl": 0.6, "blk": 0.8, "tov": 1.6, "eff": 23.0, "usg": 13.2, "gp": 5}
+      {
+        "name": "杰倫",
+        "pts": 25.9,
+        "reb": 5.9,
+        "ast": 4.9,
+        "stl": 1.1,
+        "blk": 0.4,
+        "tov": 2.3,
+        "eff": 25.4,
+        "usg": 22.9,
+        "gp": 14
+      },
+      {
+        "name": "桑尼",
+        "pts": 24.6,
+        "reb": 10.6,
+        "ast": 2.6,
+        "stl": 1.0,
+        "blk": 0.2,
+        "tov": 3.2,
+        "eff": 24.6,
+        "usg": 20.9,
+        "gp": 5
+      },
+      {
+        "name": "沃許本",
+        "pts": 18.5,
+        "reb": 10.7,
+        "ast": 1.6,
+        "stl": 1.0,
+        "blk": 1.1,
+        "tov": 1.7,
+        "eff": 24.7,
+        "usg": 16.1,
+        "gp": 26
+      },
+      {
+        "name": "飛米",
+        "pts": 18.6,
+        "reb": 8.0,
+        "ast": 2.0,
+        "stl": 0.6,
+        "blk": 0.1,
+        "tov": 2.5,
+        "eff": 19.2,
+        "usg": 17.1,
+        "gp": 15
+      },
+      {
+        "name": "傑登",
+        "pts": 16.9,
+        "reb": 10.0,
+        "ast": 1.7,
+        "stl": 0.9,
+        "blk": 0.4,
+        "tov": 2.1,
+        "eff": 18.8,
+        "usg": 16.0,
+        "gp": 18
+      },
+      {
+        "name": "喬丹",
+        "pts": 14.4,
+        "reb": 12.0,
+        "ast": 3.0,
+        "stl": 0.6,
+        "blk": 0.8,
+        "tov": 1.6,
+        "eff": 23.0,
+        "usg": 13.2,
+        "gp": 5
+      }
     ]
   },
   "leopards": {
@@ -73,39 +282,1594 @@
     "drtg": 100.8,
     "netrtg": 5.2,
     "pace": 95.1,
-    "home": {"gp": 18, "wins": 14, "losses": 4, "win_rate": 0.7778, "avg_pts": 101.22, "avg_opp": 94.11},
-    "away": {"gp": 18, "wins": 9, "losses": 9, "win_rate": 0.5, "avg_pts": 97.11, "avg_opp": 94.56},
-    "scoring": {"three": 29.2, "mid": 9.4, "paint": 44.4, "ft": 16.2, "total": 99.2},
-    "quarter": {
-      "Q1": {"avg_score": 25.39, "avg_opp": 24.75, "win_rate": 0.5},
-      "Q2": {"avg_score": 26.89, "avg_opp": 24.64, "win_rate": 0.5833},
-      "Q3": {"avg_score": 23.94, "avg_opp": 21.56, "win_rate": 0.6111},
-      "Q4": {"avg_score": 22.94, "avg_opp": 23.39, "win_rate": 0.4722}
+    "home": {
+      "gp": 18,
+      "wins": 14,
+      "losses": 4,
+      "win_rate": 0.7778,
+      "avg_pts": 101.22,
+      "avg_opp": 94.11
     },
-    "vs_formosa": {"w": 4, "l": 2, "avg_pts": 98.83, "avg_opp_pts": 96.17},
+    "away": {
+      "gp": 18,
+      "wins": 9,
+      "losses": 9,
+      "win_rate": 0.5,
+      "avg_pts": 97.11,
+      "avg_opp": 94.56
+    },
+    "scoring": {
+      "three": 29.2,
+      "mid": 9.4,
+      "paint": 44.4,
+      "ft": 16.2,
+      "total": 99.2
+    },
+    "quarter": {
+      "Q1": {
+        "avg_score": 25.39,
+        "avg_opp": 24.75,
+        "win_rate": 0.5
+      },
+      "Q2": {
+        "avg_score": 26.89,
+        "avg_opp": 24.64,
+        "win_rate": 0.5833
+      },
+      "Q3": {
+        "avg_score": 23.94,
+        "avg_opp": 21.56,
+        "win_rate": 0.6111
+      },
+      "Q4": {
+        "avg_score": 22.94,
+        "avg_opp": 23.39,
+        "win_rate": 0.4722
+      }
+    },
+    "vs_formosa": {
+      "w": 4,
+      "l": 2,
+      "avg_pts": 98.83,
+      "avg_opp_pts": 96.17
+    },
     "players": [
-      {"name": "克羅馬", "pts": 24.2, "reb": 7.0,  "ast": 6.5, "stl": 2.8, "blk": 0.8, "tov": 3.7, "eff": 25.8, "usg": 24.1, "gp": 30},
-      {"name": "迪亞洛", "pts": 19.0, "reb": 11.6, "ast": 1.4, "stl": 0.7, "blk": 0.9, "tov": 2.5, "eff": 24.4, "usg": 16.4, "gp": 24},
-      {"name": "麥卡洛", "pts": 15.9, "reb": 10.6, "ast": 1.5, "stl": 1.6, "blk": 1.3, "tov": 2.0, "eff": 20.5, "usg": 16.2, "gp": 24},
-      {"name": "米勒",   "pts": 15.9, "reb": 8.9,  "ast": 2.1, "stl": 1.2, "blk": 1.4, "tov": 1.7, "eff": 20.6, "usg": 14.7, "gp": 30},
-      {"name": "高錦瑋", "pts": 14.6, "reb": 3.9,  "ast": 4.9, "stl": 1.1, "blk": 0.2, "tov": 1.6, "eff": 15.9, "usg": 13.5, "gp": 36},
-      {"name": "林信寬", "pts": 10.1, "reb": 3.3,  "ast": 2.1, "stl": 1.1, "blk": 0.2, "tov": 1.6, "eff": 8.2,  "usg": 11.4, "gp": 34}
+      {
+        "name": "克羅馬",
+        "pts": 24.2,
+        "reb": 7.0,
+        "ast": 6.5,
+        "stl": 2.8,
+        "blk": 0.8,
+        "tov": 3.7,
+        "eff": 25.8,
+        "usg": 24.1,
+        "gp": 30
+      },
+      {
+        "name": "迪亞洛",
+        "pts": 19.0,
+        "reb": 11.6,
+        "ast": 1.4,
+        "stl": 0.7,
+        "blk": 0.9,
+        "tov": 2.5,
+        "eff": 24.4,
+        "usg": 16.4,
+        "gp": 24
+      },
+      {
+        "name": "麥卡洛",
+        "pts": 15.9,
+        "reb": 10.6,
+        "ast": 1.5,
+        "stl": 1.6,
+        "blk": 1.3,
+        "tov": 2.0,
+        "eff": 20.5,
+        "usg": 16.2,
+        "gp": 24
+      },
+      {
+        "name": "米勒",
+        "pts": 15.9,
+        "reb": 8.9,
+        "ast": 2.1,
+        "stl": 1.2,
+        "blk": 1.4,
+        "tov": 1.7,
+        "eff": 20.6,
+        "usg": 14.7,
+        "gp": 30
+      },
+      {
+        "name": "高錦瑋",
+        "pts": 14.6,
+        "reb": 3.9,
+        "ast": 4.9,
+        "stl": 1.1,
+        "blk": 0.2,
+        "tov": 1.6,
+        "eff": 15.9,
+        "usg": 13.5,
+        "gp": 36
+      },
+      {
+        "name": "林信寬",
+        "pts": 10.1,
+        "reb": 3.3,
+        "ast": 2.1,
+        "stl": 1.1,
+        "blk": 0.2,
+        "tov": 1.6,
+        "eff": 8.2,
+        "usg": 11.4,
+        "gp": 34
+      }
     ]
   },
   "h2h_kings": [
-    {"date": "20251012", "formosa_score": 93,  "opp_score": 112, "won": false, "formosa_home": false},
-    {"date": "20251112", "formosa_score": 91,  "opp_score": 94,  "won": false, "formosa_home": false},
-    {"date": "20260117", "formosa_score": 116, "opp_score": 96,  "won": true,  "formosa_home": true},
-    {"date": "20260131", "formosa_score": 97,  "opp_score": 114, "won": false, "formosa_home": true},
-    {"date": "20260327", "formosa_score": 107, "opp_score": 90,  "won": true,  "formosa_home": true},
-    {"date": "20260424", "formosa_score": 99,  "opp_score": 105, "won": false, "formosa_home": false}
+    {
+      "date": "20251012",
+      "formosa_score": 93,
+      "opp_score": 112,
+      "won": false,
+      "formosa_home": false
+    },
+    {
+      "date": "20251112",
+      "formosa_score": 91,
+      "opp_score": 94,
+      "won": false,
+      "formosa_home": false
+    },
+    {
+      "date": "20260117",
+      "formosa_score": 116,
+      "opp_score": 96,
+      "won": true,
+      "formosa_home": true
+    },
+    {
+      "date": "20260131",
+      "formosa_score": 97,
+      "opp_score": 114,
+      "won": false,
+      "formosa_home": true
+    },
+    {
+      "date": "20260327",
+      "formosa_score": 107,
+      "opp_score": 90,
+      "won": true,
+      "formosa_home": true
+    },
+    {
+      "date": "20260424",
+      "formosa_score": 99,
+      "opp_score": 105,
+      "won": false,
+      "formosa_home": false
+    }
   ],
   "h2h_leopards": [
-    {"date": "20251019", "formosa_score": 83,  "opp_score": 104, "won": false, "formosa_home": true},
-    {"date": "20251207", "formosa_score": 92,  "opp_score": 105, "won": false, "formosa_home": false},
-    {"date": "20260118", "formosa_score": 91,  "opp_score": 98,  "won": false, "formosa_home": true},
-    {"date": "20260214", "formosa_score": 100, "opp_score": 98,  "won": true,  "formosa_home": false},
-    {"date": "20260315", "formosa_score": 111, "opp_score": 84,  "won": true,  "formosa_home": true},
-    {"date": "20260426", "formosa_score": 100, "opp_score": 104, "won": false, "formosa_home": false}
+    {
+      "date": "20251019",
+      "formosa_score": 83,
+      "opp_score": 104,
+      "won": false,
+      "formosa_home": true
+    },
+    {
+      "date": "20251207",
+      "formosa_score": 92,
+      "opp_score": 105,
+      "won": false,
+      "formosa_home": false
+    },
+    {
+      "date": "20260118",
+      "formosa_score": 91,
+      "opp_score": 98,
+      "won": false,
+      "formosa_home": true
+    },
+    {
+      "date": "20260214",
+      "formosa_score": 100,
+      "opp_score": 98,
+      "won": true,
+      "formosa_home": false
+    },
+    {
+      "date": "20260315",
+      "formosa_score": 111,
+      "opp_score": 84,
+      "won": true,
+      "formosa_home": true
+    },
+    {
+      "date": "20260426",
+      "formosa_score": 100,
+      "opp_score": 104,
+      "won": false,
+      "formosa_home": false
+    }
+  ],
+  "formosa_mhu": [
+    {
+      "stat": "三分命中率",
+      "p": 0.0015,
+      "r": -0.64,
+      "sig": true,
+      "w_med": 38.0,
+      "l_med": 29.0,
+      "w_mean": 37.4,
+      "l_mean": 28.4
+    },
+    {
+      "stat": "三分命中數",
+      "p": 0.0155,
+      "r": -0.481,
+      "sig": true,
+      "w_med": 12.0,
+      "l_med": 9.0,
+      "w_mean": 13.2,
+      "l_mean": 9.7
+    },
+    {
+      "stat": "整體命中率",
+      "p": 0.0335,
+      "r": -0.429,
+      "sig": true,
+      "w_med": 46.2,
+      "l_med": 40.5,
+      "w_mean": 46.1,
+      "l_mean": 41.4
+    },
+    {
+      "stat": "失誤數",
+      "p": 0.0198,
+      "r": 0.468,
+      "sig": true,
+      "w_med": 15.0,
+      "l_med": 20.0,
+      "w_mean": 15.2,
+      "l_mean": 19.4
+    },
+    {
+      "stat": "助攻",
+      "p": 0.0031,
+      "r": -0.594,
+      "sig": true,
+      "w_med": 23.5,
+      "l_med": 18.0,
+      "w_mean": 23.0,
+      "l_mean": 17.8
+    },
+    {
+      "stat": "籃板",
+      "p": 0.7204,
+      "r": -0.075,
+      "sig": false,
+      "w_med": 52.0,
+      "l_med": 52.5,
+      "w_mean": 51.3,
+      "l_mean": 50.4
+    },
+    {
+      "stat": "抄截",
+      "p": 0.0463,
+      "r": -0.399,
+      "sig": true,
+      "w_med": 9.5,
+      "l_med": 6.5,
+      "w_mean": 9.3,
+      "l_mean": 7.3
+    },
+    {
+      "stat": "阻攻",
+      "p": 0.6177,
+      "r": -0.101,
+      "sig": false,
+      "w_med": 3.0,
+      "l_med": 3.0,
+      "w_mean": 4.1,
+      "l_mean": 3.6
+    },
+    {
+      "stat": "禁區得分",
+      "p": 0.3961,
+      "r": 0.172,
+      "sig": false,
+      "w_med": 36.0,
+      "l_med": 42.0,
+      "w_mean": 38.4,
+      "l_mean": 40.6
+    },
+    {
+      "stat": "快攻得分",
+      "p": 0.8831,
+      "r": 0.032,
+      "sig": false,
+      "w_med": 9.0,
+      "l_med": 9.0,
+      "w_mean": 8.5,
+      "l_mean": 8.1
+    }
+  ],
+  "kings_mhu": [
+    {
+      "stat": "三分命中率",
+      "p": 0.0123,
+      "r": -0.492,
+      "sig": true,
+      "w_med": 37.1,
+      "l_med": 29.4,
+      "w_mean": 36.3,
+      "l_mean": 28.6
+    },
+    {
+      "stat": "三分命中數",
+      "p": 0.1049,
+      "r": -0.319,
+      "sig": false,
+      "w_med": 13.0,
+      "l_med": 10.0,
+      "w_mean": 12.6,
+      "l_mean": 10.1
+    },
+    {
+      "stat": "整體命中率",
+      "p": 0.0053,
+      "r": -0.548,
+      "sig": true,
+      "w_med": 48.3,
+      "l_med": 41.1,
+      "w_mean": 46.6,
+      "l_mean": 41.2
+    },
+    {
+      "stat": "失誤數",
+      "p": 0.2657,
+      "r": 0.22,
+      "sig": false,
+      "w_med": 14.0,
+      "l_med": 16.0,
+      "w_mean": 14.4,
+      "l_mean": 15.8
+    },
+    {
+      "stat": "助攻",
+      "p": 0.0078,
+      "r": -0.52,
+      "sig": true,
+      "w_med": 24.0,
+      "l_med": 20.0,
+      "w_mean": 23.9,
+      "l_mean": 19.5
+    },
+    {
+      "stat": "籃板",
+      "p": 0.4947,
+      "r": -0.136,
+      "sig": false,
+      "w_med": 48.0,
+      "l_med": 47.0,
+      "w_mean": 47.8,
+      "l_mean": 46.3
+    },
+    {
+      "stat": "抄截",
+      "p": 0.0184,
+      "r": -0.461,
+      "sig": true,
+      "w_med": 9.0,
+      "l_med": 6.0,
+      "w_mean": 9.3,
+      "l_mean": 7.0
+    },
+    {
+      "stat": "阻攻",
+      "p": 0.4974,
+      "r": -0.133,
+      "sig": false,
+      "w_med": 3.0,
+      "l_med": 3.0,
+      "w_mean": 3.2,
+      "l_mean": 2.6
+    },
+    {
+      "stat": "禁區得分",
+      "p": 0.7623,
+      "r": -0.062,
+      "sig": false,
+      "w_med": 42.0,
+      "l_med": 42.0,
+      "w_mean": 41.2,
+      "l_mean": 39.8
+    },
+    {
+      "stat": "快攻得分",
+      "p": 0.095,
+      "r": -0.328,
+      "sig": false,
+      "w_med": 10.0,
+      "l_med": 8.0,
+      "w_mean": 11.5,
+      "l_mean": 8.0
+    }
+  ],
+  "leopards_mhu": [
+    {
+      "stat": "三分命中率",
+      "p": 0.0898,
+      "r": -0.348,
+      "sig": false,
+      "w_med": 34.6,
+      "l_med": 30.8,
+      "w_mean": 34.8,
+      "l_mean": 29.0
+    },
+    {
+      "stat": "三分命中數",
+      "p": 0.9604,
+      "r": -0.013,
+      "sig": false,
+      "w_med": 9.0,
+      "l_med": 10.0,
+      "w_mean": 9.9,
+      "l_mean": 9.5
+    },
+    {
+      "stat": "整體命中率",
+      "p": 0.0059,
+      "r": -0.562,
+      "sig": true,
+      "w_med": 46.7,
+      "l_med": 41.0,
+      "w_mean": 47.5,
+      "l_mean": 41.0
+    },
+    {
+      "stat": "失誤數",
+      "p": 0.8296,
+      "r": -0.047,
+      "sig": false,
+      "w_med": 15.0,
+      "l_med": 14.0,
+      "w_mean": 15.2,
+      "l_mean": 14.7
+    },
+    {
+      "stat": "助攻",
+      "p": 0.1942,
+      "r": -0.264,
+      "sig": false,
+      "w_med": 23.0,
+      "l_med": 21.0,
+      "w_mean": 22.6,
+      "l_mean": 20.8
+    },
+    {
+      "stat": "籃板",
+      "p": 0.0802,
+      "r": -0.358,
+      "sig": false,
+      "w_med": 51.0,
+      "l_med": 46.0,
+      "w_mean": 50.2,
+      "l_mean": 45.5
+    },
+    {
+      "stat": "抄截",
+      "p": 0.0283,
+      "r": -0.445,
+      "sig": true,
+      "w_med": 10.0,
+      "l_med": 7.0,
+      "w_mean": 10.1,
+      "l_mean": 8.1
+    },
+    {
+      "stat": "阻攻",
+      "p": 0.0439,
+      "r": -0.408,
+      "sig": true,
+      "w_med": 5.0,
+      "l_med": 3.0,
+      "w_mean": 4.7,
+      "l_mean": 3.2
+    },
+    {
+      "stat": "禁區得分",
+      "p": 0.089,
+      "r": -0.348,
+      "sig": false,
+      "w_med": 48.0,
+      "l_med": 38.0,
+      "w_mean": 46.5,
+      "l_mean": 40.6
+    },
+    {
+      "stat": "快攻得分",
+      "p": 0.7407,
+      "r": -0.07,
+      "sig": false,
+      "w_med": 14.0,
+      "l_med": 13.0,
+      "w_mean": 13.3,
+      "l_mean": 12.1
+    }
+  ],
+  "formosa_scenario": [
+    {
+      "label": "Best",
+      "win_rate": 1.0,
+      "team_mean": 112.8,
+      "opp_mean": 99.8,
+      "stats": {
+        "3P%": 43.9,
+        "TO": 14.8,
+        "AST": 26.8,
+        "FG%": 51.2
+      }
+    },
+    {
+      "label": "Ideal",
+      "win_rate": 0.778,
+      "team_mean": 102.3,
+      "opp_mean": 89.4,
+      "stats": {
+        "3P%": 34.2,
+        "TO": 14.9,
+        "AST": 21.8,
+        "FG%": 44.1
+      }
+    },
+    {
+      "label": "Fair",
+      "win_rate": 0.556,
+      "team_mean": 94.1,
+      "opp_mean": 93.3,
+      "stats": {
+        "3P%": 31.9,
+        "TO": 17.0,
+        "AST": 18.7,
+        "FG%": 42.1
+      }
+    },
+    {
+      "label": "Low",
+      "win_rate": 0.111,
+      "team_mean": 92.4,
+      "opp_mean": 102.0,
+      "stats": {
+        "3P%": 25.7,
+        "TO": 20.8,
+        "AST": 16.6,
+        "FG%": 39.5
+      }
+    }
+  ],
+  "kings_scenario": [
+    {
+      "label": "Best",
+      "win_rate": 0.889,
+      "team_mean": 114.6,
+      "opp_mean": 101.1,
+      "stats": {
+        "3P%": 42.3,
+        "TO": 12.9,
+        "AST": 25.9,
+        "FG%": 51.5
+      }
+    },
+    {
+      "label": "Ideal",
+      "win_rate": 0.667,
+      "team_mean": 102.3,
+      "opp_mean": 100.0,
+      "stats": {
+        "3P%": 34.2,
+        "TO": 15.8,
+        "AST": 24.6,
+        "FG%": 45.3
+      }
+    },
+    {
+      "label": "Fair",
+      "win_rate": 0.333,
+      "team_mean": 91.3,
+      "opp_mean": 99.4,
+      "stats": {
+        "3P%": 31.0,
+        "TO": 14.1,
+        "AST": 20.2,
+        "FG%": 41.3
+      }
+    },
+    {
+      "label": "Low",
+      "win_rate": 0.222,
+      "team_mean": 85.9,
+      "opp_mean": 98.7,
+      "stats": {
+        "3P%": 23.2,
+        "TO": 17.4,
+        "AST": 16.7,
+        "FG%": 38.1
+      }
+    }
+  ],
+  "leopards_scenario": [
+    {
+      "label": "Best",
+      "win_rate": 0.778,
+      "team_mean": 105.7,
+      "opp_mean": 93.3,
+      "stats": {
+        "3P%": 41.4,
+        "TO": 14.9,
+        "AST": 24.1,
+        "FG%": 49.7
+      }
+    },
+    {
+      "label": "Ideal",
+      "win_rate": 1.0,
+      "team_mean": 104.8,
+      "opp_mean": 88.4,
+      "stats": {
+        "3P%": 35.9,
+        "TO": 15.3,
+        "AST": 22.6,
+        "FG%": 48.6
+      }
+    },
+    {
+      "label": "Fair",
+      "win_rate": 0.444,
+      "team_mean": 99.2,
+      "opp_mean": 102.8,
+      "stats": {
+        "3P%": 29.9,
+        "TO": 14.7,
+        "AST": 22.4,
+        "FG%": 43.3
+      }
+    },
+    {
+      "label": "Low",
+      "win_rate": 0.333,
+      "team_mean": 87.0,
+      "opp_mean": 92.8,
+      "stats": {
+        "3P%": 23.6,
+        "TO": 15.1,
+        "AST": 18.7,
+        "FG%": 38.9
+      }
+    }
+  ],
+  "formosa_usg": [
+    {
+      "name": "張宗憲",
+      "usg": 10.8,
+      "tsp": 50.1,
+      "pts": 11.0,
+      "gp": 31
+    },
+    {
+      "name": "吳家駿",
+      "usg": 1.3,
+      "tsp": 19.7,
+      "pts": 0.8,
+      "gp": 19
+    },
+    {
+      "name": "林俊吉",
+      "usg": 9.7,
+      "tsp": 61.2,
+      "pts": 11.1,
+      "gp": 29
+    },
+    {
+      "name": "簡偉儒",
+      "usg": 1.2,
+      "tsp": 23.2,
+      "pts": 1.4,
+      "gp": 20
+    },
+    {
+      "name": "忻沃克",
+      "usg": 9.3,
+      "tsp": 54.3,
+      "pts": 9.6,
+      "gp": 35
+    },
+    {
+      "name": "史承平",
+      "usg": 0.3,
+      "tsp": 22.7,
+      "pts": 0.8,
+      "gp": 11
+    },
+    {
+      "name": "盧冠良",
+      "usg": 3.3,
+      "tsp": 37.8,
+      "pts": 3.8,
+      "gp": 31
+    },
+    {
+      "name": "高柏鎧",
+      "usg": 10.9,
+      "tsp": 59.5,
+      "pts": 12.0,
+      "gp": 23
+    },
+    {
+      "name": "霍爾曼",
+      "usg": 17.8,
+      "tsp": 57.8,
+      "pts": 17.9,
+      "gp": 28
+    },
+    {
+      "name": "蔣淯安",
+      "usg": 11.3,
+      "tsp": 52.3,
+      "pts": 10.8,
+      "gp": 36
+    },
+    {
+      "name": "周柏臣",
+      "usg": 0.5,
+      "tsp": 7.0,
+      "pts": 0.4,
+      "gp": 18
+    },
+    {
+      "name": "恩尼斯",
+      "usg": 15.7,
+      "tsp": 57.6,
+      "pts": 16.7,
+      "gp": 9
+    },
+    {
+      "name": "李德威",
+      "usg": 0.7,
+      "tsp": 13.3,
+      "pts": 0.5,
+      "gp": 17
+    },
+    {
+      "name": "馬建豪",
+      "usg": 11.5,
+      "tsp": 48.8,
+      "pts": 11.4,
+      "gp": 23
+    },
+    {
+      "name": "湯普金斯",
+      "usg": 15.4,
+      "tsp": 60.4,
+      "pts": 16.6,
+      "gp": 20
+    },
+    {
+      "name": "陳振傑",
+      "usg": 2.5,
+      "tsp": 40.4,
+      "pts": 4.2,
+      "gp": 8
+    },
+    {
+      "name": "布依德",
+      "usg": 13.2,
+      "tsp": 61.9,
+      "pts": 15.4,
+      "gp": 9
+    },
+    {
+      "name": "班提爾",
+      "usg": 19.6,
+      "tsp": 55.0,
+      "pts": 18.9,
+      "gp": 18
+    }
+  ],
+  "kings_usg": [
+    {
+      "name": "林書緯",
+      "usg": 15.1,
+      "tsp": 44.4,
+      "pts": 11.8,
+      "gp": 32
+    },
+    {
+      "name": "蘇培凱",
+      "usg": 0.9,
+      "tsp": 24.3,
+      "pts": 1.2,
+      "gp": 16
+    },
+    {
+      "name": "傑登",
+      "usg": 16.0,
+      "tsp": 54.0,
+      "pts": 16.9,
+      "gp": 18
+    },
+    {
+      "name": "李愷諺",
+      "usg": 12.8,
+      "tsp": 46.8,
+      "pts": 11.0,
+      "gp": 25
+    },
+    {
+      "name": "簡祐哲",
+      "usg": 3.0,
+      "tsp": 35.2,
+      "pts": 3.0,
+      "gp": 28
+    },
+    {
+      "name": "王柏智",
+      "usg": 1.1,
+      "tsp": 21.1,
+      "pts": 1.5,
+      "gp": 21
+    },
+    {
+      "name": "林彥廷",
+      "usg": 9.2,
+      "tsp": 46.9,
+      "pts": 8.9,
+      "gp": 35
+    },
+    {
+      "name": "呂政儒",
+      "usg": 3.2,
+      "tsp": 43.8,
+      "pts": 3.5,
+      "gp": 31
+    },
+    {
+      "name": "蘇士軒",
+      "usg": 4.1,
+      "tsp": 45.5,
+      "pts": 4.5,
+      "gp": 29
+    },
+    {
+      "name": "林金榜",
+      "usg": 1.4,
+      "tsp": 21.9,
+      "pts": 1.5,
+      "gp": 21
+    },
+    {
+      "name": "熊祥泰",
+      "usg": 4.6,
+      "tsp": 56.0,
+      "pts": 5.6,
+      "gp": 34
+    },
+    {
+      "name": "喬納森",
+      "usg": 1.4,
+      "tsp": 19.1,
+      "pts": 1.6,
+      "gp": 22
+    },
+    {
+      "name": "沃許本",
+      "usg": 16.1,
+      "tsp": 63.3,
+      "pts": 18.5,
+      "gp": 26
+    },
+    {
+      "name": "鍾理翔",
+      "usg": 0.1,
+      "tsp": 11.1,
+      "pts": 0.2,
+      "gp": 9
+    },
+    {
+      "name": "奧帝",
+      "usg": 13.1,
+      "tsp": 57.2,
+      "pts": 13.1,
+      "gp": 18
+    },
+    {
+      "name": "杰倫",
+      "usg": 22.9,
+      "tsp": 61.2,
+      "pts": 25.9,
+      "gp": 14
+    },
+    {
+      "name": "飛米",
+      "usg": 17.1,
+      "tsp": 61.4,
+      "pts": 18.6,
+      "gp": 15
+    }
+  ],
+  "leopards_usg": [
+    {
+      "name": "高錦瑋",
+      "usg": 13.5,
+      "tsp": 57.6,
+      "pts": 14.6,
+      "gp": 36
+    },
+    {
+      "name": "徐宏瑋",
+      "usg": 1.5,
+      "tsp": 37.9,
+      "pts": 1.3,
+      "gp": 29
+    },
+    {
+      "name": "麥卡洛",
+      "usg": 16.2,
+      "tsp": 52.3,
+      "pts": 15.9,
+      "gp": 24
+    },
+    {
+      "name": "汪哲宇",
+      "usg": 1.2,
+      "tsp": 35.9,
+      "pts": 1.6,
+      "gp": 21
+    },
+    {
+      "name": "丁冠皓",
+      "usg": 0.3,
+      "tsp": 14.6,
+      "pts": 0.4,
+      "gp": 12
+    },
+    {
+      "name": "莊博元",
+      "usg": 5.3,
+      "tsp": 54.3,
+      "pts": 5.6,
+      "gp": 36
+    },
+    {
+      "name": "林信寬",
+      "usg": 11.4,
+      "tsp": 45.3,
+      "pts": 10.1,
+      "gp": 34
+    },
+    {
+      "name": "米勒",
+      "usg": 14.7,
+      "tsp": 57.4,
+      "pts": 15.9,
+      "gp": 30
+    },
+    {
+      "name": "王皓吉",
+      "usg": 4.4,
+      "tsp": 41.3,
+      "pts": 3.9,
+      "gp": 34
+    },
+    {
+      "name": "克羅馬",
+      "usg": 24.1,
+      "tsp": 54.8,
+      "pts": 24.2,
+      "gp": 30
+    },
+    {
+      "name": "董永全",
+      "usg": 2.4,
+      "tsp": 36.0,
+      "pts": 2.0,
+      "gp": 29
+    },
+    {
+      "name": "曹薰襄",
+      "usg": 6.6,
+      "tsp": 45.0,
+      "pts": 5.0,
+      "gp": 36
+    },
+    {
+      "name": "劉元凱",
+      "usg": 0.2,
+      "tsp": 21.8,
+      "pts": 0.6,
+      "gp": 16
+    },
+    {
+      "name": "黃鎮",
+      "usg": 0.3,
+      "tsp": 15.4,
+      "pts": 0.6,
+      "gp": 11
+    },
+    {
+      "name": "迪亞洛",
+      "usg": 16.4,
+      "tsp": 63.2,
+      "pts": 19.0,
+      "gp": 24
+    }
+  ],
+  "formosa_hm_kings": [
+    {
+      "player": "班提爾",
+      "pm": 11.25
+    },
+    {
+      "player": "張宗憲",
+      "pm": 3.0
+    },
+    {
+      "player": "蔣淯安",
+      "pm": 1.83
+    },
+    {
+      "player": "馬建豪",
+      "pm": 1.5
+    },
+    {
+      "player": "忻沃克",
+      "pm": 1.0
+    },
+    {
+      "player": "霍爾曼",
+      "pm": 0.5
+    },
+    {
+      "player": "盧冠良",
+      "pm": 0.0
+    },
+    {
+      "player": "簡偉儒",
+      "pm": -1.17
+    },
+    {
+      "player": "林俊吉",
+      "pm": -1.2
+    },
+    {
+      "player": "史承平",
+      "pm": -1.4
+    },
+    {
+      "player": "陳振傑",
+      "pm": -2.0
+    },
+    {
+      "player": "李德威",
+      "pm": -2.2
+    },
+    {
+      "player": "周柏臣",
+      "pm": -2.33
+    },
+    {
+      "player": "高柏鎧",
+      "pm": -2.6
+    },
+    {
+      "player": "湯普金斯",
+      "pm": -3.67
+    },
+    {
+      "player": "布依德",
+      "pm": -5.0
+    },
+    {
+      "player": "吳家駿",
+      "pm": -5.4
+    },
+    {
+      "player": "恩尼斯",
+      "pm": -11.0
+    }
+  ],
+  "formosa_hm_leopards": [
+    {
+      "player": "霍爾曼",
+      "pm": 2.2
+    },
+    {
+      "player": "忻沃克",
+      "pm": 1.67
+    },
+    {
+      "player": "班提爾",
+      "pm": 1.5
+    },
+    {
+      "player": "蔣淯安",
+      "pm": 1.5
+    },
+    {
+      "player": "湯普金斯",
+      "pm": 1.0
+    },
+    {
+      "player": "史承平",
+      "pm": 1.0
+    },
+    {
+      "player": "李德威",
+      "pm": 0.67
+    },
+    {
+      "player": "吳家駿",
+      "pm": 0.67
+    },
+    {
+      "player": "林俊吉",
+      "pm": -1.33
+    },
+    {
+      "player": "張宗憲",
+      "pm": -1.33
+    },
+    {
+      "player": "周柏臣",
+      "pm": -1.6
+    },
+    {
+      "player": "陳振傑",
+      "pm": -2.5
+    },
+    {
+      "player": "簡偉儒",
+      "pm": -2.83
+    },
+    {
+      "player": "盧冠良",
+      "pm": -3.5
+    },
+    {
+      "player": "馬建豪",
+      "pm": -4.25
+    },
+    {
+      "player": "布依德",
+      "pm": -5.0
+    },
+    {
+      "player": "恩尼斯",
+      "pm": -8.5
+    },
+    {
+      "player": "高柏鎧",
+      "pm": -10.0
+    }
+  ],
+  "kings_hm_formosa": [
+    {
+      "player": "喬丹",
+      "pm": 15.0
+    },
+    {
+      "player": "沃許本",
+      "pm": 12.33
+    },
+    {
+      "player": "桑尼",
+      "pm": 8.0
+    },
+    {
+      "player": "傑登",
+      "pm": 6.33
+    },
+    {
+      "player": "簡祐哲",
+      "pm": 5.83
+    },
+    {
+      "player": "李愷諺",
+      "pm": 4.75
+    },
+    {
+      "player": "蘇培凱",
+      "pm": 2.25
+    },
+    {
+      "player": "呂政儒",
+      "pm": 1.5
+    },
+    {
+      "player": "林金榜",
+      "pm": 0.67
+    },
+    {
+      "player": "王柏智",
+      "pm": 0.67
+    },
+    {
+      "player": "喬納森",
+      "pm": 0.6
+    },
+    {
+      "player": "鍾理翔",
+      "pm": 0.0
+    },
+    {
+      "player": "林彥廷",
+      "pm": -0.5
+    },
+    {
+      "player": "熊祥泰",
+      "pm": -1.17
+    },
+    {
+      "player": "尚迪",
+      "pm": -1.5
+    },
+    {
+      "player": "林書緯",
+      "pm": -2.33
+    },
+    {
+      "player": "奧帝",
+      "pm": -3.0
+    },
+    {
+      "player": "飛米",
+      "pm": -5.67
+    },
+    {
+      "player": "蘇士軒",
+      "pm": -6.17
+    },
+    {
+      "player": "杰倫",
+      "pm": -15.0
+    }
+  ],
+  "leopards_hm_formosa": [
+    {
+      "player": "米勒",
+      "pm": 12.4
+    },
+    {
+      "player": "莊博元",
+      "pm": 5.33
+    },
+    {
+      "player": "高錦瑋",
+      "pm": 4.83
+    },
+    {
+      "player": "林信寬",
+      "pm": 2.83
+    },
+    {
+      "player": "王皓吉",
+      "pm": 0.83
+    },
+    {
+      "player": "克羅馬",
+      "pm": 0.5
+    },
+    {
+      "player": "曹薰襄",
+      "pm": -0.17
+    },
+    {
+      "player": "徐宏瑋",
+      "pm": -0.17
+    },
+    {
+      "player": "麥卡洛",
+      "pm": -1.0
+    },
+    {
+      "player": "汪哲宇",
+      "pm": -1.0
+    },
+    {
+      "player": "劉元凱",
+      "pm": -1.0
+    },
+    {
+      "player": "黃鎮",
+      "pm": -1.5
+    },
+    {
+      "player": "丁冠皓",
+      "pm": -3.33
+    },
+    {
+      "player": "董永全",
+      "pm": -3.6
+    },
+    {
+      "player": "迪亞洛",
+      "pm": -5.67
+    }
+  ],
+  "formosa_ppp_kings": [
+    {
+      "player": "布依德",
+      "ppp": 1.45
+    },
+    {
+      "player": "林俊吉",
+      "ppp": 1.31
+    },
+    {
+      "player": "霍爾曼",
+      "ppp": 1.3
+    },
+    {
+      "player": "忻沃克",
+      "ppp": 1.23
+    },
+    {
+      "player": "高柏鎧",
+      "ppp": 1.16
+    },
+    {
+      "player": "湯普金斯",
+      "ppp": 1.07
+    },
+    {
+      "player": "恩尼斯",
+      "ppp": 0.99
+    },
+    {
+      "player": "班提爾",
+      "ppp": 0.98
+    },
+    {
+      "player": "蔣淯安",
+      "ppp": 0.97
+    },
+    {
+      "player": "張宗憲",
+      "ppp": 0.94
+    },
+    {
+      "player": "馬建豪",
+      "ppp": 0.65
+    },
+    {
+      "player": "盧冠良",
+      "ppp": 0.63
+    },
+    {
+      "player": "李德威",
+      "ppp": 0.5
+    },
+    {
+      "player": "史承平",
+      "ppp": 0.5
+    },
+    {
+      "player": "周柏臣",
+      "ppp": 0.33
+    },
+    {
+      "player": "吳家駿",
+      "ppp": 0.0
+    },
+    {
+      "player": "陳振傑",
+      "ppp": 0.0
+    }
+  ],
+  "formosa_ppp_leopards": [
+    {
+      "player": "史承平",
+      "ppp": 2.5
+    },
+    {
+      "player": "高柏鎧",
+      "ppp": 1.56
+    },
+    {
+      "player": "布依德",
+      "ppp": 1.48
+    },
+    {
+      "player": "湯普金斯",
+      "ppp": 1.33
+    },
+    {
+      "player": "霍爾曼",
+      "ppp": 1.17
+    },
+    {
+      "player": "陳振傑",
+      "ppp": 1.1
+    },
+    {
+      "player": "張宗憲",
+      "ppp": 1.09
+    },
+    {
+      "player": "忻沃克",
+      "ppp": 0.96
+    },
+    {
+      "player": "蔣淯安",
+      "ppp": 0.94
+    },
+    {
+      "player": "馬建豪",
+      "ppp": 0.94
+    },
+    {
+      "player": "林俊吉",
+      "ppp": 0.82
+    },
+    {
+      "player": "班提爾",
+      "ppp": 0.82
+    },
+    {
+      "player": "恩尼斯",
+      "ppp": 0.54
+    },
+    {
+      "player": "李德威",
+      "ppp": 0.53
+    },
+    {
+      "player": "簡偉儒",
+      "ppp": 0.25
+    },
+    {
+      "player": "盧冠良",
+      "ppp": 0.08
+    },
+    {
+      "player": "吳家駿",
+      "ppp": 0.0
+    }
+  ],
+  "kings_ppp_formosa": [
+    {
+      "player": "尚迪",
+      "ppp": 2.34
+    },
+    {
+      "player": "喬丹",
+      "ppp": 1.91
+    },
+    {
+      "player": "蘇培凱",
+      "ppp": 1.88
+    },
+    {
+      "player": "蘇士軒",
+      "ppp": 1.81
+    },
+    {
+      "player": "熊祥泰",
+      "ppp": 1.41
+    },
+    {
+      "player": "沃許本",
+      "ppp": 1.39
+    },
+    {
+      "player": "傑登",
+      "ppp": 1.28
+    },
+    {
+      "player": "李愷諺",
+      "ppp": 1.15
+    },
+    {
+      "player": "飛米",
+      "ppp": 1.15
+    },
+    {
+      "player": "奧帝",
+      "ppp": 1.13
+    },
+    {
+      "player": "林書緯",
+      "ppp": 1.01
+    },
+    {
+      "player": "桑尼",
+      "ppp": 0.98
+    },
+    {
+      "player": "簡祐哲",
+      "ppp": 0.95
+    },
+    {
+      "player": "杰倫",
+      "ppp": 0.89
+    },
+    {
+      "player": "喬納森",
+      "ppp": 0.88
+    },
+    {
+      "player": "林彥廷",
+      "ppp": 0.82
+    },
+    {
+      "player": "王柏智",
+      "ppp": 0.56
+    },
+    {
+      "player": "呂政儒",
+      "ppp": 0.53
+    },
+    {
+      "player": "林金榜",
+      "ppp": 0.27
+    }
+  ],
+  "leopards_ppp_formosa": [
+    {
+      "player": "迪亞洛",
+      "ppp": 1.61
+    },
+    {
+      "player": "董永全",
+      "ppp": 1.56
+    },
+    {
+      "player": "莊博元",
+      "ppp": 1.38
+    },
+    {
+      "player": "米勒",
+      "ppp": 1.25
+    },
+    {
+      "player": "麥卡洛",
+      "ppp": 1.24
+    },
+    {
+      "player": "克羅馬",
+      "ppp": 1.01
+    },
+    {
+      "player": "高錦瑋",
+      "ppp": 0.96
+    },
+    {
+      "player": "曹薰襄",
+      "ppp": 0.76
+    },
+    {
+      "player": "王皓吉",
+      "ppp": 0.74
+    },
+    {
+      "player": "林信寬",
+      "ppp": 0.72
+    },
+    {
+      "player": "徐宏瑋",
+      "ppp": 0.53
+    },
+    {
+      "player": "汪哲宇",
+      "ppp": 0.0
+    },
+    {
+      "player": "丁冠皓",
+      "ppp": 0.0
+    }
   ]
 }

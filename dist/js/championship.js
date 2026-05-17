@@ -1,11 +1,13 @@
-/* championship.js — 夢想家冠軍戰分析頁 */
+/* championship.js — TPBL 冠軍戰分析頁 */
 (function () {
   'use strict';
 
   var DATA_URL = '/data/championship_2526.json';
-  var D = null;          // full data
-  var currentOpp = null; // 'kings' | 'leopards'
+  var D = null;
+  var currentOpp = null;
   var effChart = null;
+  var scenarioChart = null;
+  var usgChart = null;
 
   /* ── 載入資料 ── */
   fetch(DATA_URL)
@@ -70,7 +72,11 @@
     renderHomeAway(fm, opp);
     renderQuarter(fm, opp);
     renderPlayers(fm, opp);
+    renderMHU(fm, opp, oppKey);
+    renderScenario(fm, opp, oppKey);
+    renderUSGScatter(fm, opp, oppKey);
     renderPrediction(fm, opp, h2h);
+    renderHeatmaps(fm, opp, oppKey);
   }
 
   /* ① 英雄區塊 */
@@ -337,7 +343,274 @@
     });
   }
 
-  /* ⑧ 勝負預測 */
+  /* ⑧ Mann-Whitney 勝負關鍵指標 */
+  function renderMHU(fm, opp, oppKey) {
+    var fmMhu = D.formosa_mhu;
+    var oppMhu = D[oppKey + '_mhu'];
+    var container = document.getElementById('mhu-compare');
+    container.innerHTML = '';
+
+    [
+      { label: '夢想家', mhu: fmMhu, cls: 'formosa', colorVar: 'var(--accent)' },
+      { label: opp.short, mhu: oppMhu, cls: 'opponent', colorVar: 'var(--opp-color)' }
+    ].forEach(function (item) {
+      var panel = document.createElement('div');
+      panel.className = 'mhu-panel';
+
+      var title = document.createElement('div');
+      title.className = 'mhu-panel-title';
+      title.style.color = item.colorVar;
+      title.textContent = item.label + ' — 勝場關鍵因子';
+      panel.appendChild(title);
+
+      var maxDiff = 0;
+      item.mhu.forEach(function (s) {
+        var d = Math.abs(s.w_med - s.l_med);
+        if (d > maxDiff) maxDiff = d;
+      });
+
+      item.mhu.forEach(function (s) {
+        var diff = s.w_med - s.l_med;
+        var pct = maxDiff > 0 ? Math.min(100, Math.abs(diff) / maxDiff * 100).toFixed(1) : 0;
+        var sigStar = s.sig ? ' ★' : '';
+        var fillColor = s.sig ? item.colorVar : 'rgba(143,163,184,.4)';
+
+        var row = document.createElement('div');
+        row.className = 'mhu-row';
+        row.title = '勝場中位數 ' + s.w_med + ' vs 敗場 ' + s.l_med + ' (p=' + s.p.toFixed(3) + ')';
+        row.innerHTML =
+          '<div class="mhu-stat-name">' + s.stat + (s.sig ? '<span class="mhu-sig-star"> ★</span>' : '') + '</div>' +
+          '<div class="mhu-bar-track">' +
+            '<div class="mhu-bar-fill" style="width:' + pct + '%;background:' + fillColor + '"></div>' +
+          '</div>' +
+          '<div class="mhu-val" style="color:' + (s.sig ? item.colorVar : 'var(--text2)') + '">' +
+            (diff >= 0 ? '+' : '') + diff.toFixed(1) +
+          '</div>';
+        panel.appendChild(row);
+      });
+
+      container.appendChild(panel);
+    });
+  }
+
+  /* ⑨ 情境分析 */
+  function renderScenario(fm, opp, oppKey) {
+    var fmS = D.formosa_scenario;
+    var oppS = D[oppKey + '_scenario'];
+    var labels = fmS.map(function (s) { return s.label; });
+
+    if (scenarioChart) { scenarioChart.destroy(); }
+    var ctx = document.getElementById('chart-scenario').getContext('2d');
+    scenarioChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '夢想家 勝率',
+            data: fmS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
+            backgroundColor: 'rgba(0,229,255,.7)',
+            borderColor: 'rgba(0,229,255,1)',
+            borderWidth: 1,
+            yAxisID: 'y',
+          },
+          {
+            label: opp.short + ' 勝率',
+            data: oppS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
+            backgroundColor: hexToRgba(opp.color, .65),
+            borderColor: opp.color,
+            borderWidth: 1,
+            yAxisID: 'y',
+          },
+          {
+            label: '夢想家 均分',
+            data: fmS.map(function (s) { return s.team_mean.toFixed(1); }),
+            type: 'line',
+            borderColor: 'rgba(0,229,255,.5)',
+            borderDash: [4, 3],
+            pointBackgroundColor: 'rgba(0,229,255,.9)',
+            fill: false,
+            tension: 0.3,
+            yAxisID: 'y2',
+          },
+          {
+            label: opp.short + ' 均分',
+            data: oppS.map(function (s) { return s.team_mean.toFixed(1); }),
+            type: 'line',
+            borderColor: hexToRgba(opp.color, .5),
+            borderDash: [4, 3],
+            pointBackgroundColor: hexToRgba(opp.color, .9),
+            fill: false,
+            tension: 0.3,
+            yAxisID: 'y2',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#8fa3b8', font: { size: 11 } } },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { ticks: { color: '#8fa3b8' }, grid: { color: 'rgba(255,255,255,.05)' } },
+          y: {
+            position: 'left',
+            min: 0, max: 110,
+            ticks: { color: '#8fa3b8', callback: function (v) { return v + '%'; } },
+            grid: { color: 'rgba(255,255,255,.05)' },
+            title: { display: true, text: '勝率 %', color: '#8fa3b8', font: { size: 11 } }
+          },
+          y2: {
+            position: 'right',
+            ticks: { color: '#8fa3b8' },
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: '均分', color: '#8fa3b8', font: { size: 11 } }
+          }
+        }
+      }
+    });
+
+    // 情境 table
+    var tbl = document.getElementById('scenario-table');
+    var rows = labels.map(function (lbl, i) {
+      var fs = fmS[i], os = oppS[i];
+      return '<tr>' +
+        '<td style="font-weight:700;color:var(--text)">' + lbl + '</td>' +
+        '<td style="color:var(--accent)">' + (fs.win_rate * 100).toFixed(0) + '%</td>' +
+        '<td>' + fs.team_mean.toFixed(1) + ' 分</td>' +
+        '<td style="color:var(--opp-color)">' + (os.win_rate * 100).toFixed(0) + '%</td>' +
+        '<td>' + os.team_mean.toFixed(1) + ' 分</td>' +
+        '</tr>';
+    }).join('');
+    tbl.innerHTML =
+      '<table class="scenario-tbl">' +
+        '<thead><tr><th>情境</th><th>夢想家勝率</th><th>夢想家均分</th>' +
+          '<th>' + opp.short + '勝率</th><th>' + opp.short + '均分</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>';
+  }
+
+  /* ⑩ USG% vs TS% 散點圖 */
+  function renderUSGScatter(fm, opp, oppKey) {
+    var fmPlayers = D.formosa_usg;
+    var oppPlayers = D[oppKey + '_usg'];
+
+    var fmData = fmPlayers.map(function (p) {
+      return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
+    });
+    var oppData = oppPlayers.map(function (p) {
+      return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
+    });
+
+    if (usgChart) { usgChart.destroy(); }
+    var ctx = document.getElementById('chart-usg-ts').getContext('2d');
+    usgChart = new Chart(ctx, {
+      type: 'bubble',
+      data: {
+        datasets: [
+          {
+            label: '夢想家',
+            data: fmData,
+            backgroundColor: 'rgba(0,229,255,.55)',
+            borderColor: 'rgba(0,229,255,.9)',
+            borderWidth: 1.5,
+          },
+          {
+            label: opp.short,
+            data: oppData,
+            backgroundColor: hexToRgba(opp.color, .5),
+            borderColor: opp.color,
+            borderWidth: 1.5,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#8fa3b8', font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: function (c) {
+                var d = c.raw;
+                return d.label + ' USG ' + d.x + '% / TS ' + d.y + '% (' + d.gp + '場)';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'USG% (用球率)', color: '#8fa3b8', font: { size: 11 } },
+            ticks: { color: '#8fa3b8' },
+            grid: { color: 'rgba(255,255,255,.05)' }
+          },
+          y: {
+            title: { display: true, text: 'TS% (真實命中率)', color: '#8fa3b8', font: { size: 11 } },
+            ticks: { color: '#8fa3b8' },
+            grid: { color: 'rgba(255,255,255,.05)' }
+          }
+        }
+      }
+    });
+  }
+
+  /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
+  function renderHeatmaps(fm, opp, oppKey) {
+    var fmPM  = D['formosa_hm_' + oppKey];
+    var oppPM = D[oppKey + '_hm_formosa'];
+    var fmPPP  = D['formosa_ppp_' + oppKey];
+    var oppPPP = D[oppKey + '_ppp_formosa'];
+
+    renderMiniBar('pm-compare', fmPM, oppPM, fm, opp, 'pm', 'var(--accent)', 'var(--opp-color)');
+    renderMiniBar('ppp-compare', fmPPP, oppPPP, fm, opp, 'ppp', 'var(--accent)', 'var(--opp-color)');
+  }
+
+  function renderMiniBar(containerId, fmData, oppData, fm, opp, field, fColor, oColor) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    [
+      { label: '夢想家', data: fmData, color: fColor },
+      { label: opp.short, data: oppData, color: oColor }
+    ].forEach(function (item) {
+      var panel = document.createElement('div');
+      panel.className = 'hm-panel';
+
+      var title = document.createElement('div');
+      title.className = 'hm-panel-title';
+      title.style.color = item.color;
+      title.textContent = item.label;
+      panel.appendChild(title);
+
+      var maxAbs = 0;
+      item.data.forEach(function (p) {
+        var v = Math.abs(p[field] || 0);
+        if (v > maxAbs) maxAbs = v;
+      });
+
+      item.data.forEach(function (p) {
+        var val = p[field] || 0;
+        var pct = maxAbs > 0 ? Math.min(50, Math.abs(val) / maxAbs * 50).toFixed(1) : 0;
+        var isPos = val >= 0;
+        var row = document.createElement('div');
+        row.className = 'mini-bar-row';
+        row.innerHTML =
+          '<div class="mini-bar-name">' + p.player + '</div>' +
+          '<div class="mini-bar-track">' +
+            '<div class="mini-bar-axis"></div>' +
+            '<div class="mini-bar-fill ' + (isPos ? 'mini-bar-pos' : 'mini-bar-neg') + '" style="width:' + pct + '%;background:' + (isPos ? 'rgba(0,229,255,.75)' : 'rgba(240,98,146,.75)') + '"></div>' +
+          '</div>' +
+          '<div class="mini-bar-val" style="color:' + (isPos ? 'var(--accent)' : 'var(--accent2)') + '">' +
+            (isPos ? '+' : '') + val.toFixed(field === 'ppp' ? 2 : 1) +
+          '</div>';
+        panel.appendChild(row);
+      });
+
+      container.appendChild(panel);
+    });
+  }
+
+  /* ⑪ 勝負預測 */
   function renderPrediction(fm, opp, h2h) {
     document.getElementById('pred-opp-label').textContent = opp.short;
 

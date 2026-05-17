@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <title>夢想家冠軍戰分析 2025-26｜TPBL-Lens</title>
-  <meta name="description" content="福爾摩沙夢想家 2025-26 TPBL 冠軍賽對戰分析——效率、交手紀錄、球員比較、勝負預測">
+  <title>TPBL 2025-26 冠軍戰分析｜TPBL-Lens</title>
+  <meta name="description" content="TPBL 2025-26 冠軍賽對戰分析——效率比較、交手紀錄、勝負關鍵指標、球員效率、預測">
   <link rel="canonical" href="https://tpbl-lens.pages.dev/championship/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tpbl-lens.pages.dev/championship/">
-  <meta property="og:title" content="夢想家冠軍戰分析 2025-26｜TPBL-Lens">
-  <meta property="og:description" content="福爾摩沙夢想家 2025-26 TPBL 冠軍賽對戰分析">
+  <meta property="og:title" content="TPBL 2025-26 冠軍戰分析｜TPBL-Lens">
+  <meta property="og:description" content="TPBL 2025-26 冠軍賽對戰分析——效率比較、交手紀錄、勝負關鍵指標、球員效率、預測">
   <meta property="og:locale" content="zh_TW">
   <meta property="og:site_name" content="TPBL-Lens">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="夢想家冠軍戰分析 2025-26｜TPBL-Lens">
+  <meta name="twitter:title" content="TPBL 2025-26 冠軍戰分析｜TPBL-Lens">
   {{HEAD}}
   <style>
     /* ── 冠軍戰專屬樣式 ── */
@@ -212,6 +212,39 @@
     }
     .pending-notice.show { display: block; }
 
+    /* MHU 並排 */
+    .mhu-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+    .mhu-panel { }
+    .mhu-panel-title { font-size: .8rem; font-weight: 700; margin-bottom: .6rem; }
+    .mhu-row { display: grid; grid-template-columns: 5.5rem 1fr 2.5rem; align-items: center; gap: .3rem .5rem; padding: .22rem 0; border-radius: 4px; cursor: pointer; transition: background .12s; }
+    .mhu-row:hover { background: rgba(255,255,255,.04); }
+    .mhu-stat-name { font-size: .76rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mhu-bar-track { position: relative; height: 14px; background: var(--bg3); border-radius: 3px; }
+    .mhu-bar-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px; transition: width .7s cubic-bezier(.4,0,.2,1); }
+    .mhu-val { font-size: .72rem; font-weight: 700; white-space: nowrap; }
+    .mhu-sig-star { color: var(--accent); }
+
+    /* 情境分析 table */
+    .scenario-tbl { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: .5rem; }
+    .scenario-tbl th { color: var(--text2); font-size: .75rem; padding: .35rem .5rem; border-bottom: 1px solid var(--bg3); text-align: center; }
+    .scenario-tbl td { padding: .35rem .5rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .scenario-tbl tr:last-child td { border-bottom: none; }
+
+    /* 熱力圖並排 */
+    .heatmap-side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .hm-panel { overflow-x: auto; }
+    .hm-panel-title { font-size: .78rem; font-weight: 700; margin-bottom: .5rem; }
+
+    /* mini bar for heatmap */
+    .mini-bar-row { display: grid; grid-template-columns: 5.5rem 1fr 3rem; align-items: center; gap: .3rem .4rem; padding: .18rem 0; }
+    .mini-bar-name { font-size: .74rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-bar-track { height: 12px; background: var(--bg3); border-radius: 3px; position: relative; }
+    .mini-bar-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; transition: width .7s; }
+    .mini-bar-pos { left: 50%; background: var(--accent); }
+    .mini-bar-neg { right: 50%; background: var(--accent2); }
+    .mini-bar-axis { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,.25); }
+    .mini-bar-val { font-size: .7rem; font-weight: 700; text-align: right; white-space: nowrap; }
+
     @media (max-width: 600px) {
       .champ-hero { flex-direction: column; gap: .5rem; }
       .hero-vs { transform: rotate(90deg); }
@@ -220,6 +253,8 @@
       .quarter-grid { grid-template-columns: repeat(2, 1fr); }
       .player-compare { grid-template-columns: 1fr; }
       .pred-label { min-width: 60px; font-size: .72rem; }
+      .mhu-compare { grid-template-columns: 1fr; }
+      .heatmap-side-by-side { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -338,14 +373,50 @@
     <div class="player-compare" id="player-compare"></div>
   </section>
 
-  <!-- ⑧ 勝負預測 -->
+  <!-- ⑧ Mann-Whitney 勝負關鍵指標 -->
+  <section id="mann-whitney">
+    <h2>勝負關鍵指標（Mann-Whitney）</h2>
+    <div class="card" style="margin-bottom:.75rem">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
+        各隊勝場與敗場的指標中位數差異，★ 為統計顯著（p&lt;0.05），顏色深淺代表效應量大小。
+      </div>
+      <div id="mhu-compare" class="mhu-compare"></div>
+    </div>
+  </section>
+
+  <!-- ⑨ 情境分析 -->
+  <section id="scenario">
+    <h2>情境分析（例行賽）</h2>
+    <div class="card">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
+        依例行賽三分命中率 + 助攻數將每場比賽分為 Best / Ideal / Fair / Low 四種情境，看各隊在不同情境下的表現。
+      </div>
+      <div class="card chart-wrap" style="padding:0;background:transparent;border:none">
+        <canvas id="chart-scenario" style="max-height:300px"></canvas>
+      </div>
+      <div id="scenario-table" style="margin-top:1rem"></div>
+    </div>
+  </section>
+
+  <!-- ⑩ USG% vs TS% 散點圖 -->
+  <section id="usg-ts">
+    <h2>球員效率 — USG% vs TS%</h2>
+    <div class="card chart-wrap">
+      <canvas id="chart-usg-ts" style="max-height:380px"></canvas>
+    </div>
+    <div style="font-size:.72rem;color:var(--text2);margin-top:.5rem">
+      右上角為高用球量且高效率。圓圈大小代表場均得分。
+    </div>
+  </section>
+
+  <!-- ⑪ 勝負預測 -->
   <section id="prediction">
-    <h2>例行賽數據預測</h2>
+    <h2>單場勝率預測</h2>
     <div class="card">
       <div class="pred-container">
         <div>
           <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
-            <span>夢想家</span><span id="pred-opp-label">對手</span>
+            <span id="pred-team-a-label">夢想家</span><span id="pred-opp-label">對手</span>
           </div>
           <div class="pred-bar-bg" id="pred-bar-main">
             <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
@@ -360,9 +431,41 @@
     </div>
   </section>
 
+  <!-- ⑫ 延伸閱讀（折疊） -->
+  <section id="extended">
+    <h2 style="cursor:pointer" id="extended-toggle" onclick="toggleExtended()">
+      延伸閱讀 — Plus/Minus &amp; PPP 熱力圖
+      <span id="extended-arrow" style="font-size:.8rem;margin-left:.4rem">▼ 展開</span>
+    </h2>
+    <div id="extended-content" style="display:none">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:1rem">
+        僅顯示對本次對手的 Plus/Minus（每36分鐘±值）與 PPP（每回合得分）。
+      </div>
+      <!-- Plus/Minus -->
+      <div style="margin-bottom:1.5rem">
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 Plus/Minus（對本對手）</h3>
+        <div class="heatmap-side-by-side" id="pm-compare"></div>
+      </div>
+      <!-- PPP -->
+      <div>
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 PPP（對本對手）</h3>
+        <div class="heatmap-side-by-side" id="ppp-compare"></div>
+      </div>
+    </div>
+  </section>
+
 </main>
 {{FOOTER}}
 <script src="/js/common.js"></script>
 <script src="/js/championship.js"></script>
+<script>
+function toggleExtended() {
+  var c = document.getElementById('extended-content');
+  var a = document.getElementById('extended-arrow');
+  var open = c.style.display !== 'none';
+  c.style.display = open ? 'none' : 'block';
+  a.textContent = open ? '▼ 展開' : '▲ 收起';
+}
+</script>
 </body>
 </html>
