@@ -666,14 +666,21 @@
     </div>
   </section>
 
-  <!-- ⑩ USG% vs TS% 散點圖 -->
+  <!-- ⑩ USG% vs TS% 散點圖（H2H，分隊顯示） -->
   <section id="usg-ts">
-    <h2>球員效率 — USG% vs TS%</h2>
-    <div class="card chart-wrap">
-      <canvas id="chart-usg-ts" style="max-height:380px"></canvas>
+    <h2>球員效率 — USG% vs TS%（對戰數據）</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="card chart-wrap">
+        <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
+        <canvas id="chart-usg-f" style="max-height:320px"></canvas>
+      </div>
+      <div class="card chart-wrap">
+        <div id="usg-opp-label" style="font-size:.78rem;font-weight:700;color:var(--opp-color);margin-bottom:.4rem">對手</div>
+        <canvas id="chart-usg-k" style="max-height:320px"></canvas>
+      </div>
     </div>
     <div style="font-size:.72rem;color:var(--text2);margin-top:.5rem">
-      右上角為高用球量且高效率。圓圈大小代表場均得分。
+      右上角為高用球量且高效率。圓圈大小代表場均得分。數據取自例行賽雙方對戰場次。
     </div>
   </section>
 

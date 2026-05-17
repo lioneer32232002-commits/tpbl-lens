@@ -7,7 +7,8 @@
   var currentOpp = null;
   var effChart = null;
   var scenarioChart = null;
-  var usgChart = null;
+  var usgChartF = null;
+  var usgChartK = null;
 
   /* ── 載入資料 ── */
   fetch(DATA_URL)
@@ -34,20 +35,25 @@
   function renderAll(opp, oppKey) {
     var fm = D.formosa;
     var h2h = D['h2h_' + oppKey];
+    // 取 H2H 子物件，並補上 metadata
+    var fmH2H  = fm['h2h_' + oppKey] || fm;
+    var oppH2H = opp['h2h_formosa']  || opp;
+    fmH2H.name  = fm.name;  fmH2H.short  = fm.short;  fmH2H.color  = fm.color;
+    oppH2H.name = opp.name; oppH2H.short = opp.short; oppH2H.color = opp.color;
+
     renderHero(fm, opp);
-    renderEfficiency(fm, opp);
     renderH2H(h2h, opp);
-    renderScoring(fm, opp);
-    renderHomeAway(fm, opp);
-    renderQuarter(fm, opp);
-    renderPlayers(fm, opp);
+    renderPrediction(fmH2H, oppH2H, h2h);
+    renderEfficiency(fmH2H, oppH2H);
+    renderScoring(fmH2H, oppH2H);
+    renderHomeAway(fmH2H, oppH2H);
+    renderQuarter(fmH2H, oppH2H, opp);
+    renderPlayers(fmH2H, oppH2H);
     renderMHU(fm, opp, oppKey);
     renderScenario(fm, opp, oppKey);
-    renderUSGScatter(fm, opp, oppKey);
-    renderPrediction(fm, opp, h2h);
+    renderUSGCharts(oppKey, opp);
     renderHeatmaps(fm, opp, oppKey);
-    // 觸發所有 bar 動畫
-    animateBars('.cmp-bar-f, .cmp-bar-o, .mhu-bar-fill, .mini-bar-fill');
+    setupScrollTriggers();
   }
 
   /* ① 英雄區塊 */
@@ -89,8 +95,8 @@
       var oPct = (100 - fPct).toFixed(1);
       var barRow = document.createElement('div');
       barRow.className = 'cmp-bar-row';
-      barRow.innerHTML = '<div class="cmp-bar-f" style="width:' + fPct + '%"></div>' +
-                         '<div class="cmp-bar-o" style="width:' + oPct + '%"></div>';
+      barRow.innerHTML = '<div class="cmp-bar-f" data-w="' + fPct + '%" style="width:0%"></div>' +
+                         '<div class="cmp-bar-o" data-w="' + oPct + '%" style="width:0%"></div>';
       grid.appendChild(barRow);
     });
 
@@ -254,11 +260,13 @@
       var d = item.data;
       var card = document.createElement('div');
       card.className = 'ha-card';
+      var homeWR = d.home.win_rate !== undefined ? d.home.win_rate : d.home.wins / (d.home.wins + d.home.losses || 1);
+      var awayWR = d.away.win_rate !== undefined ? d.away.win_rate : d.away.wins / (d.away.wins + d.away.losses || 1);
       card.innerHTML =
         '<div class="ha-team-name" style="color:' + item.colorVar + ';font-weight:700">' + item.label + '</div>' +
-        haRow('主場', d.home.wins + 'W ' + d.home.losses + 'L　' + pct(d.home.win_rate)) +
+        haRow('主場', d.home.wins + 'W ' + d.home.losses + 'L　' + pct(homeWR)) +
         haRow('　　得/失分', d.home.avg_pts.toFixed(1) + ' / ' + d.home.avg_opp.toFixed(1)) +
-        haRow('客場', d.away.wins + 'W ' + d.away.losses + 'L　' + pct(d.away.win_rate)) +
+        haRow('客場', d.away.wins + 'W ' + d.away.losses + 'L　' + pct(awayWR)) +
         haRow('　　得/失分', d.away.avg_pts.toFixed(1) + ' / ' + d.away.avg_opp.toFixed(1));
       container.appendChild(card);
     });
@@ -269,29 +277,39 @@
   }
 
   /* ⑥ 節次分析 */
-  function renderQuarter(fm, opp) {
+  function renderQuarter(fm, opp, oppFull) {
     var container = document.getElementById('quarter-grid');
     container.innerHTML = '';
+    // H2H quarter 為純數字；例行賽為 {avg_score, win_rate} 物件
+    function qScore(q, key) {
+      var v = q[key];
+      return typeof v === 'object' ? v.avg_score : v;
+    }
+    function qWR(q, key) {
+      var v = q[key];
+      return typeof v === 'object' ? pct(v.win_rate) : null;
+    }
     ['Q1', 'Q2', 'Q3', 'Q4'].forEach(function (q) {
-      var fq = fm.quarter[q];
-      var oq = opp.quarter[q];
-      var fBetter = fq.avg_score >= oq.avg_score;
+      var fScore = qScore(fm.quarter, q);
+      var oScore = qScore(opp.quarter, q);
+      var fBetter = fScore >= oScore;
+      var wrText  = qWR(fm.quarter, q);
       var card = document.createElement('div');
       card.className = 'quarter-card';
       card.innerHTML =
         '<div class="quarter-name">' + q + '</div>' +
         '<div class="quarter-scores">' +
           '<div class="quarter-team">' +
-            '<div class="quarter-score formosa" style="color:' + (fBetter ? 'var(--accent)' : 'var(--text)') + '">' + fq.avg_score.toFixed(1) + '</div>' +
+            '<div class="quarter-score formosa" style="color:' + (fBetter ? 'var(--accent)' : 'var(--text)') + '">' + fScore.toFixed(1) + '</div>' +
             '<div style="font-size:.65rem;color:var(--text2)">夢想家</div>' +
           '</div>' +
           '<div class="quarter-sep">—</div>' +
           '<div class="quarter-team">' +
-            '<div class="quarter-score opponent" style="color:' + (!fBetter ? 'var(--opp-color)' : 'var(--text)') + '">' + oq.avg_score.toFixed(1) + '</div>' +
+            '<div class="quarter-score opponent" style="color:' + (!fBetter ? 'var(--opp-color)' : 'var(--text)') + '">' + oScore.toFixed(1) + '</div>' +
             '<div style="font-size:.65rem;color:var(--text2)">' + opp.short + '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="quarter-winrate">夢 節勝率 ' + pct(fq.win_rate) + '</div>';
+        (wrText ? '<div class="quarter-winrate">夢 節勝率 ' + wrText + '</div>' : '');
       container.appendChild(card);
     });
   }
@@ -373,7 +391,7 @@
         row.innerHTML =
           '<div class="mhu-stat-name">' + s.stat + (s.sig ? '<span class="mhu-sig-star"> ★</span>' : '') + '</div>' +
           '<div class="mhu-bar-track">' +
-            '<div class="mhu-bar-fill" style="width:' + pct + '%;background:' + fillColor + '"></div>' +
+            '<div class="mhu-bar-fill" data-w="' + pct + '%" style="width:0%;background:' + fillColor + '"></div>' +
           '</div>' +
           '<div class="mhu-val" style="color:' + (s.sig ? item.colorVar : 'var(--text2)') + '">' +
             (diff >= 0 ? '+' : '') + diff.toFixed(1) +
@@ -483,66 +501,55 @@
       '</table>';
   }
 
-  /* ⑩ USG% vs TS% 散點圖 */
-  function renderUSGScatter(fm, opp, oppKey) {
-    var fmPlayers = D.formosa_usg;
-    var oppPlayers = D[oppKey + '_usg'];
+  /* ⑩ USG% vs TS% 散點圖（H2H，分隊各一張） */
+  function renderUSGCharts(oppKey, opp) {
+    var fmPlayers  = D['h2h_formosa_usg'] || D.formosa_usg;
+    var oppPlayers = D['h2h_' + oppKey + '_usg'] || D[oppKey + '_usg'];
 
-    var fmData = fmPlayers.map(function (p) {
-      return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
-    });
-    var oppData = oppPlayers.map(function (p) {
-      return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
-    });
-
-    if (usgChart) { usgChart.destroy(); }
-    var ctx = document.getElementById('chart-usg-ts').getContext('2d');
-    usgChart = new Chart(ctx, {
-      type: 'bubble',
-      data: {
-        datasets: [
-          {
-            label: '夢想家',
-            data: fmData,
-            backgroundColor: 'rgba(0,229,255,.55)',
-            borderColor: 'rgba(0,229,255,.9)',
-            borderWidth: 1.5,
-          },
-          {
-            label: opp.short,
-            data: oppData,
-            backgroundColor: hexToRgba(opp.color, .5),
-            borderColor: opp.color,
-            borderWidth: 1.5,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: '#8fa3b8', font: { size: 12 } } },
-          tooltip: {
-            callbacks: {
-              label: function (c) {
-                var d = c.raw;
-                return d.label + ' USG ' + d.x + '% / TS ' + d.y + '% (' + d.gp + '場)';
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            title: { display: true, text: 'USG% (用球率)', color: '#8fa3b8', font: { size: 11 } },
-            ticks: { color: '#8fa3b8' },
-            grid: { color: 'rgba(255,255,255,.05)' }
-          },
-          y: {
-            title: { display: true, text: 'TS% (真實命中率)', color: '#8fa3b8', font: { size: 11 } },
-            ticks: { color: '#8fa3b8' },
-            grid: { color: 'rgba(255,255,255,.05)' }
-          }
-        }
+    function toData(arr) {
+      return arr.map(function (p) {
+        return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
+      });
+    }
+    var tooltipCb = {
+      label: function (c) {
+        var d = c.raw;
+        return d.label + ' USG ' + d.x + '% / TS ' + d.y + '% (' + d.gp + '場)';
       }
+    };
+    var scalesBase = {
+      x: {
+        title: { display: true, text: 'USG%', color: '#8fa3b8', font: { size: 11 } },
+        ticks: { color: '#8fa3b8' },
+        grid: { color: 'rgba(255,255,255,.05)' }
+      },
+      y: {
+        title: { display: true, text: 'TS%', color: '#8fa3b8', font: { size: 11 } },
+        ticks: { color: '#8fa3b8' },
+        grid: { color: 'rgba(255,255,255,.05)' }
+      }
+    };
+
+    if (usgChartF) { usgChartF.destroy(); }
+    usgChartF = new Chart(document.getElementById('chart-usg-f').getContext('2d'), {
+      type: 'bubble',
+      data: { datasets: [{ label: '夢想家', data: toData(fmPlayers),
+        backgroundColor: 'rgba(0,229,255,.55)', borderColor: 'rgba(0,229,255,.9)', borderWidth: 1.5 }] },
+      options: { responsive: true,
+        plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 11 } } }, tooltip: { callbacks: tooltipCb } },
+        scales: scalesBase }
+    });
+
+    if (usgChartK) { usgChartK.destroy(); }
+    var oppLbl = document.getElementById('usg-opp-label');
+    if (oppLbl) { oppLbl.textContent = opp.short; oppLbl.style.color = opp.color; }
+    usgChartK = new Chart(document.getElementById('chart-usg-k').getContext('2d'), {
+      type: 'bubble',
+      data: { datasets: [{ label: opp.short, data: toData(oppPlayers),
+        backgroundColor: hexToRgba(opp.color, .5), borderColor: opp.color, borderWidth: 1.5 }] },
+      options: { responsive: true,
+        plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 11 } } }, tooltip: { callbacks: tooltipCb } },
+        scales: scalesBase }
     });
   }
 
@@ -553,17 +560,29 @@
     var fmPPP  = D['formosa_ppp_' + oppKey];
     var oppPPP = D[oppKey + '_ppp_formosa'];
 
-    renderMiniBar('pm-compare', fmPM, oppPM, fm, opp, 'pm', 'var(--accent)', 'var(--opp-color)');
-    renderMiniBar('ppp-compare', fmPPP, oppPPP, fm, opp, 'ppp', 'var(--accent)', 'var(--opp-color)');
+    var fmActive  = buildActiveMap(fm.players);
+    var oppActive = buildActiveMap(opp.players);
+
+    renderMiniBar('pm-compare',  fmPM,  oppPM,  fm, opp, 'pm',  'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
+    renderMiniBar('ppp-compare', fmPPP, oppPPP, fm, opp, 'ppp', 'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
   }
 
-  function renderMiniBar(containerId, fmData, oppData, fm, opp, field, fColor, oColor) {
+  function buildActiveMap(players) {
+    var map = {};
+    if (!players) { return map; }
+    players.forEach(function (p) {
+      map[p.name] = (p.active !== false) && !p.injured;
+    });
+    return map;
+  }
+
+  function renderMiniBar(containerId, fmData, oppData, fm, opp, field, fColor, oColor, fmActive, oppActive) {
     var container = document.getElementById(containerId);
     container.innerHTML = '';
 
     [
-      { label: '夢想家', data: fmData, color: fColor },
-      { label: opp.short, data: oppData, color: oColor }
+      { label: '夢想家', data: fmData,  color: fColor, activeMap: fmActive  || {} },
+      { label: opp.short, data: oppData, color: oColor, activeMap: oppActive || {} }
     ].forEach(function (item) {
       var panel = document.createElement('div');
       panel.className = 'hm-panel';
@@ -576,23 +595,33 @@
 
       var maxAbs = 0;
       item.data.forEach(function (p) {
+        if (item.activeMap[p.player] === false) { return; }
         var v = Math.abs(p[field] || 0);
-        if (v > maxAbs) maxAbs = v;
+        if (v > maxAbs) { maxAbs = v; }
       });
 
       item.data.forEach(function (p) {
+        var isActive = item.activeMap[p.player] !== false;
         var val = p[field] || 0;
-        var pct = maxAbs > 0 ? Math.min(50, Math.abs(val) / maxAbs * 50).toFixed(1) : 0;
+        var barPct = maxAbs > 0 ? Math.min(50, Math.abs(val) / maxAbs * 50).toFixed(1) : 0;
         var isPos = val >= 0;
+
+        var fillColor = !isActive ? 'rgba(143,163,184,.35)' : (isPos ? 'rgba(0,229,255,.75)' : 'rgba(240,98,146,.75)');
+        var valColor  = !isActive ? 'var(--text2)' : (isPos ? 'var(--accent)' : 'var(--accent2)');
+
         var row = document.createElement('div');
         row.className = 'mini-bar-row';
+        if (!isActive) { row.style.opacity = '0.38'; }
         row.innerHTML =
-          '<div class="mini-bar-name">' + p.player + '</div>' +
+          '<div class="mini-bar-name">' + p.player +
+            (!isActive ? ' <span style="font-size:.58rem;color:var(--text2)">(傷)</span>' : '') +
+          '</div>' +
           '<div class="mini-bar-track">' +
             '<div class="mini-bar-axis"></div>' +
-            '<div class="mini-bar-fill ' + (isPos ? 'mini-bar-pos' : 'mini-bar-neg') + '" style="width:' + pct + '%;background:' + (isPos ? 'rgba(0,229,255,.75)' : 'rgba(240,98,146,.75)') + '"></div>' +
+            '<div class="mini-bar-fill ' + (isPos ? 'mini-bar-pos' : 'mini-bar-neg') +
+              '" data-w="' + barPct + '%" style="width:0%;background:' + fillColor + '"></div>' +
           '</div>' +
-          '<div class="mini-bar-val" style="color:' + (isPos ? 'var(--accent)' : 'var(--accent2)') + '">' +
+          '<div class="mini-bar-val" style="color:' + valColor + '">' +
             (isPos ? '+' : '') + val.toFixed(field === 'ppp' ? 2 : 1) +
           '</div>';
         panel.appendChild(row);
@@ -742,7 +771,7 @@
         '<div class="pred-path-row">' +
           '<div class="pred-path-label">夢 ' + lbl + '</div>' +
           '<div class="pred-path-bar-bg">' +
-            '<div class="pred-path-bar-fill" style="width:' + bw + '%;background:rgba(0,229,255,.75)"></div>' +
+            '<div class="pred-path-bar-fill" data-w="' + bw + '%" style="width:0%;background:rgba(0,229,255,.75)"></div>' +
           '</div>' +
           '<div class="pred-path-val" style="color:var(--accent)">' + v + '%</div>' +
         '</div>';
@@ -755,7 +784,7 @@
         '<div class="pred-path-row">' +
           '<div class="pred-path-label">' + opp.short + ' ' + lbl + '</div>' +
           '<div class="pred-path-bar-bg">' +
-            '<div class="pred-path-bar-fill" style="width:' + bw + '%;background:rgba(var(--opp-rgb),.75)"></div>' +
+            '<div class="pred-path-bar-fill" data-w="' + bw + '%" style="width:0%;background:rgba(var(--opp-rgb),.75)"></div>' +
           '</div>' +
           '<div class="pred-path-val" style="color:var(--opp-color)">' + v + '%</div>' +
         '</div>';
@@ -774,12 +803,14 @@
     html += '<div class="pred-factors" id="pred-factors"></div>';
     card.innerHTML = html;
 
+    var fHomeWR  = fm.home.win_rate  !== undefined ? fm.home.win_rate  : fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1);
+    var oHomeWR  = opp.home.win_rate !== undefined ? opp.home.win_rate : opp.home.wins / (opp.home.wins + opp.home.losses || 1);
     var factors = [
-      { name: '整體效率 NetRtg', fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
-      { name: '進攻效率 ORtg',   fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
-      { name: '防守效率 DRtg',   fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
-      { name: '主場勝率',        fVal: fm.home.win_rate, oVal: opp.home.win_rate, higherBetter: true, fmt: pct },
-      { name: '例行賽 H2H',      fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } }
+      { name: 'H2H NetRtg',    fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
+      { name: '進攻效率 ORtg',  fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
+      { name: '防守效率 DRtg',  fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
+      { name: 'H2H 主場勝率',   fVal: fHomeWR,   oVal: oHomeWR,    higherBetter: true,  fmt: pct },
+      { name: 'H2H 戰績',       fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } }
     ];
     var fcont = document.getElementById('pred-factors');
     factors.forEach(function (f) {
@@ -796,23 +827,50 @@
       fcont.appendChild(el);
     });
 
-    // 觸發路徑 bar 動畫
-    animateBars('.pred-path-bar-fill');
   }
 
-  /* ── Bar 動畫：渲染後用 rAF 觸發 transition ── */
-  function animateBars(selector) {
-    var els = document.querySelectorAll(selector);
-    // 先存目標寬度，歸零，下一 frame 還原
-    var targets = [];
-    els.forEach(function (el) {
-      targets.push({ el: el, w: el.style.width });
-      el.style.width = '0%';
-    });
+  /* ── Bar 動畫：讀取 data-w 展開 ── */
+  function animateBars(selector, scope) {
+    var root = scope || document;
+    var els = root.querySelectorAll(selector);
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        targets.forEach(function (t) { t.el.style.width = t.w; });
+        els.forEach(function (el) {
+          el.style.width = el.dataset.w || '0%';
+        });
       });
+    });
+  }
+
+  /* ── Scroll trigger：各區塊進入視口才播動畫 ── */
+  function setupScrollTriggers() {
+    var configs = [
+      { id: 'pred-card',    sel: '.pred-path-bar-fill' },
+      { id: 'efficiency',   sel: '#efficiency .cmp-bar-f, #efficiency .cmp-bar-o' },
+      { id: 'mann-whitney', sel: '#mann-whitney .mhu-bar-fill' },
+      { id: 'extended',     sel: '#extended .mini-bar-fill' },
+    ];
+
+    if (!('IntersectionObserver' in window)) {
+      // fallback：全部立即觸發
+      configs.forEach(function (c) { animateBars(c.sel); });
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) { return; }
+        obs.unobserve(entry.target);
+        var id = entry.target.id;
+        configs.forEach(function (c) {
+          if (c.id === id) { animateBars(c.sel, entry.target); }
+        });
+      });
+    }, { threshold: 0.12 });
+
+    configs.forEach(function (c) {
+      var el = document.getElementById(c.id);
+      if (el) { obs.observe(el); }
     });
   }
 
