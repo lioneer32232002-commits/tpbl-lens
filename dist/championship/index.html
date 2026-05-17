@@ -291,24 +291,6 @@
     .hero-netrtg span { font-weight: 700; }
     .hero-vs { font-size: 1.4rem; font-weight: 900; color: var(--text2); padding: 0 .5rem; flex-shrink: 0; }
 
-    /* 切換對手 */
-    .opp-toggle { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .opp-btn {
-      padding: .45rem 1.1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text2);
-      font-size: .87rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .18s;
-      font-family: inherit;
-    }
-    .opp-btn:hover { border-color: rgba(0,229,255,.4); color: var(--text); }
-    .opp-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,.12); }
-    .opp-btn.pending { border-color: var(--accent2); color: var(--accent2); background: rgba(240,98,146,.1); }
-
     /* 對決 stat 比較列 */
     .compare-grid {
       display: grid;
@@ -444,13 +426,6 @@
     .edge-o { color: var(--opp-color, #ffd700); }
     .edge-tie { color: var(--text2); }
 
-    /* pending 按鈕跳動 */
-    @keyframes pendingPulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(240,98,146,.0); border-color: var(--accent2); }
-      50%      { box-shadow: 0 0 0 3px rgba(240,98,146,.25); border-color: rgba(240,98,146,.7); }
-    }
-    .opp-btn.pending { animation: pendingPulse 2s ease-in-out infinite; }
-
     /* 英雄卡發光邊框（切換對手時） */
     @keyframes heroBorderPulse {
       0%   { box-shadow: 0 0 0 0 rgba(0,229,255,.0); }
@@ -468,19 +443,6 @@
     /* 折疊標題 hover */
     #extended-toggle:hover { color: var(--text); }
     #extended-toggle { transition: color .15s; }
-
-    /* pending overlay */
-    .pending-notice {
-      display: none;
-      background: rgba(240,98,146,.1);
-      border: 1px dashed var(--accent2);
-      border-radius: 8px;
-      padding: .7rem 1rem;
-      font-size: .84rem;
-      color: var(--accent2);
-      margin-bottom: 1.5rem;
-    }
-    .pending-notice.show { display: block; }
 
     /* MHU 並排 */
     .mhu-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
@@ -548,24 +510,6 @@
 
 <main id="champ-main">
 
-  <!-- 對手切換 -->
-  <section id="opp-select" style="margin-bottom:1.5rem">
-    <div class="card" style="padding:.85rem 1.25rem">
-      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-        <span style="font-size:.84rem;color:var(--text2);white-space:nowrap">冠軍戰對手：</span>
-        <div class="opp-toggle">
-          <button class="opp-btn pending" data-opp="kings">🆚 新北國王</button>
-          <button class="opp-btn pending" data-opp="leopards">🆚 桃園雲豹</button>
-        </div>
-        <span id="opp-status" style="font-size:.75rem;color:var(--accent2)">等待今晚確認對手…</span>
-      </div>
-    </div>
-  </section>
-
-  <div id="pending-notice" class="pending-notice show">
-    ⏳ 冠軍戰對手尚未確認，以下顯示兩種對陣的完整分析。確定對手後點選上方按鈕即可鎖定。
-  </div>
-
   <!-- ① 對決英雄區塊 -->
   <section id="matchup-hero">
     <h2>對決概況</h2>
@@ -578,10 +522,10 @@
       </div>
       <div class="hero-vs">VS</div>
       <div class="hero-team">
-        <div class="hero-name" id="hero-opp-fullname">—</div>
-        <div class="hero-short opponent" id="hero-opp-short">?</div>
-        <div class="hero-record" id="hero-record-o">—</div>
-        <div class="hero-netrtg" id="hero-netrtg-o">Net Rtg <span>—</span></div>
+        <div class="hero-name" id="hero-opp-fullname">新北國王</div>
+        <div class="hero-short opponent" id="hero-opp-short">國王</div>
+        <div class="hero-record" id="hero-record-o">19 勝 17 敗</div>
+        <div class="hero-netrtg" id="hero-netrtg-o">Net Rtg <span style="color:var(--opp-color)">-1.4</span></div>
       </div>
     </div>
   </section>

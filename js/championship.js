@@ -14,58 +14,18 @@
     .then(function (r) { return r.json(); })
     .then(function (d) {
       D = d;
-      var initial = d.active_opponent || 'kings';
-      setOpp(initial);
-      bindToggle();
+      setOpp('kings');
       bindLocks();
     })
     .catch(function (e) { console.error('Championship data load failed', e); });
-
-  /* ── 對手切換按鈕 ── */
-  function bindToggle() {
-    document.querySelectorAll('.opp-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () { setOpp(btn.dataset.opp); });
-    });
-  }
 
   function setOpp(oppKey) {
     currentOpp = oppKey;
     var opp = D[oppKey];
 
-    // CSS 變數 —— 對手顏色
-    var oppColor = opp.color;
     var root = document.documentElement;
-    root.style.setProperty('--opp-color', oppColor);
-    var rgb = hexToRgb(oppColor);
-    root.style.setProperty('--opp-rgb', rgb);
-
-    // 英雄卡切換發光
-    var hero = document.getElementById('hero-card');
-    if (hero) {
-      hero.classList.remove('glow');
-      void hero.offsetWidth; // reflow to restart animation
-      hero.classList.add('glow');
-    }
-
-    // 按鈕狀態
-    document.querySelectorAll('.opp-btn').forEach(function (b) {
-      b.classList.remove('active', 'pending');
-      b.classList.add(b.dataset.opp === oppKey ? 'active' : 'pending');
-    });
-
-    // 是否已確認對手
-    var confirmed = !!D.active_opponent;
-    var notice = document.getElementById('pending-notice');
-    var status = document.getElementById('opp-status');
-    if (confirmed) {
-      notice.classList.remove('show');
-      status.textContent = '✅ 對手已確認';
-      status.style.color = 'var(--accent)';
-    } else {
-      notice.classList.add('show');
-      status.textContent = '等待今晚確認對手…';
-      status.style.color = 'var(--accent2)';
-    }
+    root.style.setProperty('--opp-color', opp.color);
+    root.style.setProperty('--opp-rgb', hexToRgb(opp.color));
 
     renderAll(opp, oppKey);
   }
