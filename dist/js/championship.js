@@ -17,6 +17,7 @@
       var initial = d.active_opponent || 'kings';
       setOpp(initial);
       bindToggle();
+      bindLocks();
     })
     .catch(function (e) { console.error('Championship data load failed', e); });
 
@@ -37,6 +38,14 @@
     root.style.setProperty('--opp-color', oppColor);
     var rgb = hexToRgb(oppColor);
     root.style.setProperty('--opp-rgb', rgb);
+
+    // 英雄卡切換發光
+    var hero = document.getElementById('hero-card');
+    if (hero) {
+      hero.classList.remove('glow');
+      void hero.offsetWidth; // reflow to restart animation
+      hero.classList.add('glow');
+    }
 
     // 按鈕狀態
     document.querySelectorAll('.opp-btn').forEach(function (b) {
@@ -77,6 +86,8 @@
     renderUSGScatter(fm, opp, oppKey);
     renderPrediction(fm, opp, h2h);
     renderHeatmaps(fm, opp, oppKey);
+    // 觸發所有 bar 動畫
+    animateBars('.cmp-bar-f, .cmp-bar-o, .mhu-bar-fill, .pred-bar-f, .pred-bar-o, .mini-bar-fill');
   }
 
   /* ① 英雄區塊 */
@@ -610,23 +621,45 @@
     });
   }
 
+  /* 7 戰 4 勝制系列賽奪冠機率（給定單場勝率） */
+  function seriesWinProb(p) {
+    // P(贏得系列賽) = Σ C(3+k, k) * p^4 * (1-p)^k，k=0..3
+    var q = 1 - p;
+    var total = 0;
+    // k = 對手勝場數 0,1,2,3（總場數 4,5,6,7）
+    for (var k = 0; k <= 3; k++) {
+      total += binom(3 + k, k) * Math.pow(p, 4) * Math.pow(q, k);
+    }
+    return total;
+  }
+
+  function binom(n, k) {
+    if (k === 0 || k === n) return 1;
+    var result = 1;
+    for (var i = 0; i < k; i++) { result = result * (n - i) / (i + 1); }
+    return result;
+  }
+
   /* ⑪ 勝負預測 */
   function renderPrediction(fm, opp, h2h) {
     document.getElementById('pred-opp-label').textContent = opp.short;
+    document.getElementById('pred-team-a-label').textContent = '夢想家';
 
     var wins = h2h.filter(function (g) { return g.won; }).length;
     var h2hWinRate = wins / h2h.length;
 
-    // Net Rtg 換算勝率（Pythagorean approximation）
+    // Net Rtg 換算單場勝率
     var netDiff = fm.netrtg - opp.netrtg;
     var netProb = 0.5 + netDiff * 0.025;
     netProb = Math.min(0.82, Math.max(0.18, netProb));
 
-    // 加權：Net Rtg 60%，H2H 40%
-    var combined = netProb * 0.6 + h2hWinRate * 0.4;
-    combined = Math.min(0.80, Math.max(0.20, combined));
+    // 加權單場勝率：Net Rtg 60%，H2H 40%
+    var gameProbRaw = netProb * 0.6 + h2hWinRate * 0.4;
+    gameProbRaw = Math.min(0.80, Math.max(0.20, gameProbRaw));
 
-    var fPct = Math.round(combined * 100);
+    // 換算成 7 戰 4 勝制系列賽奪冠機率
+    var seriesProb = seriesWinProb(gameProbRaw);
+    var fPct = Math.round(seriesProb * 100);
     var oPct = 100 - fPct;
 
     var fillF = document.getElementById('pred-fill-f');
@@ -640,7 +673,8 @@
     var noteTxt =
       'Net Rating 差距 ' + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
       '，例行賽 H2H ' + wins + ' 勝 ' + (h2h.length - wins) + ' 敗。' +
-      '加權預測（Net Rtg 60% + H2H 40%）夢想家單場勝率約 ' + fPct + '%。' +
+      '加權估算單場勝率 ' + Math.round(gameProbRaw * 100) + '%，' +
+      '換算 7 戰 4 勝制：夢想家奪冠機率約 ' + fPct + '%（' + opp.short + ' ' + oPct + '%）。' +
       '僅供參考，季後賽強度與陣容調整可能顯著影響結果。';
     document.getElementById('pred-note').textContent = noteTxt;
 
@@ -670,6 +704,38 @@
         '<div class="factor-edge ' + edgeCls + '">' + edgeLabel + '</div>';
       fcont.appendChild(card);
     });
+  }
+
+  /* ── Bar 動畫：渲染後用 rAF 觸發 transition ── */
+  function animateBars(selector) {
+    var els = document.querySelectorAll(selector);
+    // 先存目標寬度，歸零，下一 frame 還原
+    var targets = [];
+    els.forEach(function (el) {
+      targets.push({ el: el, w: el.style.width });
+      el.style.width = '0%';
+    });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        targets.forEach(function (t) { t.el.style.width = t.w; });
+      });
+    });
+  }
+
+  /* ── Click-to-lock for MHU rows and factor cards ── */
+  function bindLocks() {
+    document.addEventListener('click', function (e) {
+      var mhu = e.target.closest('.mhu-row');
+      if (mhu) { _lock(mhu, mhu.closest('.mhu-panel'), '.mhu-row'); return; }
+      var fc = e.target.closest('.factor-card');
+      if (fc) { _lock(fc, fc.closest('.pred-factors'), '.factor-card'); return; }
+    });
+  }
+
+  function _lock(el, scope, sel) {
+    var was = el.classList.contains('locked');
+    if (scope) scope.querySelectorAll(sel + '.locked').forEach(function (x) { x.classList.remove('locked'); });
+    if (!was) el.classList.add('locked');
   }
 
   /* ── 工具函式 ── */
