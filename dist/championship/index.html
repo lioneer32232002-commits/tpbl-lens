@@ -289,7 +289,7 @@
     .hero-record { font-size: 1.15rem; font-weight: 700; color: var(--text); }
     .hero-netrtg { font-size: .8rem; color: var(--text2); margin-top: .2rem; }
     .hero-netrtg span { font-weight: 700; }
-    .hero-vs { font-size: 1.4rem; font-weight: 900; color: var(--text2); padding: 0 .5rem; flex-shrink: 0; }
+    .hero-score-src { flex-shrink: 0; width: 210px; padding: 0 .9rem; }
 
     /* 對決 stat 比較列 */
     .compare-grid {
@@ -418,7 +418,7 @@
       transition: width .9s cubic-bezier(.4,0,.2,1);
     }
     .pred-note { font-size: .73rem; color: var(--text2); line-height: 1.55; }
-    .pred-factors { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; margin-top: .5rem; }
+    .pred-factors { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: .5rem; margin-top: .5rem; }
     .factor-card { background: var(--bg3); border-radius: 7px; padding: .55rem .75rem; }
     .factor-name { font-size: .72rem; color: var(--text2); margin-bottom: .15rem; }
     .factor-edge { font-size: .84rem; font-weight: 700; }
@@ -513,8 +513,8 @@
     .mini-bar-val { font-size: .7rem; font-weight: 700; text-align: right; white-space: nowrap; }
 
     @media (max-width: 600px) {
-      .champ-hero { flex-direction: column; gap: .5rem; }
-      .hero-vs { transform: rotate(90deg); }
+      .champ-hero { flex-direction: column; gap: .75rem; }
+      .hero-score-src { width: 100%; padding: 0; }
       .compare-grid { font-size: .9rem; }
       .ha-compare { grid-template-columns: 1fr; }
       .quarter-grid { grid-template-columns: repeat(2, 1fr); }
@@ -555,7 +555,7 @@
         <div class="hero-record" id="hero-record-f">22 勝 14 敗</div>
         <div class="hero-netrtg">Net Rtg <span style="color:var(--accent)">+4.7</span></div>
       </div>
-      <div class="hero-vs">VS</div>
+      <div class="hero-score-src" id="hero-score-src"></div>
       <div class="hero-team">
         <div class="hero-name" id="hero-opp-fullname">新北國王</div>
         <div class="hero-short opponent" id="hero-opp-short">國王</div>
@@ -659,10 +659,17 @@
       <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
         依例行賽三分命中率 + 助攻數將每場比賽分為 Best / Ideal / Fair / Low 四種情境，看各隊在不同情境下的表現。
       </div>
-      <div class="card chart-wrap" style="padding:0;background:transparent;border:none">
-        <canvas id="chart-scenario" style="max-height:300px"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.5rem">
+        <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
+          <canvas id="chart-scenario-f" style="max-height:260px"></canvas>
+        </div>
+        <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
+          <div id="scenario-opp-label" style="font-size:.78rem;font-weight:700;color:var(--opp-color);margin-bottom:.4rem">對手</div>
+          <canvas id="chart-scenario-k" style="max-height:260px"></canvas>
+        </div>
       </div>
-      <div id="scenario-table" style="margin-top:1rem"></div>
+      <div id="scenario-table" style="margin-top:.5rem"></div>
     </div>
   </section>
 

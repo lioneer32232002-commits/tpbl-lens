@@ -6,9 +6,29 @@
   var D = null;
   var currentOpp = null;
   var effChart = null;
-  var scenarioChart = null;
+  var scenarioChartF = null;
+  var scenarioChartK = null;
   var usgChartF = null;
   var usgChartK = null;
+
+  // 得分來源色系（深 → 淺），依佔比高低動態分配
+  var SCORE_SHADES = {
+    formosa:  ['#004d66', '#0091b8', '#00d4f0', '#80f0ff'],
+    opponent: ['#7a5000', '#c88000', '#ffd700', '#ffe980']
+  };
+
+  function assignScoringColors(scoring, shades) {
+    var cats = [
+      { key: 'three', val: scoring.three },
+      { key: 'mid',   val: scoring.mid   },
+      { key: 'paint', val: scoring.paint },
+      { key: 'ft',    val: scoring.ft    }
+    ];
+    var sorted = cats.slice().sort(function (a, b) { return b.val - a.val; });
+    var map = {};
+    sorted.forEach(function (c, i) { map[c.key] = shades[i]; });
+    return [map.three, map.mid, map.paint, map.ft];
+  }
 
   /* ── 載入資料 ── */
   fetch(DATA_URL)
@@ -42,6 +62,7 @@
     oppH2H.name = opp.name; oppH2H.short = opp.short; oppH2H.color = opp.color;
 
     renderHero(fm, opp);
+    renderHeroScoring(fmH2H, oppH2H);
     renderH2H(h2h, opp);
     renderPrediction(fmH2H, oppH2H, h2h);
     renderEfficiency(fmH2H, oppH2H);
@@ -64,6 +85,43 @@
     var netSign = opp.netrtg >= 0 ? '+' : '';
     document.getElementById('hero-netrtg-o').innerHTML =
       'Net Rtg <span style="color:var(--opp-color)">' + netSign + opp.netrtg + '</span>';
+  }
+
+  /* ①-b 英雄區塊得分來源 mini bars */
+  function renderHeroScoring(fmH2H, oppH2H) {
+    var container = document.getElementById('hero-score-src');
+    if (!container) { return; }
+
+    function miniBar(scoring, shades, label) {
+      var colors = assignScoringColors(scoring, shades);
+      var total = scoring.total || 1;
+      var cats = [
+        { v: scoring.three, c: colors[0], t: '三分' },
+        { v: scoring.mid,   c: colors[1], t: '中距' },
+        { v: scoring.paint, c: colors[2], t: '禁區' },
+        { v: scoring.ft,    c: colors[3], t: '罰球' }
+      ];
+      var segs = cats.map(function (x) {
+        var pct = (x.v / total * 100).toFixed(1);
+        return '<div style="width:' + pct + '%;background:' + x.c + ';height:100%;flex-shrink:0" title="' + x.t + ' ' + x.v + '"></div>';
+      }).join('');
+      return '<div style="display:flex;align-items:center;gap:.4rem">' +
+        '<span style="font-size:.62rem;color:var(--text2);width:1rem;text-align:right;flex-shrink:0">' + label + '</span>' +
+        '<div style="flex:1;display:flex;height:9px;border-radius:3px;overflow:hidden;gap:1px">' + segs + '</div>' +
+        '<span style="font-size:.65rem;color:var(--text2);width:2.5rem;text-align:right;flex-shrink:0">' + total.toFixed(1) + '分</span>' +
+        '</div>';
+    }
+
+    container.innerHTML =
+      '<div style="font-size:.6rem;color:var(--text2);text-align:center;margin-bottom:.4rem;letter-spacing:.04em">得分來源</div>' +
+      miniBar(fmH2H.scoring, SCORE_SHADES.formosa, '夢') +
+      '<div style="height:.35rem"></div>' +
+      miniBar(oppH2H.scoring, SCORE_SHADES.opponent, '王') +
+      '<div style="display:flex;justify-content:center;gap:.5rem;margin-top:.4rem">' +
+        ['三分','中距','禁區','罰球'].map(function(l) {
+          return '<span style="font-size:.55rem;color:var(--text2)">' + l + '</span>';
+        }).join('') +
+      '</div>';
   }
 
   /* ② 效率比較 */
@@ -196,25 +254,21 @@
   }
 
   /* ④ 得分來源 */
-  var SCORE_COLORS = {
-    formosa:  ['#00e5ff', '#0091b8', '#005f80', '#80f0ff'],
-    opponent: ['#ffd700', '#e8a020', '#b07800', '#ffe980']
-  };
-
   function renderScoring(fm, opp) {
     var container = document.getElementById('scoring-bars');
     container.innerHTML = '';
+    var legendData = [];
 
     [
-      { label: '夢想家', s: fm.scoring,  colors: SCORE_COLORS.formosa },
-      { label: opp.short, s: opp.scoring, colors: SCORE_COLORS.opponent }
+      { label: '夢想家', s: fm.scoring,  shades: SCORE_SHADES.formosa },
+      { label: opp.short, s: opp.scoring, shades: SCORE_SHADES.opponent }
     ].forEach(function (item) {
+      var colors = assignScoringColors(item.s, item.shades);
       var total = item.s.total;
       var threePct = (item.s.three / total * 100).toFixed(1);
       var midPct   = (item.s.mid   / total * 100).toFixed(1);
       var paintPct = (item.s.paint / total * 100).toFixed(1);
       var ftPct    = (100 - +threePct - +midPct - +paintPct).toFixed(1);
-      var c = item.colors;
 
       var row = document.createElement('div');
       row.className = 'score-src-row';
@@ -224,28 +278,32 @@
           '<span>三分 ' + item.s.three + '　中距 ' + item.s.mid + '　禁區 ' + item.s.paint + '　罰球 ' + item.s.ft + '　共 ' + total + ' 分</span>' +
         '</div>' +
         '<div class="score-src-bar">' +
-          '<div style="width:' + threePct + '%;background:' + c[0] + '" title="三分 ' + item.s.three + '"></div>' +
-          '<div style="width:' + midPct   + '%;background:' + c[1] + '" title="中距 ' + item.s.mid   + '"></div>' +
-          '<div style="width:' + paintPct + '%;background:' + c[2] + '" title="禁區 ' + item.s.paint + '"></div>' +
-          '<div style="width:' + ftPct    + '%;background:' + c[3] + '" title="罰球 ' + item.s.ft    + '"></div>' +
+          '<div style="width:' + threePct + '%;background:' + colors[0] + '" title="三分 ' + item.s.three + '"></div>' +
+          '<div style="width:' + midPct   + '%;background:' + colors[1] + '" title="中距 ' + item.s.mid   + '"></div>' +
+          '<div style="width:' + paintPct + '%;background:' + colors[2] + '" title="禁區 ' + item.s.paint + '"></div>' +
+          '<div style="width:' + ftPct    + '%;background:' + colors[3] + '" title="罰球 ' + item.s.ft    + '"></div>' +
         '</div>';
       container.appendChild(row);
+      legendData.push({ label: item.label, colors: colors });
     });
 
     var legend = document.getElementById('scoring-legend');
     if (legend) {
-      legend.innerHTML =
-        scoreLegendGroup('夢想家', SCORE_COLORS.formosa) +
-        scoreLegendGroup(opp.short, SCORE_COLORS.opponent);
+      legend.innerHTML = legendData.map(function (d) {
+        return scoreLegendGroup(d.label, d.colors);
+      }).join('');
     }
   }
 
   function scoreLegendGroup(teamLabel, colors) {
     var labels = ['三分', '中距', '禁區', '罰球'];
     var dots = labels.map(function (l, i) {
-      return '<span><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + '</span>';
-    }).join('');
-    return '<span style="font-size:.7rem;font-weight:700;color:var(--text2);margin-right:.4rem">' + teamLabel + '：</span>' + dots + '　';
+      return '<span style="white-space:nowrap"><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + '</span>';
+    }).join(' ');
+    return '<span style="display:inline-flex;align-items:center;flex-wrap:nowrap;gap:.3rem;margin-bottom:.2rem;margin-right:.75rem">' +
+      '<span style="font-size:.7rem;font-weight:700;color:var(--text2);white-space:nowrap">' + teamLabel + '：</span>' +
+      dots +
+      '</span>';
   }
 
   /* ⑤ 主客場 */
@@ -389,7 +447,7 @@
         row.className = 'mhu-row';
         row.title = '勝場中位數 ' + s.w_med + ' vs 敗場 ' + s.l_med + ' (p=' + s.p.toFixed(3) + ')';
         row.innerHTML =
-          '<div class="mhu-stat-name">' + s.stat + (s.sig ? '<span class="mhu-sig-star"> ★</span>' : '') + '</div>' +
+          '<div class="mhu-stat-name">' + s.stat + (s.sig ? '<span class="mhu-sig-star" style="color:' + item.colorVar + '"> ★</span>' : '') + '</div>' +
           '<div class="mhu-bar-track">' +
             '<div class="mhu-bar-fill" data-w="' + pct + '%" style="width:0%;background:' + fillColor + '"></div>' +
           '</div>' +
@@ -403,83 +461,73 @@
     });
   }
 
-  /* ⑨ 情境分析 */
+  /* ⑨ 情境分析（各隊各一張） */
   function renderScenario(fm, opp, oppKey) {
     var fmS = D.formosa_scenario;
     var oppS = D[oppKey + '_scenario'];
     var labels = fmS.map(function (s) { return s.label; });
 
-    if (scenarioChart) { scenarioChart.destroy(); }
-    var ctx = document.getElementById('chart-scenario').getContext('2d');
-    scenarioChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: '夢想家 勝率',
-            data: fmS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
-            backgroundColor: 'rgba(0,229,255,.7)',
-            borderColor: 'rgba(0,229,255,1)',
-            borderWidth: 1,
-            yAxisID: 'y',
-          },
-          {
-            label: opp.short + ' 勝率',
-            data: oppS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
-            backgroundColor: hexToRgba(opp.color, .65),
-            borderColor: opp.color,
-            borderWidth: 1,
-            yAxisID: 'y',
-          },
-          {
-            label: '夢想家 均分',
-            data: fmS.map(function (s) { return s.team_mean.toFixed(1); }),
-            type: 'line',
-            borderColor: 'rgba(0,229,255,.5)',
-            borderDash: [4, 3],
-            pointBackgroundColor: 'rgba(0,229,255,.9)',
-            fill: false,
-            tension: 0.3,
-            yAxisID: 'y2',
-          },
-          {
-            label: opp.short + ' 均分',
-            data: oppS.map(function (s) { return s.team_mean.toFixed(1); }),
-            type: 'line',
-            borderColor: hexToRgba(opp.color, .5),
-            borderDash: [4, 3],
-            pointBackgroundColor: hexToRgba(opp.color, .9),
-            fill: false,
-            tension: 0.3,
-            yAxisID: 'y2',
-          }
-        ]
+    var scaleOpts = {
+      x: { ticks: { color: '#8fa3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.05)' } },
+      y: {
+        position: 'left', min: 0, max: 110,
+        ticks: { color: '#8fa3b8', font: { size: 10 }, callback: function (v) { return v + '%'; } },
+        grid: { color: 'rgba(255,255,255,.05)' },
+        title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } }
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: '#8fa3b8', font: { size: 11 } } },
-          tooltip: { mode: 'index', intersect: false }
-        },
-        scales: {
-          x: { ticks: { color: '#8fa3b8' }, grid: { color: 'rgba(255,255,255,.05)' } },
-          y: {
-            position: 'left',
-            min: 0, max: 110,
-            ticks: { color: '#8fa3b8', callback: function (v) { return v + '%'; } },
-            grid: { color: 'rgba(255,255,255,.05)' },
-            title: { display: true, text: '勝率 %', color: '#8fa3b8', font: { size: 11 } }
-          },
-          y2: {
-            position: 'right',
-            ticks: { color: '#8fa3b8' },
-            grid: { drawOnChartArea: false },
-            title: { display: true, text: '均分', color: '#8fa3b8', font: { size: 11 } }
-          }
-        }
+      y2: {
+        position: 'right',
+        ticks: { color: '#8fa3b8', font: { size: 10 } },
+        grid: { drawOnChartArea: false },
+        title: { display: true, text: '均分', color: '#8fa3b8', font: { size: 10 } }
       }
-    });
+    };
+
+    // 夢想家圖
+    if (scenarioChartF) { scenarioChartF.destroy(); }
+    var ctxF = document.getElementById('chart-scenario-f');
+    if (ctxF) {
+      scenarioChartF = new Chart(ctxF.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: '夢想家 勝率', data: fmS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
+              backgroundColor: 'rgba(0,229,255,.7)', borderColor: 'rgba(0,229,255,1)', borderWidth: 1, yAxisID: 'y' },
+            { label: '夢 均分', data: fmS.map(function (s) { return s.team_mean.toFixed(1); }),
+              type: 'line', borderColor: 'rgba(0,229,255,.6)', borderDash: [4,3],
+              pointBackgroundColor: 'rgba(0,229,255,.9)', fill: false, tension: 0.3, yAxisID: 'y2' }
+          ]
+        },
+        options: { responsive: true,
+          plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } },
+          scales: scaleOpts }
+      });
+    }
+
+    // 對手圖
+    var oppLbl = document.getElementById('scenario-opp-label');
+    if (oppLbl) { oppLbl.textContent = opp.name; oppLbl.style.color = opp.color; }
+    if (scenarioChartK) { scenarioChartK.destroy(); }
+    var ctxK = document.getElementById('chart-scenario-k');
+    if (ctxK) {
+      scenarioChartK = new Chart(ctxK.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: opp.short + ' 勝率', data: oppS.map(function (s) { return (s.win_rate * 100).toFixed(1); }),
+              backgroundColor: hexToRgba(opp.color, .65), borderColor: opp.color, borderWidth: 1, yAxisID: 'y' },
+            { label: opp.short + ' 均分', data: oppS.map(function (s) { return s.team_mean.toFixed(1); }),
+              type: 'line', borderColor: hexToRgba(opp.color, .6), borderDash: [4,3],
+              pointBackgroundColor: hexToRgba(opp.color, .9), fill: false, tension: 0.3, yAxisID: 'y2' }
+          ]
+        },
+        options: { responsive: true,
+          plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } },
+          scales: scaleOpts }
+      });
+    }
 
     // 情境 table
     var tbl = document.getElementById('scenario-table');
@@ -822,7 +870,11 @@
       el.className = 'factor-card';
       el.innerHTML =
         '<div class="factor-name">' + f.name + '</div>' +
-        '<div style="font-size:.78rem;color:var(--text2);margin-bottom:.15rem">夢 ' + f.fmt(f.fVal) + '　vs　' + opp.short + ' ' + f.fmt(f.oVal) + '</div>' +
+        '<div style="display:flex;align-items:baseline;gap:.2rem;font-size:.7rem;margin-bottom:.15rem;white-space:nowrap;overflow:hidden">' +
+          '<span style="color:var(--accent)">夢&nbsp;' + f.fmt(f.fVal) + '</span>' +
+          '<span style="color:var(--text2);font-size:.62rem;flex-shrink:0">vs</span>' +
+          '<span style="color:var(--opp-color)">' + opp.short + '&nbsp;' + f.fmt(f.oVal) + '</span>' +
+        '</div>' +
         '<div class="factor-edge ' + edgeCls + '">' + edgeLabel + '</div>';
       fcont.appendChild(el);
     });
