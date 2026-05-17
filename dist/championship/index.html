@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <title>海神 2025-26 賽季分析｜TPBL-Lens</title>
-  <meta name="description" content="高雄全家海神 2025-26 賽季進階統計分析｜TPBL-Lens">
-  <link rel="canonical" href="https://tpbl-lens.pages.dev/aquas/">
+  <title>夢想家冠軍戰分析 2025-26｜TPBL-Lens</title>
+  <meta name="description" content="福爾摩沙夢想家 2025-26 TPBL 冠軍賽對戰分析——效率、交手紀錄、球員比較、勝負預測">
+  <link rel="canonical" href="https://tpbl-lens.pages.dev/championship/">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tpbl-lens.pages.dev/aquas/">
-  <meta property="og:title" content="海神 2025-26 賽季分析｜TPBL-Lens">
-  <meta property="og:description" content="高雄全家海神 2025-26 賽季進階統計分析｜TPBL-Lens">
+  <meta property="og:url" content="https://tpbl-lens.pages.dev/championship/">
+  <meta property="og:title" content="夢想家冠軍戰分析 2025-26｜TPBL-Lens">
+  <meta property="og:description" content="福爾摩沙夢想家 2025-26 TPBL 冠軍賽對戰分析">
   <meta property="og:locale" content="zh_TW">
   <meta property="og:site_name" content="TPBL-Lens">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="海神 2025-26 賽季分析｜TPBL-Lens">
-  <meta name="twitter:description" content="高雄全家海神 2025-26 賽季進階統計分析｜TPBL-Lens">
+  <meta name="twitter:title" content="夢想家冠軍戰分析 2025-26｜TPBL-Lens">
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0f1923">
@@ -259,6 +258,215 @@
 })();
 </script>
 
+  <style>
+    /* ── 冠軍戰專屬樣式 ── */
+    .champ-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(0,229,255,.08) 0%, rgba(26,42,58,.0) 50%, rgba(var(--opp-rgb),.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.25rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .champ-hero::before {
+      content: "🏆";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 5rem;
+      opacity: .06;
+      pointer-events: none;
+    }
+    .hero-team { flex: 1; text-align: center; }
+    .hero-name { font-size: .78rem; color: var(--text2); margin-bottom: .35rem; }
+    .hero-short { font-size: 1.6rem; font-weight: 900; margin-bottom: .4rem; }
+    .hero-short.formosa { color: var(--accent); }
+    .hero-short.opponent { color: var(--opp-color, #ffd700); }
+    .hero-record { font-size: 1.15rem; font-weight: 700; color: var(--text); }
+    .hero-netrtg { font-size: .8rem; color: var(--text2); margin-top: .2rem; }
+    .hero-netrtg span { font-weight: 700; }
+    .hero-vs { font-size: 1.4rem; font-weight: 900; color: var(--text2); padding: 0 .5rem; flex-shrink: 0; }
+
+    /* 切換對手 */
+    .opp-toggle { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .opp-btn {
+      padding: .45rem 1.1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: .87rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: inherit;
+    }
+    .opp-btn:hover { border-color: rgba(0,229,255,.4); color: var(--text); }
+    .opp-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,.12); }
+    .opp-btn.pending { border-color: var(--accent2); color: var(--accent2); background: rgba(240,98,146,.1); }
+
+    /* 對決 stat 比較列 */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: .5rem .75rem;
+      align-items: center;
+    }
+    .cmp-label {
+      grid-column: 2;
+      font-size: .75rem;
+      color: var(--text2);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .cmp-val-f { text-align: right; font-weight: 700; font-size: 1.05rem; }
+    .cmp-val-o { text-align: left;  font-weight: 700; font-size: 1.05rem; }
+    .cmp-val-f.better { color: var(--accent); }
+    .cmp-val-o.better { color: var(--opp-color, #ffd700); }
+    .cmp-bar-row {
+      grid-column: 1 / -1;
+      display: flex;
+      height: 7px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg3);
+      margin: -.25rem 0 .35rem;
+    }
+    .cmp-bar-f { background: var(--accent); transition: width .7s cubic-bezier(.4,0,.2,1); }
+    .cmp-bar-o { background: var(--opp-color, #ffd700); transition: width .7s cubic-bezier(.4,0,.2,1); }
+
+    /* H2H 게임 table */
+    .h2h-badge {
+      display: inline-block;
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .h2h-w { background: rgba(0,229,255,.18); color: var(--accent); }
+    .h2h-l { background: rgba(240,98,146,.15); color: var(--accent2); }
+    .h2h-home-tag {
+      display: inline-block;
+      font-size: .66rem;
+      color: var(--text2);
+      border: 1px solid var(--bg3);
+      border-radius: 3px;
+      padding: .05rem .3rem;
+      margin-left: .3rem;
+    }
+
+    /* 得分來源 stacked bar */
+    .score-src-row { margin-bottom: .85rem; }
+    .score-src-label { display: flex; justify-content: space-between; font-size: .78rem; color: var(--text2); margin-bottom: .25rem; }
+    .score-src-label strong { color: var(--text); }
+    .score-src-bar {
+      display: flex;
+      height: 22px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .src-three  { background: #00e5ff; }
+    .src-mid    { background: #4fc3f7; }
+    .src-paint  { background: #f06292; }
+    .src-ft     { background: #ffcc02; }
+    .score-src-legend {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin-top: .65rem;
+      font-size: .72rem;
+      color: var(--text2);
+    }
+    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: .25rem; vertical-align: middle; }
+
+    /* 主客場雙欄 */
+    .ha-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .ha-card { background: var(--bg3); border-radius: 8px; padding: .75rem 1rem; }
+    .ha-team-name { font-size: .78rem; color: var(--text2); margin-bottom: .5rem; }
+    .ha-row { display: flex; justify-content: space-between; margin-bottom: .3rem; font-size: .84rem; }
+    .ha-row .label { color: var(--text2); }
+    .ha-row .value { font-weight: 700; }
+
+    /* 節次比較 */
+    .quarter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .quarter-card { background: var(--bg3); border-radius: 8px; padding: .65rem .5rem; text-align: center; }
+    .quarter-name { font-size: .7rem; color: var(--text2); margin-bottom: .4rem; font-weight: 700; }
+    .quarter-scores { display: flex; justify-content: space-around; align-items: flex-end; gap: .3rem; }
+    .quarter-team { text-align: center; }
+    .quarter-score { font-size: 1.05rem; font-weight: 900; }
+    .quarter-score.formosa { color: var(--accent); }
+    .quarter-score.opponent { color: var(--opp-color, #ffd700); }
+    .quarter-sep { font-size: .78rem; color: var(--text2); margin-bottom: .15rem; }
+    .quarter-winrate { font-size: .68rem; color: var(--text2); margin-top: .2rem; }
+
+    /* 球員表格 */
+    .player-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .player-panel h3 { font-size: .84rem; font-weight: 700; margin-bottom: .65rem; }
+    .player-panel h3.formosa { color: var(--accent); }
+    .player-panel h3.opponent { color: var(--opp-color, #ffd700); }
+
+    /* 勝負預測 */
+    .pred-container { display: flex; flex-direction: column; gap: .85rem; }
+    .pred-bar-wrap { display: flex; align-items: center; gap: .75rem; }
+    .pred-label { font-size: .8rem; color: var(--text2); white-space: nowrap; min-width: 80px; }
+    .pred-bar-bg {
+      flex: 1;
+      height: 28px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg3);
+      display: flex;
+    }
+    .pred-bar-f {
+      background: linear-gradient(90deg, rgba(0,229,255,.9), rgba(0,229,255,.7));
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: .4rem;
+      font-size: .78rem; font-weight: 700; color: #000;
+      transition: width .9s cubic-bezier(.4,0,.2,1);
+    }
+    .pred-bar-o {
+      background: linear-gradient(90deg, rgba(var(--opp-rgb),.7), rgba(var(--opp-rgb),.9));
+      display: flex; align-items: center; justify-content: flex-start;
+      padding-left: .4rem;
+      font-size: .78rem; font-weight: 700; color: #000;
+      transition: width .9s cubic-bezier(.4,0,.2,1);
+    }
+    .pred-note { font-size: .73rem; color: var(--text2); line-height: 1.55; }
+    .pred-factors { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; margin-top: .5rem; }
+    .factor-card { background: var(--bg3); border-radius: 7px; padding: .55rem .75rem; }
+    .factor-name { font-size: .72rem; color: var(--text2); margin-bottom: .15rem; }
+    .factor-edge { font-size: .84rem; font-weight: 700; }
+    .edge-f { color: var(--accent); }
+    .edge-o { color: var(--opp-color, #ffd700); }
+    .edge-tie { color: var(--text2); }
+
+    /* pending overlay */
+    .pending-notice {
+      display: none;
+      background: rgba(240,98,146,.1);
+      border: 1px dashed var(--accent2);
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      font-size: .84rem;
+      color: var(--accent2);
+      margin-bottom: 1.5rem;
+    }
+    .pending-notice.show { display: block; }
+
+    @media (max-width: 600px) {
+      .champ-hero { flex-direction: column; gap: .5rem; }
+      .hero-vs { transform: rotate(90deg); }
+      .compare-grid { font-size: .9rem; }
+      .ha-compare { grid-template-columns: 1fr; }
+      .quarter-grid { grid-template-columns: repeat(2, 1fr); }
+      .player-compare { grid-template-columns: 1fr; }
+      .pred-label { min-width: 60px; font-size: .72rem; }
+    }
+  </style>
 </head>
 <body>
 <header>
@@ -278,104 +486,139 @@
   </nav>
 </header>
 
-<main data-team="aquas">
+<main id="champ-main">
 
-  <section id="stats-summary">
-    <h2>賽季總覽</h2>
-    <div id="stats-summary-content" class="card"></div>
-  </section>
-
-  <section id="standings">
-    <h2>聯盟排名</h2>
-    <div class="card">
-      <table>
-        <thead><tr><th style="text-align:center">#</th><th>球隊</th><th style="text-align:center">勝</th><th style="text-align:center">敗</th><th style="text-align:center">勝率</th></tr></thead>
-        <tbody id="standings-body"></tbody>
-      </table>
+  <!-- 對手切換 -->
+  <section id="opp-select" style="margin-bottom:1.5rem">
+    <div class="card" style="padding:.85rem 1.25rem">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <span style="font-size:.84rem;color:var(--text2);white-space:nowrap">冠軍戰對手：</span>
+        <div class="opp-toggle">
+          <button class="opp-btn pending" data-opp="kings">🆚 新北國王</button>
+          <button class="opp-btn pending" data-opp="leopards">🆚 桃園雲豹</button>
+        </div>
+        <span id="opp-status" style="font-size:.75rem;color:var(--accent2)">等待今晚確認對手…</span>
+      </div>
     </div>
   </section>
 
-  <section id="league-rtg">
-    <h2>每百回合效率</h2>
-    <div class="card chart-wrap"><canvas id="chart-rtg" style="max-height:340px"></canvas></div>
+  <div id="pending-notice" class="pending-notice show">
+    ⏳ 冠軍戰對手尚未確認，以下顯示兩種對陣的完整分析。確定對手後點選上方按鈕即可鎖定。
+  </div>
+
+  <!-- ① 對決英雄區塊 -->
+  <section id="matchup-hero">
+    <h2>對決概況</h2>
+    <div id="hero-card" class="champ-hero card">
+      <div class="hero-team">
+        <div class="hero-name">福爾摩沙夢想家</div>
+        <div class="hero-short formosa">夢想家</div>
+        <div class="hero-record" id="hero-record-f">22 勝 14 敗</div>
+        <div class="hero-netrtg">Net Rtg <span style="color:var(--accent)">+4.7</span></div>
+      </div>
+      <div class="hero-vs">VS</div>
+      <div class="hero-team">
+        <div class="hero-name" id="hero-opp-fullname">—</div>
+        <div class="hero-short opponent" id="hero-opp-short">?</div>
+        <div class="hero-record" id="hero-record-o">—</div>
+        <div class="hero-netrtg" id="hero-netrtg-o">Net Rtg <span>—</span></div>
+      </div>
+    </div>
   </section>
 
-  <section id="vs-summary">
-    <h2>對各隊戰績</h2>
-    <div id="vs-grid" class="vs-grid"></div>
+  <!-- ② 效率比較 -->
+  <section id="efficiency">
+    <h2>每百回合效率比較</h2>
+    <div class="card">
+      <div class="compare-grid" id="eff-compare">
+        <!-- 由 JS 填入 -->
+      </div>
+      <div class="card chart-wrap" style="margin-top:1rem;padding:0;background:transparent;border:none">
+        <canvas id="chart-eff" style="max-height:280px"></canvas>
+      </div>
+    </div>
   </section>
 
+  <!-- ③ 例行賽交手紀錄 -->
+  <section id="h2h">
+    <h2>例行賽交手紀錄</h2>
+    <div class="card">
+      <div id="h2h-summary" style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap"></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>夢想家</th>
+              <th></th>
+              <th id="h2h-opp-col">對手</th>
+              <th>主場</th>
+              <th>勝負</th>
+            </tr>
+          </thead>
+          <tbody id="h2h-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ 得分來源 -->
+  <section id="scoring">
+    <h2>得分來源比較</h2>
+    <div class="card">
+      <div id="scoring-bars"></div>
+      <div class="score-src-legend">
+        <span><span class="legend-dot" style="background:#00e5ff"></span>三分</span>
+        <span><span class="legend-dot" style="background:#4fc3f7"></span>中距離</span>
+        <span><span class="legend-dot" style="background:#f06292"></span>禁區</span>
+        <span><span class="legend-dot" style="background:#ffcc02"></span>罰球</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 主客場 -->
   <section id="home-away">
-    <h2>主客場分析</h2>
-    <div id="home-away-content" class="card"></div>
+    <h2>主客場優勢</h2>
+    <div class="ha-compare" id="ha-compare"></div>
   </section>
 
-  <section id="player-avg">
-    <h2>球員賽季均值</h2>
-    <div class="card" style="overflow-x:auto">
-      <table class="data-nums">
-        <thead>
-          <tr><th>球員</th><th>得分</th><th>籃板</th><th>助攻</th><th>抄截</th><th>蓋帽</th><th>失誤</th><th>±</th><th>效率</th><th>TS%</th><th>USG%</th><th>場數</th></tr>
-        </thead>
-        <tbody id="player-tbody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Full-depth sections — hidden until JS reveals them -->
-  <section id="simulation" style="display:none">
-    <h2>季後賽機率模擬</h2>
-    <div class="card"><div id="prob-bars"></div></div>
-  </section>
-
-  <section id="heatmap" style="display:none">
-    <h2>球員 Plus/Minus 熱力圖</h2>
+  <!-- ⑥ 節次分析 -->
+  <section id="quarter">
+    <h2>節次分析（例行賽平均）</h2>
     <div class="card">
-      <div class="heatmap-wrap">
-        <table class="heatmap-table" id="heatmap-table"></table>
+      <div class="quarter-grid" id="quarter-grid"></div>
+      <div style="margin-top:.75rem;font-size:.72rem;color:var(--text2)">
+        括號內為各節奪得節次比例（該節得分領先場次 / 總場次）
       </div>
     </div>
   </section>
 
-  <section id="ppp-heatmap" style="display:none">
-    <h2>球員 PPP 熱力圖</h2>
+  <!-- ⑦ 球員比較 -->
+  <section id="players">
+    <h2>關鍵球員（例行賽均值）</h2>
+    <div class="player-compare" id="player-compare"></div>
+  </section>
+
+  <!-- ⑧ 勝負預測 -->
+  <section id="prediction">
+    <h2>例行賽數據預測</h2>
     <div class="card">
-      <div class="heatmap-wrap">
-        <table class="heatmap-table" id="ppp-table"></table>
+      <div class="pred-container">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.35rem">
+            <span>夢想家</span><span id="pred-opp-label">對手</span>
+          </div>
+          <div class="pred-bar-bg" id="pred-bar-main">
+            <div class="pred-bar-f" id="pred-fill-f" style="width:50%">—%</div>
+            <div class="pred-bar-o" id="pred-fill-o" style="width:50%">—%</div>
+          </div>
+        </div>
+        <div class="pred-note" id="pred-note">
+          根據例行賽 Net Rating 差距與對戰紀錄加權估算。
+        </div>
+        <div class="pred-factors" id="pred-factors"></div>
       </div>
     </div>
-  </section>
-
-  <section id="usg-ts" style="display:none">
-    <h2>USG% vs TS% 散點圖</h2>
-    <div class="card chart-wrap"><canvas id="chart-usg-ts" style="max-height:380px"></canvas></div>
-  </section>
-
-  <section id="scenario" style="display:none">
-    <h2>情境分析</h2>
-    <div class="card chart-wrap"><canvas id="chart-scenario" style="max-height:340px"></canvas></div>
-  </section>
-
-  <section id="quarter" style="display:none">
-    <h2>節次分析</h2>
-    <div id="quarter-content" class="card"></div>
-  </section>
-
-  <section id="mann-whitney" style="display:none">
-    <h2>Mann-Whitney 勝負差異分析</h2>
-    <div class="card" style="margin-bottom:.75rem" id="mw-bar-chart"></div>
-    <div id="mw-stat-grid" class="mw-stat-grid"></div>
-  </section>
-
-  <section id="roc" style="display:none">
-    <h2>ROC 曲線（勝負預測指標）</h2>
-    <div class="card chart-wrap" style="height:360px"><canvas id="chart-roc"></canvas></div>
-    <div id="roc-legend" style="margin-top:.75rem"></div>
-  </section>
-
-  <section id="last-game" style="display:none">
-    <h2>最新比賽回顧</h2>
-    <div id="last-game-content" class="card"></div>
   </section>
 
 </main>
@@ -385,6 +628,6 @@
 </footer>
 
 <script src="/js/common.js"></script>
-<script src="/js/team.js"></script>
+<script src="/js/championship.js"></script>
 </body>
 </html>
