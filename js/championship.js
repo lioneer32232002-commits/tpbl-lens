@@ -602,7 +602,7 @@
               title: { display: true, text: '場均得分', color: '#8fa3b8', font: { size: 10 } }
             },
             y2: {
-              position: 'right', min: 0, max: 110,
+              position: 'right', min: 0, max: 100,
               ticks: { color: '#8fa3b8', font: { size: 10 }, callback: function (v) { return v + '%'; } },
               grid: { drawOnChartArea: false },
               title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } }
