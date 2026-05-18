@@ -631,19 +631,27 @@
   }
 
   /* ⑩ USG% vs TS% 散點圖（H2H，分隊各一張） */
+  var USG_TS_THRESHOLD = 50; // TS% < 50% 視為低效，顯示粉色
+
   function renderUSGCharts(oppKey, opp) {
     var fmPlayers  = D['h2h_formosa_usg'] || D.formosa_usg;
     var oppPlayers = D['h2h_' + oppKey + '_usg'] || D[oppKey + '_usg'];
 
-    function toData(arr) {
-      return arr.map(function (p) {
-        return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
-      });
+    function toPoint(p) {
+      return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
     }
+    function splitByEff(arr) {
+      var hi = [], lo = [];
+      arr.forEach(function (p) {
+        (p.tsp >= USG_TS_THRESHOLD ? hi : lo).push(toPoint(p));
+      });
+      return { hi: hi, lo: lo };
+    }
+
     var tooltipCb = {
       label: function (c) {
         var d = c.raw;
-        return d.label + ' USG ' + d.x + '% / TS ' + d.y + '% (' + d.gp + '場)';
+        return d.label + '  USG ' + d.x + '%  TS ' + d.y + '%  (' + d.gp + '場)';
       }
     };
     var scalesBase = {
@@ -655,31 +663,43 @@
       y: {
         title: { display: true, text: 'TS%', color: '#8fa3b8', font: { size: 11 } },
         ticks: { color: '#8fa3b8' },
-        grid: { color: 'rgba(255,255,255,.05)' }
+        grid: { color: 'rgba(255,255,255,.05)' },
+        suggestedMin: 0, suggestedMax: 100
       }
     };
 
+    function buildUsgChart(canvasId, players, teamLabel, mainBg, mainBorder) {
+      var split = splitByEff(players);
+      return new Chart(document.getElementById(canvasId).getContext('2d'), {
+        type: 'bubble',
+        data: {
+          datasets: [
+            { label: teamLabel + ' 高效（TS≥50%）', data: split.hi,
+              backgroundColor: mainBg, borderColor: mainBorder, borderWidth: 1.5 },
+            { label: '低效（TS<50%）', data: split.lo,
+              backgroundColor: 'rgba(240,98,146,.55)', borderColor: 'rgba(240,98,146,.9)', borderWidth: 1.5 }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: '#8fa3b8', font: { size: 10 }, boxWidth: 14 } },
+            tooltip: { callbacks: tooltipCb }
+          },
+          scales: scalesBase
+        }
+      });
+    }
+
     if (usgChartF) { usgChartF.destroy(); }
-    usgChartF = new Chart(document.getElementById('chart-usg-f').getContext('2d'), {
-      type: 'bubble',
-      data: { datasets: [{ label: '夢想家', data: toData(fmPlayers),
-        backgroundColor: 'rgba(0,229,255,.55)', borderColor: 'rgba(0,229,255,.9)', borderWidth: 1.5 }] },
-      options: { responsive: true,
-        plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 11 } } }, tooltip: { callbacks: tooltipCb } },
-        scales: scalesBase }
-    });
+    usgChartF = buildUsgChart('chart-usg-f', fmPlayers, '夢想家',
+      'rgba(0,229,255,.55)', 'rgba(0,229,255,.9)');
 
     if (usgChartK) { usgChartK.destroy(); }
     var oppLbl = document.getElementById('usg-opp-label');
     if (oppLbl) { oppLbl.textContent = opp.short; oppLbl.style.color = opp.color; }
-    usgChartK = new Chart(document.getElementById('chart-usg-k').getContext('2d'), {
-      type: 'bubble',
-      data: { datasets: [{ label: opp.short, data: toData(oppPlayers),
-        backgroundColor: hexToRgba(opp.color, .5), borderColor: opp.color, borderWidth: 1.5 }] },
-      options: { responsive: true,
-        plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 11 } } }, tooltip: { callbacks: tooltipCb } },
-        scales: scalesBase }
-    });
+    usgChartK = buildUsgChart('chart-usg-k', oppPlayers, opp.short,
+      hexToRgba(opp.color, .5), opp.color);
   }
 
   /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
