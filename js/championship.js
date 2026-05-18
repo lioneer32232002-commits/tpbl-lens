@@ -18,16 +18,8 @@
   };
 
   function assignScoringColors(scoring, shades) {
-    var cats = [
-      { key: 'three', val: scoring.three },
-      { key: 'mid',   val: scoring.mid   },
-      { key: 'paint', val: scoring.paint },
-      { key: 'ft',    val: scoring.ft    }
-    ];
-    var sorted = cats.slice().sort(function (a, b) { return b.val - a.val; });
-    var map = {};
-    sorted.forEach(function (c, i) { map[c.key] = shades[i]; });
-    return [map.three, map.mid, map.paint, map.ft];
+    // 固定順序：三分、中距、禁區、罰球 → 由深到淺
+    return [shades[0], shades[1], shades[2], shades[3]];
   }
 
   /* ── 載入資料 ── */
@@ -289,21 +281,21 @@
 
     var legend = document.getElementById('scoring-legend');
     if (legend) {
-      legend.innerHTML = legendData.map(function (d) {
-        return scoreLegendGroup(d.label, d.colors);
+      var catLabels = ['三分', '中距', '禁區', '罰球'];
+      var rows = legendData.map(function (d) {
+        var cells = catLabels.map(function (l, i) {
+          return '<div style="display:flex;align-items:center;gap:.25rem;font-size:.72rem;color:var(--text2);white-space:nowrap">' +
+            '<span class="legend-dot" style="background:' + d.colors[i] + '"></span>' + l +
+          '</div>';
+        }).join('');
+        return '<div style="font-size:.72rem;font-weight:700;color:var(--text2);white-space:nowrap">' + d.label + '</div>' + cells;
       }).join('');
+      legend.style.display = 'grid';
+      legend.style.gridTemplateColumns = 'auto repeat(4, 1fr)';
+      legend.style.gap = '.3rem .6rem';
+      legend.style.alignItems = 'center';
+      legend.innerHTML = rows;
     }
-  }
-
-  function scoreLegendGroup(teamLabel, colors) {
-    var labels = ['三分', '中距', '禁區', '罰球'];
-    var dots = labels.map(function (l, i) {
-      return '<span style="white-space:nowrap"><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + '</span>';
-    }).join(' ');
-    return '<span style="display:inline-flex;align-items:center;flex-wrap:nowrap;gap:.3rem;margin-bottom:.2rem;margin-right:.75rem">' +
-      '<span style="font-size:.7rem;font-weight:700;color:var(--text2);white-space:nowrap">' + teamLabel + '：</span>' +
-      dots +
-      '</span>';
   }
 
   /* ⑤ 主客場 */
