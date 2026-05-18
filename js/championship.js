@@ -747,10 +747,9 @@
   }
 
   /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
-  var MIN_AVG_MIN = 5;
   function filterByTime(arr) {
     if (!arr) { return arr; }
-    return arr.filter(function (p) { return (p.avg_min || 0) >= MIN_AVG_MIN; });
+    return arr.filter(function (p) { return (p.gp || 0) >= 3; });
   }
 
   function renderHeatmaps(fm, opp, oppKey) {
