@@ -74,9 +74,13 @@ def build():
 
     dist_js = os.path.join(DIST, "js")
     if os.path.exists(dist_js):
-        shutil.rmtree(dist_js)
+        shutil.rmtree(dist_js, ignore_errors=True)
     if os.path.exists(JS_DIR):
-        shutil.copytree(JS_DIR, dist_js)
+        if os.path.exists(dist_js):
+            for jf in glob.glob(os.path.join(JS_DIR, "*.js")):
+                shutil.copy2(jf, dist_js)
+        else:
+            shutil.copytree(JS_DIR, dist_js)
 
     dist_data = os.path.join(DIST, "data")
     os.makedirs(dist_data, exist_ok=True)
