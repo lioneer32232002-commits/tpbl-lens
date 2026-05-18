@@ -624,29 +624,33 @@
     var ctxK = document.getElementById('chart-scenario-k');
     if (ctxK) { scenarioChartK = buildChart(ctxK, oppF, opp.color, opp.short, false); }
 
-    // 情境摘要卡片（使用 H2H 真實統計）
+    // 情境摘要卡片（使用 H2H 真實統計，縮寫點號並排）
     function makeCard(s, clr, isOpp) {
       var st = s.stats || {};
       var a  = scAlpha(s.label);
       var bg     = isOpp ? hexToRgba(clr, a * 0.18) : 'rgba(0,229,255,' + (a * 0.18) + ')';
       var border = isOpp ? hexToRgba(clr, a * 0.45) : 'rgba(0,229,255,' + (a * 0.45) + ')';
       var clrCss = isOpp ? 'var(--opp-color)' : 'var(--accent)';
-      var rows = [
-        ['均分',   s.team_mean.toFixed(1)],
-        ['對手均分', s.opp_mean != null ? (+s.opp_mean).toFixed(1) : '—'],
-        ['三分命中', st['3P%']  != null ? st['3P%'].toFixed(1) + '%'              : '—'],
-        ['三分進球', st['3PM']  != null ? st['3PM'].toFixed(1) + ' 顆'            : '—'],
-        ['投籃命中', st['FG%']  != null ? st['FG%'].toFixed(1) + '%'              : '—'],
-        ['助攻',   st['AST'] != null ? st['AST'].toFixed(1)                    : '—'],
-        ['失誤',   st['TO']  != null ? st['TO'].toFixed(1)                     : '—'],
-      ];
-      var grid = rows.map(function (r) {
-        return '<span class="sc-sl">' + r[0] + '</span><span class="sc-sv">' + r[1] + '</span>';
-      }).join('');
+      function stat(abbr, val) {
+        return '<span class="sc-abbr">' + abbr + '</span><span class="sc-val">' + val + '</span>';
+      }
+      function row(items) {
+        return '<div class="sc-row">' +
+          items.map(function (it) { return stat(it[0], it[1]); })
+               .join('<span class="sc-dot">·</span>') +
+        '</div>';
+      }
+      var ptsOpp  = row([['PTS', s.team_mean.toFixed(1)],
+                         ['OPP', s.opp_mean != null ? (+s.opp_mean).toFixed(1) : '—']]);
+      var threeRow = row([['3P%', st['3P%'] != null ? st['3P%'].toFixed(1) + '%' : '—'],
+                          ['3PM', st['3PM'] != null ? st['3PM'].toFixed(1) : '—']]);
+      var restRow  = row([['FG%', st['FG%'] != null ? st['FG%'].toFixed(1) + '%' : '—'],
+                          ['AST', st['AST'] != null ? st['AST'].toFixed(1) : '—'],
+                          ['TO',  st['TO']  != null ? st['TO'].toFixed(1)  : '—']]);
       return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + '">' +
         '<div class="sc-label" style="color:' + clrCss + '">' + s.label + '</div>' +
         '<div class="sc-winrate" style="color:' + clrCss + '">' + (s.win_rate * 100).toFixed(0) + '%</div>' +
-        '<div class="sc-stats-grid">' + grid + '</div>' +
+        ptsOpp + threeRow + restRow +
         '<div class="sc-n">' + s.n + ' 場</div>' +
       '</div>';
     }
