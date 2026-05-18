@@ -303,27 +303,50 @@
     var container = document.getElementById('ha-compare');
     container.innerHTML = '';
 
-    [
-      { label: '夢想家', data: fm, colorVar: 'var(--accent)' },
-      { label: opp.short, data: opp, colorVar: 'var(--opp-color)' }
-    ].forEach(function (item) {
-      var d = item.data;
-      var card = document.createElement('div');
-      card.className = 'ha-card';
-      var homeWR = d.home.win_rate !== undefined ? d.home.win_rate : d.home.wins / (d.home.wins + d.home.losses || 1);
-      var awayWR = d.away.win_rate !== undefined ? d.away.win_rate : d.away.wins / (d.away.wins + d.away.losses || 1);
-      card.innerHTML =
-        '<div class="ha-team-name" style="color:' + item.colorVar + ';font-weight:700">' + item.label + '</div>' +
-        haRow('主場', d.home.wins + 'W ' + d.home.losses + 'L　' + pct(homeWR)) +
-        haRow('　　得/失分', d.home.avg_pts.toFixed(1) + ' / ' + d.home.avg_opp.toFixed(1)) +
-        haRow('客場', d.away.wins + 'W ' + d.away.losses + 'L　' + pct(awayWR)) +
-        haRow('　　得/失分', d.away.avg_pts.toFixed(1) + ' / ' + d.away.avg_opp.toFixed(1));
-      container.appendChild(card);
-    });
-  }
+    var fHomeWR = fm.home.win_rate  !== undefined ? fm.home.win_rate  : fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1);
+    var oHomeWR = opp.home.win_rate !== undefined ? opp.home.win_rate : opp.home.wins / (opp.home.wins + opp.home.losses || 1);
+    var fAwayWR = fm.away.win_rate  !== undefined ? fm.away.win_rate  : fm.away.wins  / (fm.away.wins  + fm.away.losses  || 1);
+    var oAwayWR = opp.away.win_rate !== undefined ? opp.away.win_rate : opp.away.wins / (opp.away.wins + opp.away.losses || 1);
 
-  function haRow(label, value) {
-    return '<div class="ha-row"><span class="label">' + label + '</span><span class="value">' + value + '</span></div>';
+    function haVsSection(title, rows) {
+      var rowsHtml = rows.map(function (r) {
+        var fBetter = r.higherBetter ? r.fVal >= r.oVal : r.fVal <= r.oVal;
+        var fCls = fBetter ? 'style="color:var(--accent);font-weight:700"' : 'style="color:var(--text2)"';
+        var oCls = !fBetter ? 'style="color:var(--opp-color);font-weight:700"' : 'style="color:var(--text2)"';
+        return '<div ' + fCls + '>' + r.fText + '</div>' +
+               '<div style="font-size:.73rem;color:var(--text2);text-align:center;white-space:nowrap">' + r.label + '</div>' +
+               '<div ' + oCls + '>' + r.oText + '</div>';
+      }).join('');
+      return '<div style="margin-bottom:.85rem">' +
+        '<div style="font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:.5rem;letter-spacing:.03em">' + title + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.3rem .75rem;align-items:center;font-size:.85rem">' +
+          '<div style="text-align:right;font-size:.72rem;color:var(--accent);font-weight:700">夢想家</div>' +
+          '<div></div>' +
+          '<div style="text-align:left;font-size:.72rem;color:var(--opp-color);font-weight:700">' + opp.short + '</div>' +
+          rowsHtml +
+        '</div>' +
+      '</div>';
+    }
+
+    container.innerHTML =
+      haVsSection('主場', [
+        { label: '勝率', fVal: fHomeWR, oVal: oHomeWR, higherBetter: true,
+          fText: fm.home.wins + 'W ' + fm.home.losses + 'L　' + pct(fHomeWR),
+          oText: opp.home.wins + 'W ' + opp.home.losses + 'L　' + pct(oHomeWR) },
+        { label: '場均得分', fVal: fm.home.avg_pts, oVal: opp.home.avg_pts, higherBetter: true,
+          fText: fm.home.avg_pts.toFixed(1), oText: opp.home.avg_pts.toFixed(1) },
+        { label: '場均失分', fVal: fm.home.avg_opp, oVal: opp.home.avg_opp, higherBetter: false,
+          fText: fm.home.avg_opp.toFixed(1), oText: opp.home.avg_opp.toFixed(1) }
+      ]) +
+      haVsSection('客場', [
+        { label: '勝率', fVal: fAwayWR, oVal: oAwayWR, higherBetter: true,
+          fText: fm.away.wins + 'W ' + fm.away.losses + 'L　' + pct(fAwayWR),
+          oText: opp.away.wins + 'W ' + opp.away.losses + 'L　' + pct(oAwayWR) },
+        { label: '場均得分', fVal: fm.away.avg_pts, oVal: opp.away.avg_pts, higherBetter: true,
+          fText: fm.away.avg_pts.toFixed(1), oText: opp.away.avg_pts.toFixed(1) },
+        { label: '場均失分', fVal: fm.away.avg_opp, oVal: opp.away.avg_opp, higherBetter: false,
+          fText: fm.away.avg_opp.toFixed(1), oText: opp.away.avg_opp.toFixed(1) }
+      ]);
   }
 
   /* ⑥ 節次分析 */
