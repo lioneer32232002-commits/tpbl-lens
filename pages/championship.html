@@ -289,7 +289,6 @@
     .hero-record { font-size: 1.15rem; font-weight: 700; color: var(--text); }
     .hero-netrtg { font-size: .8rem; color: var(--text2); margin-top: .2rem; }
     .hero-netrtg span { font-weight: 700; }
-    .hero-score-src { flex-shrink: 0; width: 210px; padding: 0 .9rem; }
 
     /* 對決 stat 比較列 */
     .compare-grid {
@@ -502,6 +501,15 @@
     .hm-panel { overflow-x: auto; }
     .hm-panel-title { font-size: .78rem; font-weight: 700; margin-bottom: .5rem; }
 
+    /* PPP 格子 */
+    .ppp-section { display: flex; flex-direction: column; gap: 1rem; }
+    .ppp-panel-title { font-size: .78rem; font-weight: 700; margin-bottom: .5rem; }
+    .ppp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .45rem; }
+    .ppp-cell { border-radius: 8px; padding: .55rem .6rem; text-align: center; }
+    .ppp-cell-name { font-size: .73rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ppp-cell-val { font-size: 1.05rem; font-weight: 900; }
+    .ppp-cell-gp { font-size: .6rem; color: var(--text2); margin-top: .1rem; }
+
     /* mini bar for heatmap */
     .mini-bar-row { display: grid; grid-template-columns: 5.5rem 1fr 3rem; align-items: center; gap: .3rem .4rem; padding: .18rem 0; }
     .mini-bar-name { font-size: .74rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -514,7 +522,6 @@
 
     @media (max-width: 600px) {
       .champ-hero { flex-direction: column; gap: .75rem; }
-      .hero-score-src { width: 100%; padding: 0; }
       .compare-grid { font-size: .9rem; }
       .ha-compare { grid-template-columns: 1fr; }
       .quarter-grid { grid-template-columns: repeat(2, 1fr); }
@@ -555,7 +562,6 @@
         <div class="hero-record" id="hero-record-f">22 勝 14 敗</div>
         <div class="hero-netrtg">Net Rtg <span style="color:var(--accent)">+4.7</span></div>
       </div>
-      <div class="hero-score-src" id="hero-score-src"></div>
       <div class="hero-team">
         <div class="hero-name" id="hero-opp-fullname">新北國王</div>
         <div class="hero-short opponent" id="hero-opp-short">國王</div>
@@ -575,7 +581,7 @@
 
   <!-- ③ 效率比較 -->
   <section id="efficiency">
-    <h2>每百回合效率比較</h2>
+    <h2>每百回合效率比較（雙方對戰 6 場）</h2>
     <div class="card">
       <div class="compare-grid" id="eff-compare">
         <!-- 由 JS 填入 -->
@@ -611,7 +617,7 @@
 
   <!-- ④ 得分來源 -->
   <section id="scoring">
-    <h2>得分來源比較</h2>
+    <h2>得分來源比較（雙方對戰 6 場）</h2>
     <div class="card">
       <div id="scoring-bars"></div>
       <div class="score-src-legend" id="scoring-legend"></div>
@@ -626,7 +632,7 @@
 
   <!-- ⑥ 節次分析 -->
   <section id="quarter">
-    <h2>節次分析（例行賽平均）</h2>
+    <h2>節次分析（雙方對戰 6 場）</h2>
     <div class="card">
       <div class="quarter-grid" id="quarter-grid"></div>
       <div style="margin-top:.75rem;font-size:.72rem;color:var(--text2)">
@@ -637,7 +643,7 @@
 
   <!-- ⑦ 球員比較 -->
   <section id="players">
-    <h2>關鍵球員（例行賽均值）</h2>
+    <h2>關鍵球員（雙方對戰 6 場）</h2>
     <div class="player-compare" id="player-compare"></div>
   </section>
 
@@ -659,7 +665,7 @@
       <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
         依三分命中率 + 助攻數將雙方 6 場對戰分為 Best / Ideal / Fair / Low 四種情境，比較各隊在不同狀態下的勝率與得分。
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.5rem">
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:.5rem">
         <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
           <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
           <canvas id="chart-scenario-f" style="max-height:260px"></canvas>
@@ -675,8 +681,8 @@
 
   <!-- ⑩ USG% vs TS% 散點圖（H2H，分隊顯示） -->
   <section id="usg-ts">
-    <h2>球員效率 — USG% vs TS%（對戰數據）</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+    <h2>球員效率 — USG% vs TS%（雙方對戰 6 場）</h2>
+    <div style="display:flex;flex-direction:column;gap:1rem">
       <div class="card chart-wrap">
         <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
         <canvas id="chart-usg-f" style="max-height:320px"></canvas>
@@ -703,13 +709,13 @@
       </div>
       <!-- Plus/Minus -->
       <div style="margin-bottom:1.5rem">
-        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 Plus/Minus（對本對手）</h3>
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 Plus/Minus（雙方對戰 6 場）</h3>
         <div class="heatmap-side-by-side" id="pm-compare"></div>
       </div>
       <!-- PPP -->
       <div>
-        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 PPP（對本對手）</h3>
-        <div class="heatmap-side-by-side" id="ppp-compare"></div>
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.65rem">球員 PPP（雙方對戰 6 場）</h3>
+        <div id="ppp-compare"></div>
       </div>
     </div>
   </section>

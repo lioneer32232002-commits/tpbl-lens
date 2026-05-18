@@ -62,7 +62,6 @@
     oppH2H.name = opp.name; oppH2H.short = opp.short; oppH2H.color = opp.color;
 
     renderHero(fm, opp);
-    renderHeroScoring(fmH2H, oppH2H);
     renderH2H(h2h, opp);
     renderPrediction(fmH2H, oppH2H, h2h);
     renderEfficiency(fmH2H, oppH2H);
@@ -617,8 +616,74 @@
     var fmActive  = buildActiveMap(fm.players);
     var oppActive = buildActiveMap(opp.players);
 
-    renderMiniBar('pm-compare',  fmPM,  oppPM,  fm, opp, 'pm',  'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
-    renderMiniBar('ppp-compare', fmPPP, oppPPP, fm, opp, 'ppp', 'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
+    renderMiniBar('pm-compare', fmPM, oppPM, fm, opp, 'pm', 'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
+    renderPppGrid('ppp-compare', fmPPP, oppPPP, opp, fmActive, oppActive);
+  }
+
+  /* PPP 格子：正值才有意義，用色深淺表示高低 */
+  function renderPppGrid(containerId, fmData, oppData, opp, fmActive, oppActive) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    var fRgb  = '0,229,255';
+    var oRgb  = hexToRgb(opp.color);
+
+    [
+      { label: '夢想家', data: fmData,  rgb: fRgb,  colorVar: 'var(--accent)',    activeMap: fmActive  || {} },
+      { label: opp.short, data: oppData, rgb: oRgb, colorVar: 'var(--opp-color)', activeMap: oppActive || {} }
+    ].forEach(function (item) {
+      var panel = document.createElement('div');
+      panel.style.marginBottom = '1rem';
+
+      var title = document.createElement('div');
+      title.className = 'ppp-panel-title';
+      title.style.color = item.colorVar;
+      title.textContent = item.label;
+      panel.appendChild(title);
+
+      if (!item.data || !item.data.length) {
+        var empty = document.createElement('div');
+        empty.style.cssText = 'font-size:.78rem;color:var(--text2)';
+        empty.textContent = '—';
+        panel.appendChild(empty);
+        container.appendChild(panel);
+        return;
+      }
+
+      // 計算最大最小值（只算在籍球員）
+      var actVals = item.data
+        .filter(function (p) { return item.activeMap[p.player] !== false; })
+        .map(function (p) { return p.ppp || 0; });
+      var maxV = actVals.length ? Math.max.apply(null, actVals) : 1;
+      var minV = actVals.length ? Math.min.apply(null, actVals) : 0;
+      var range = maxV - minV || 1;
+
+      var grid = document.createElement('div');
+      grid.className = 'ppp-grid';
+
+      item.data.forEach(function (p) {
+        var isActive = item.activeMap[p.player] !== false;
+        var val = p.ppp || 0;
+        var norm = isActive ? Math.max(0, Math.min(1, (val - minV) / range)) : 0;
+        var alpha = isActive ? (0.12 + norm * 0.73) : 0.07;
+        var textAlpha = isActive ? (0.55 + norm * 0.45) : 0.35;
+
+        var cell = document.createElement('div');
+        cell.className = 'ppp-cell';
+        cell.style.background = 'rgba(' + item.rgb + ',' + alpha.toFixed(2) + ')';
+        if (!isActive) { cell.style.opacity = '0.4'; }
+
+        cell.innerHTML =
+          '<div class="ppp-cell-name">' + p.player + '</div>' +
+          '<div class="ppp-cell-val" style="color:rgba(' + item.rgb + ',' + textAlpha.toFixed(2) + ')">' +
+            val.toFixed(2) +
+          '</div>';
+        grid.appendChild(cell);
+      });
+
+      panel.appendChild(grid);
+      container.appendChild(panel);
+    });
   }
 
   function buildActiveMap(players) {
@@ -699,7 +764,7 @@
 
   /* Monte Carlo 模擬（指定主客場勝率） */
   function simSeries(pHome, pAway, sched, fNeed, kNeed) {
-    var N = 60000;
+    var N = 300000;
     var wins = 0;
     for (var i = 0; i < N; i++) {
       var f = 0, k = 0, g = 0;
@@ -714,7 +779,7 @@
   }
 
   function computePaths(pHome, pAway, sched) {
-    var N = 60000;
+    var N = 300000;
     var f = [0,0,0,0], k = [0,0,0,0];
     for (var i = 0; i < N; i++) {
       var fw = 0, kw = 0, g = 0;
@@ -850,7 +915,7 @@
       '<div class="pred-note" style="margin-bottom:.85rem">' +
         'Net Rating 差距 ' + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
         '，H2H ' + wins + '勝' + (h2h.length - wins) + '敗。' +
-        '主場勝率 ' + Math.round(pH * 100) + '%・客場 ' + Math.round(pA * 100) + '%。Monte Carlo 6萬次模擬。僅供參考。' +
+        '主場勝率 ' + Math.round(pH * 100) + '%・客場 ' + Math.round(pA * 100) + '%。Monte Carlo 30萬次模擬。僅供參考。' +
       '</div>';
 
     // ── 優劣因子 ──
