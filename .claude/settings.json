@@ -9,7 +9,7 @@
             "if": "Bash(*git push*)",
             "shell": "powershell",
             "command": "Set-Location 'C:\\Users\\oneda\\OneDrive\\02_創作\\14_AI TEST\\tpbl_lens'; python build.py; cmd /c 'npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=auto-deploy' 2>&1 | Select-Object -Last 4",
-            "async": true,
+            "async": false,
             "statusMessage": "部署至 Cloudflare Pages..."
           }
         ]
