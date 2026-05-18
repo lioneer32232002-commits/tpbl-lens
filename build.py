@@ -145,12 +145,21 @@ def _build_sitemap():
 
 def _build_og_images():
     try:
-        from generate_og_pace import generate_og_pace
-        generate_og_pace()
+        import PIL  # noqa: F401
     except ImportError:
-        print("[build] Pillow not installed — skipping OG image (pip install Pillow)")
-    except Exception as e:
-        print(f"[build] OG image generation failed: {e}")
+        print("[build] Pillow not installed — skipping OG images (pip install Pillow)")
+        return
+
+    for mod_name, fn_name in [
+        ("generate_og_pace",         "generate_og_pace"),
+        ("generate_og_championship", "generate_og_championship"),
+    ]:
+        try:
+            import importlib
+            m = importlib.import_module(mod_name)
+            getattr(m, fn_name)()
+        except Exception as e:
+            print(f"[build] {mod_name} failed: {e}")
 
 
 if __name__ == "__main__":
