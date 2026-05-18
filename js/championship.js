@@ -481,93 +481,153 @@
     var fmS  = D['formosa_h2h_scenario']   || D.formosa_scenario;
     var oppS = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
     var labels = fmS.map(function (s) { return s.label; });
-    // n=0 的情境傳 null，讓 Chart.js 不顯示那格
+
+    // n=0 → null
     function scVal(arr, key) {
       return arr.map(function (s) { return (s.n > 0) ? +s[key] : null; });
     }
 
-    var scaleOpts = {
-      x: { ticks: { color: '#8fa3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.05)' } },
-      y: {
-        position: 'left', min: 0, max: 110,
-        ticks: { color: '#8fa3b8', font: { size: 10 }, callback: function (v) { return v + '%'; } },
-        grid: { color: 'rgba(255,255,255,.05)' },
-        title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } }
-      },
-      y2: {
-        position: 'right',
-        ticks: { color: '#8fa3b8', font: { size: 10 } },
-        grid: { drawOnChartArea: false },
-        title: { display: true, text: '均分', color: '#8fa3b8', font: { size: 10 } }
-      }
-    };
+    // 情境深淺色（Best 最深→Low 最淺）
+    var SC_ALPHAS = [0.88, 0.65, 0.42, 0.22];
 
-    // 夢想家圖
-    if (scenarioChartF) { scenarioChartF.destroy(); }
-    var ctxF = document.getElementById('chart-scenario-f');
-    if (ctxF) {
-      scenarioChartF = new Chart(ctxF.getContext('2d'), {
+    function buildChart(ctx, scenarioArr, teamColor, teamShort, isFormosa) {
+      var barColors = scenarioArr.map(function (s, i) {
+        if (s.n === 0) { return 'rgba(0,0,0,0)'; }
+        return isFormosa
+          ? 'rgba(0,229,255,' + SC_ALPHAS[i] + ')'
+          : hexToRgba(teamColor, SC_ALPHAS[i]);
+      });
+      var borderColors = scenarioArr.map(function (s, i) {
+        if (s.n === 0) { return 'rgba(0,0,0,0)'; }
+        return isFormosa ? 'rgba(0,229,255,.95)' : teamColor;
+      });
+      var scoreData = scVal(scenarioArr, 'team_mean').map(function (v) {
+        return v === null ? null : (+v).toFixed(1);
+      });
+      var winData = scVal(scenarioArr, 'win_rate').map(function (v) {
+        return v === null ? null : (v * 100).toFixed(1);
+      });
+      var lineColor = isFormosa ? 'rgba(0,229,255,.85)' : hexToRgba(teamColor, .85);
+
+      return new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
           labels: labels,
           datasets: [
-            { label: '夢想家 勝率', data: scVal(fmS, 'win_rate').map(function (v) { return v === null ? null : (v * 100).toFixed(1); }),
-              backgroundColor: 'rgba(0,229,255,.7)', borderColor: 'rgba(0,229,255,1)', borderWidth: 1, yAxisID: 'y', skipNull: true },
-            { label: '夢 均分', data: scVal(fmS, 'team_mean').map(function (v) { return v === null ? null : (+v).toFixed(1); }),
-              type: 'line', borderColor: 'rgba(0,229,255,.6)', borderDash: [4,3],
-              pointBackgroundColor: 'rgba(0,229,255,.9)', fill: false, tension: 0.3, yAxisID: 'y2', spanGaps: false }
+            {
+              label: teamShort + ' 場均得分',
+              data: scoreData,
+              backgroundColor: barColors,
+              borderColor: borderColors,
+              borderWidth: 1.5,
+              borderRadius: 6,
+              barPercentage: 0.55,
+              categoryPercentage: 0.7,
+              yAxisID: 'y',
+              skipNull: true
+            },
+            {
+              label: teamShort + ' 勝率',
+              data: winData,
+              type: 'line',
+              borderColor: lineColor,
+              borderDash: [4, 3],
+              borderWidth: 2,
+              pointBackgroundColor: lineColor,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              fill: false,
+              tension: 0.3,
+              yAxisID: 'y2',
+              spanGaps: false
+            }
           ]
         },
-        options: { responsive: true,
-          plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } },
-          scales: scaleOpts }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: '#8fa3b8', font: { size: 10 }, boxWidth: 20 } },
+            tooltip: {
+              mode: 'index', intersect: false,
+              callbacks: {
+                label: function (c) {
+                  if (c.datasetIndex === 0) { return ' 場均得分 ' + c.raw; }
+                  return ' 勝率 ' + c.raw + '%';
+                }
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#8fa3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.05)' } },
+            y: {
+              position: 'left',
+              suggestedMin: 70, suggestedMax: 125,
+              ticks: { color: '#8fa3b8', font: { size: 10 } },
+              grid: { color: 'rgba(255,255,255,.05)' },
+              title: { display: true, text: '場均得分', color: '#8fa3b8', font: { size: 10 } }
+            },
+            y2: {
+              position: 'right', min: 0, max: 110,
+              ticks: { color: '#8fa3b8', font: { size: 10 }, callback: function (v) { return v + '%'; } },
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } }
+            }
+          }
+        }
       });
     }
+
+    // 夢想家圖
+    if (scenarioChartF) { scenarioChartF.destroy(); }
+    var ctxF = document.getElementById('chart-scenario-f');
+    if (ctxF) { scenarioChartF = buildChart(ctxF, fmS, '#00e5ff', '夢想家', true); }
 
     // 對手圖
     var oppLbl = document.getElementById('scenario-opp-label');
     if (oppLbl) { oppLbl.textContent = opp.name; oppLbl.style.color = opp.color; }
     if (scenarioChartK) { scenarioChartK.destroy(); }
     var ctxK = document.getElementById('chart-scenario-k');
-    if (ctxK) {
-      scenarioChartK = new Chart(ctxK.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            { label: opp.short + ' 勝率', data: scVal(oppS, 'win_rate').map(function (v) { return v === null ? null : (v * 100).toFixed(1); }),
-              backgroundColor: hexToRgba(opp.color, .65), borderColor: opp.color, borderWidth: 1, yAxisID: 'y', skipNull: true },
-            { label: opp.short + ' 均分', data: scVal(oppS, 'team_mean').map(function (v) { return v === null ? null : (+v).toFixed(1); }),
-              type: 'line', borderColor: hexToRgba(opp.color, .6), borderDash: [4,3],
-              pointBackgroundColor: hexToRgba(opp.color, .9), fill: false, tension: 0.3, yAxisID: 'y2', spanGaps: false }
-          ]
-        },
-        options: { responsive: true,
-          plugins: { legend: { labels: { color: '#8fa3b8', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } },
-          scales: scaleOpts }
-      });
-    }
+    if (ctxK) { scenarioChartK = buildChart(ctxK, oppS, opp.color, opp.short, false); }
 
-    // 情境 table（只顯示有比賽場次的情境）
+    // 情境摘要卡片（取代舊 table）
     var tbl = document.getElementById('scenario-table');
-    var rows = labels.map(function (lbl, i) {
-      var fs = fmS[i], os = oppS[i];
-      var fEmpty = !fs || (fs.n === 0);
-      var oEmpty = !os || (os.n === 0);
-      return '<tr>' +
-        '<td style="font-weight:700;color:var(--text)">' + lbl + '</td>' +
-        '<td style="color:var(--accent)">' + (fEmpty ? '—' : (fs.win_rate * 100).toFixed(0) + '%') + '</td>' +
-        '<td>' + (fEmpty ? '—' : fs.team_mean.toFixed(1) + ' 分 (' + fs.n + '場)') + '</td>' +
-        '<td style="color:var(--opp-color)">' + (oEmpty ? '—' : (os.win_rate * 100).toFixed(0) + '%') + '</td>' +
-        '<td>' + (oEmpty ? '—' : os.team_mean.toFixed(1) + ' 分 (' + os.n + '場)') + '</td>' +
-        '</tr>';
+    var cardsF = labels.map(function (lbl, i) {
+      var fs = fmS[i];
+      var empty = !fs || fs.n === 0;
+      var alpha = SC_ALPHAS[i];
+      var bg = 'rgba(0,229,255,' + (alpha * 0.18) + ')';
+      var border = 'rgba(0,229,255,' + (alpha * 0.45) + ')';
+      return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + (empty ? ';opacity:.35' : '') + '">' +
+        '<div class="sc-label" style="color:var(--accent)">' + lbl + '</div>' +
+        (empty
+          ? '<div class="sc-stat">無對戰場次</div>'
+          : '<div class="sc-winrate" style="color:var(--accent)">' + (fs.win_rate * 100).toFixed(0) + '%</div>' +
+            '<div class="sc-stat">均分 ' + fs.team_mean.toFixed(1) + '</div>' +
+            '<div class="sc-stat">' + fs.n + ' 場</div>') +
+      '</div>';
     }).join('');
+
+    var cardsO = labels.map(function (lbl, i) {
+      var os = oppS[i];
+      var empty = !os || os.n === 0;
+      var alpha = SC_ALPHAS[i];
+      var bg = hexToRgba(opp.color, alpha * 0.18);
+      var border = hexToRgba(opp.color, alpha * 0.45);
+      return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + (empty ? ';opacity:.35' : '') + '">' +
+        '<div class="sc-label" style="color:var(--opp-color)">' + lbl + '</div>' +
+        (empty
+          ? '<div class="sc-stat">無對戰場次</div>'
+          : '<div class="sc-winrate" style="color:var(--opp-color)">' + (os.win_rate * 100).toFixed(0) + '%</div>' +
+            '<div class="sc-stat">均分 ' + os.team_mean.toFixed(1) + '</div>' +
+            '<div class="sc-stat">' + os.n + ' 場</div>') +
+      '</div>';
+    }).join('');
+
     tbl.innerHTML =
-      '<table class="scenario-tbl">' +
-        '<thead><tr><th>情境</th><th>夢想家勝率</th><th>夢想家均分</th>' +
-          '<th>' + opp.short + '勝率</th><th>' + opp.short + '均分</th></tr></thead>' +
-        '<tbody>' + rows + '</tbody>' +
-      '</table>';
+      '<div style="font-size:.73rem;color:var(--accent);font-weight:700;margin-bottom:.4rem">夢想家</div>' +
+      '<div class="sc-cards">' + cardsF + '</div>' +
+      '<div style="font-size:.73rem;color:var(--opp-color);font-weight:700;margin:.75rem 0 .4rem">' + opp.short + '</div>' +
+      '<div class="sc-cards">' + cardsO + '</div>';
   }
 
   /* ⑩ USG% vs TS% 散點圖（H2H，分隊各一張） */
