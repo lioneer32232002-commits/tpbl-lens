@@ -1,5 +1,9 @@
 # build.py
-import os, shutil, glob, importlib.util
+import os, shutil, glob, importlib.util, hashlib
+
+def _file_hash(path):
+    with open(path, "rb") as f:
+        return hashlib.md5(f.read()).hexdigest()[:8]
 
 TEMPLATES = "templates"
 PAGES     = "pages"
@@ -58,10 +62,12 @@ def build():
         content = content.replace("{{TEAM_TITLE}}", t["title"])
         _write(os.path.join(DIST, t["slug"], "index.html"), content)
 
+    champ_js_hash = _file_hash(os.path.join(JS_DIR, "championship.js"))
     champ_src = _read(os.path.join(PAGES, "championship.html"))
     for t in CHAMP_PAGES:
         content = inject_partials(champ_src, head, nav, footer)
         content = content.replace("{{TEAM_SLUG}}", t["slug"])
+        content = content.replace('championship.js"', f'championship.js?v={champ_js_hash}"')
         _write(os.path.join(DIST, t["slug"], "index.html"), content)
 
     cal_src = _read(os.path.join(PAGES, "calibration.html"))
