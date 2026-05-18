@@ -346,7 +346,7 @@
         },
         scales: {
           x: { ticks: { color: '#8fa3b8', font: { size: 12 } }, grid: { color: 'rgba(255,255,255,.05)' } },
-          y: { min: 0, max: 110,
+          y: { min: 0, max: 100,
                ticks: { color: '#8fa3b8', callback: function (v) { return v + '%'; } },
                grid: { color: 'rgba(255,255,255,.05)' },
                title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } } }
