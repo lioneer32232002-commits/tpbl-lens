@@ -7,27 +7,14 @@
 
 ## 部署流程（一條龍，不可跳步）
 
-修改任何檔案後，必須按以下順序完成才算完工：
+修改任何檔案後，必須用以下**單一指令**完成（worktree commit → merge → build → push → deploy 全部同步執行）：
 
-```
-1. git add + git commit          ← 在 worktree 提交變更
-2. git merge <branch>            ← 從 worktree 合併回 master（主目錄）
-3. git push origin master        ← push 後 hook 自動執行 build.py + wrangler deploy
-```
-
-**Hook 說明**（`.claude/settings.json` 已設定）：
-- 偵測到 `git push` 後自動執行：
-  1. `python build.py` — 將 `data/`、`js/`、`pages/` 同步到 `dist/`
-  2. `npx wrangler pages deploy dist --project-name tpbl-lens` — 上傳到 Cloudflare Pages
-
-> ⚠️ **不要** 手動修改 `dist/` 再部署，一律透過 build.py 同步，否則會被下次 build 覆蓋。
-
-**手動備用指令**（hook 失敗時）：
 ```bash
-cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens"
-python build.py
-npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=manual-deploy
+cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens" && git merge claude/magical-snyder-a11061 && python build.py && git push origin master && npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=auto-deploy
 ```
+
+> ⚠️ **不靠 hook**，每次都執行完整指令，確保 build 和 deploy 一定發生。  
+> ⚠️ **不要** 手動修改 `dist/`，一律透過 build.py 同步。
 
 ---
 
