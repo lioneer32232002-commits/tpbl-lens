@@ -513,6 +513,9 @@
     .sc-note { font-size: .62rem; color: var(--text2); margin-top: .6rem; line-height: 1.5; }
     @media (max-width: 600px) { .sc-cards { grid-template-columns: 1fr; } }
 
+    /* USG 圖例（彩色文字，無方塊） */
+    .usg-legend { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; margin-top: .5rem; font-size: .78rem; }
+
     /* PPP 格子 */
     .ppp-section { display: flex; flex-direction: column; gap: 1rem; }
     .ppp-panel-title { font-size: .78rem; font-weight: 700; margin-bottom: .5rem; }
@@ -669,19 +672,24 @@
     <h2>情境分析（雙方對戰 6 場）</h2>
     <div class="card">
       <div style="font-size:.75rem;color:var(--text2);margin-bottom:.85rem">
-        依三分命中率 + 助攻數將雙方 6 場對戰分為 Best / Ideal / Fair / Low 四種情境，比較各隊在不同狀態下的勝率與得分。
+        依三分命中率 + 助攻數將雙方 6 場對戰分為 Best / Fair / Low 三種情境，比較各隊在不同狀態下的勝率與各項數據。
       </div>
-      <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:.5rem">
+      <!-- 夢想家：長條圖 + 情境卡片 -->
+      <div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
         <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
-          <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.4rem">福爾摩沙夢想家</div>
-          <canvas id="chart-scenario-f" style="max-height:260px"></canvas>
+          <canvas id="chart-scenario-f" style="max-height:240px"></canvas>
         </div>
-        <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
-          <div id="scenario-opp-label" style="font-size:.78rem;font-weight:700;color:var(--opp-color);margin-bottom:.4rem">對手</div>
-          <canvas id="chart-scenario-k" style="max-height:260px"></canvas>
-        </div>
+        <div id="sc-cards-f" style="margin-top:.6rem"></div>
       </div>
-      <div id="scenario-table" style="margin-top:.5rem;overflow-x:auto"></div>
+      <!-- 對手：長條圖 + 情境卡片 -->
+      <div style="margin-top:1.2rem">
+        <div id="scenario-opp-label" style="font-size:.78rem;font-weight:700;color:var(--opp-color);margin-bottom:.4rem">對手</div>
+        <div class="card chart-wrap" style="padding:.75rem;background:var(--bg3);border:1px solid var(--border)">
+          <canvas id="chart-scenario-k" style="max-height:240px"></canvas>
+        </div>
+        <div id="sc-cards-k" style="margin-top:.6rem"></div>
+      </div>
     </div>
   </section>
 

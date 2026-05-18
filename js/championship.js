@@ -478,10 +478,8 @@
 
   /* ⑨ 情境分析（H2H 對戰場次，各隊各一張） */
   function renderScenario(fm, opp, oppKey) {
-    var fmS    = D['formosa_h2h_scenario']   || D.formosa_scenario;
-    var oppS   = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
-    var fmSeas = D.formosa_scenario  || [];
-    var oppSeas= D[oppKey + '_scenario'] || [];
+    var fmS  = D['formosa_h2h_scenario']   || D.formosa_scenario;
+    var oppS = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
 
     // 只保留雙方都有對戰場次的情境
     var idxs = fmS.reduce(function (acc, s, i) {
@@ -491,14 +489,6 @@
     var fmF  = idxs.map(function (i) { return fmS[i]; });
     var oppF = idxs.map(function (i) { return oppS[i]; });
     var labels = fmF.map(function (s) { return s.label; });
-
-    // 依標籤查全季情境統計（作為三分/命中率等參考）
-    function seasStats(arr, label) {
-      for (var j = 0; j < arr.length; j++) {
-        if (arr[j].label === label) { return arr[j].stats || {}; }
-      }
-      return {};
-    }
 
     // 情境深淺色：Best 最深 → Low 最淺
     var SC_ORDER  = ['Best', 'Ideal', 'Fair', 'Low'];
@@ -597,22 +587,21 @@
     var ctxK = document.getElementById('chart-scenario-k');
     if (ctxK) { scenarioChartK = buildChart(ctxK, oppF, opp.color, opp.short, false); }
 
-    // 情境摘要卡片
-    function makeCard(s, seasArr, clr, isOpp) {
-      var st  = seasStats(seasArr, s.label);
-      var a   = scAlpha(s.label);
+    // 情境摘要卡片（使用 H2H 真實統計）
+    function makeCard(s, clr, isOpp) {
+      var st = s.stats || {};
+      var a  = scAlpha(s.label);
       var bg     = isOpp ? hexToRgba(clr, a * 0.18) : 'rgba(0,229,255,' + (a * 0.18) + ')';
       var border = isOpp ? hexToRgba(clr, a * 0.45) : 'rgba(0,229,255,' + (a * 0.45) + ')';
       var clrCss = isOpp ? 'var(--opp-color)' : 'var(--accent)';
-      // 三分進球估算：以全季各情境 3P% × 22 次平均出手
-      var tpm3 = st['3P%'] ? Math.round(st['3P%'] / 100 * 22) : null;
       var rows = [
         ['均分',   s.team_mean.toFixed(1)],
-        ['三分命中', st['3P%']  ? st['3P%'].toFixed(1) + '%'  : '—'],
-        ['三分進球', tpm3 !== null ? '約 ' + tpm3 + ' 顆' : '—'],
-        ['投籃命中', st['FG%']  ? st['FG%'].toFixed(1) + '%'  : '—'],
-        ['助攻',   st['AST'] ? st['AST'].toFixed(1)         : '—'],
-        ['失誤',   st['TO']  ? st['TO'].toFixed(1)          : '—'],
+        ['對手均分', s.opp_mean != null ? (+s.opp_mean).toFixed(1) : '—'],
+        ['三分命中', st['3P%']  != null ? st['3P%'].toFixed(1) + '%'              : '—'],
+        ['三分進球', st['3PM']  != null ? st['3PM'].toFixed(1) + ' 顆'            : '—'],
+        ['投籃命中', st['FG%']  != null ? st['FG%'].toFixed(1) + '%'              : '—'],
+        ['助攻',   st['AST'] != null ? st['AST'].toFixed(1)                    : '—'],
+        ['失誤',   st['TO']  != null ? st['TO'].toFixed(1)                     : '—'],
       ];
       var grid = rows.map(function (r) {
         return '<span class="sc-sl">' + r[0] + '</span><span class="sc-sv">' + r[1] + '</span>';
@@ -625,16 +614,10 @@
       '</div>';
     }
 
-    var cardsF = fmF.map(function (s) { return makeCard(s, fmSeas, '#00e5ff', false); }).join('');
-    var cardsO = oppF.map(function (s) { return makeCard(s, oppSeas, opp.color, true); }).join('');
-
-    var tbl = document.getElementById('scenario-table');
-    tbl.innerHTML =
-      '<div style="font-size:.73rem;color:var(--accent);font-weight:700;margin-bottom:.4rem">夢想家</div>' +
-      '<div class="sc-cards">' + cardsF + '</div>' +
-      '<div style="font-size:.73rem;color:var(--opp-color);font-weight:700;margin:.75rem 0 .4rem">' + opp.short + '</div>' +
-      '<div class="sc-cards">' + cardsO + '</div>' +
-      '<div class="sc-note">均分與勝率取自雙方對戰紀錄；三分命中率、投籃命中率、助攻、失誤為全季各情境趨勢參考。三分進球為估算值（3P% × 22 次出手）。</div>';
+    var elF = document.getElementById('sc-cards-f');
+    var elK = document.getElementById('sc-cards-k');
+    if (elF) { elF.innerHTML = '<div class="sc-cards">' + fmF.map(function (s) { return makeCard(s, '#00e5ff', false); }).join('') + '</div>'; }
+    if (elK) { elK.innerHTML = '<div class="sc-cards">' + oppF.map(function (s) { return makeCard(s, opp.color, true); }).join('') + '</div>'; }
   }
 
   /* ⑩ USG% vs TS% 散點圖（H2H，分隊各一張） */
@@ -675,38 +658,54 @@
       }
     };
 
-    function buildUsgChart(canvasId, players, teamLabel, mainBg, mainBorder) {
+    function usgLegend(canvasId, teamColor, teamLabel) {
+      var canvas = document.getElementById(canvasId);
+      if (!canvas) { return; }
+      // 移除舊圖例（重繪時避免重複）
+      var prev = canvas.nextElementSibling;
+      if (prev && prev.classList.contains('usg-legend')) { prev.parentNode.removeChild(prev); }
+      var div = document.createElement('div');
+      div.className = 'usg-legend';
+      div.innerHTML =
+        '<span style="color:' + teamColor + '">' + teamLabel + ' 高效（TS≥50%）</span>' +
+        '<span style="color:rgba(240,98,146,.95)">低效（TS＜50%）</span>';
+      canvas.parentNode.insertBefore(div, canvas.nextSibling);
+    }
+
+    function buildUsgChart(canvasId, players, teamLabel, mainBg, mainBorder, teamColor) {
       var split = splitByEff(players);
-      return new Chart(document.getElementById(canvasId).getContext('2d'), {
+      var chart = new Chart(document.getElementById(canvasId).getContext('2d'), {
         type: 'bubble',
         data: {
           datasets: [
-            { label: teamLabel + ' 高效（TS≥50%）', data: split.hi,
+            { label: teamLabel + ' 高效', data: split.hi,
               backgroundColor: mainBg, borderColor: mainBorder, borderWidth: 1.5 },
-            { label: '低效（TS<50%）', data: split.lo,
+            { label: '低效', data: split.lo,
               backgroundColor: 'rgba(240,98,146,.55)', borderColor: 'rgba(240,98,146,.9)', borderWidth: 1.5 }
           ]
         },
         options: {
           responsive: true,
           plugins: {
-            legend: { labels: { color: '#8fa3b8', font: { size: 10 }, boxWidth: 14 } },
+            legend: { display: false },
             tooltip: { callbacks: tooltipCb }
           },
           scales: scalesBase
         }
       });
+      usgLegend(canvasId, teamColor, teamLabel);
+      return chart;
     }
 
     if (usgChartF) { usgChartF.destroy(); }
     usgChartF = buildUsgChart('chart-usg-f', fmPlayers, '夢想家',
-      'rgba(0,229,255,.55)', 'rgba(0,229,255,.9)');
+      'rgba(0,229,255,.55)', 'rgba(0,229,255,.9)', '#00e5ff');
 
     if (usgChartK) { usgChartK.destroy(); }
     var oppLbl = document.getElementById('usg-opp-label');
     if (oppLbl) { oppLbl.textContent = opp.short; oppLbl.style.color = opp.color; }
     usgChartK = buildUsgChart('chart-usg-k', oppPlayers, opp.short,
-      hexToRgba(opp.color, .5), opp.color);
+      hexToRgba(opp.color, .5), opp.color, opp.color);
   }
 
   /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
