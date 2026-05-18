@@ -640,8 +640,6 @@
                .join('<span class="sc-dot">·</span>') +
         '</div>';
       }
-      var ptsOpp  = row([['PTS', s.team_mean.toFixed(1)],
-                         ['OPP', s.opp_mean != null ? (+s.opp_mean).toFixed(1) : '—']]);
       var threeRow = row([['3P%', st['3P%'] != null ? st['3P%'].toFixed(1) + '%' : '—'],
                           ['3PM', st['3PM'] != null ? st['3PM'].toFixed(1) : '—']]);
       var restRow  = row([['FG%', st['FG%'] != null ? st['FG%'].toFixed(1) + '%' : '—'],
@@ -649,8 +647,7 @@
                           ['TO',  st['TO']  != null ? st['TO'].toFixed(1)  : '—']]);
       return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + '">' +
         '<div class="sc-label" style="color:' + clrCss + '">' + s.label + '</div>' +
-        '<div class="sc-winrate" style="color:' + clrCss + '">' + (s.win_rate * 100).toFixed(0) + '%</div>' +
-        ptsOpp + threeRow + restRow +
+        threeRow + restRow +
         '<div class="sc-n">' + s.n + ' 場</div>' +
       '</div>';
     }
@@ -750,11 +747,17 @@
   }
 
   /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
+  var MIN_AVG_MIN = 5;
+  function filterByTime(arr) {
+    if (!arr) { return arr; }
+    return arr.filter(function (p) { return (p.avg_min || 0) >= MIN_AVG_MIN; });
+  }
+
   function renderHeatmaps(fm, opp, oppKey) {
-    var fmPM  = D['formosa_hm_' + oppKey];
-    var oppPM = D[oppKey + '_hm_formosa'];
-    var fmPPP  = D['formosa_ppp_' + oppKey];
-    var oppPPP = D[oppKey + '_ppp_formosa'];
+    var fmPM  = filterByTime(D['formosa_hm_' + oppKey]);
+    var oppPM = filterByTime(D[oppKey + '_hm_formosa']);
+    var fmPPP  = filterByTime(D['formosa_ppp_' + oppKey]);
+    var oppPPP = filterByTime(D[oppKey + '_ppp_formosa']);
 
     var fmActive  = buildActiveMap(fm.players);
     var oppActive = buildActiveMap(opp.players);
