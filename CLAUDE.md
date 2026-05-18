@@ -7,14 +7,20 @@
 
 ## 部署流程（一條龍，不可跳步）
 
-修改任何檔案後，必須用以下**單一指令**完成（worktree commit → merge → build → push → deploy 全部同步執行）：
+修改任何檔案後，必須用以下**單一指令**完成：
 
 ```bash
-cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens" && git merge claude/magical-snyder-a11061 && python build.py && git push origin master && npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=auto-deploy
+cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens" && git merge claude/magical-snyder-a11061 && python build.py && git add dist/ && (git diff --cached --quiet || git commit -m "build: update dist") && git push origin master && npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=auto-deploy
 ```
 
-> ⚠️ **不靠 hook**，每次都執行完整指令，確保 build 和 deploy 一定發生。  
-> ⚠️ **不要** 手動修改 `dist/`，一律透過 build.py 同步。
+**順序說明**：
+1. `git merge` — 合併 worktree 變更到 master
+2. `python build.py` — 重新產生 dist/
+3. `git add dist/ && git commit` — **必須把新 dist/ commit 進 git**，否則 GitHub 推上去的是舊版
+4. `git push` — 推到 GitHub（含正確的 dist/）
+5. `wrangler deploy` — 直接部署 dist/ 到 Cloudflare
+
+> ⚠️ 步驟 3 不可省略：dist/ 被 git 追蹤，GitHub 整合會用 repo 內的 dist/ 部署，跳過這步就會看到舊版本。
 
 ---
 
