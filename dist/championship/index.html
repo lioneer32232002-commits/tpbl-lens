@@ -513,6 +513,14 @@
     .sc-note { font-size: .62rem; color: var(--text2); margin-top: .6rem; line-height: 1.5; }
     @media (max-width: 600px) { .sc-cards { grid-template-columns: 1fr; } }
 
+    /* 主客場圖例與數據格 */
+    .ha-legend { display: flex; gap: 1.2rem; margin-top: .5rem; font-size: .78rem; }
+    .ha-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-top: .2rem; }
+    .ha-stat-cell { background: var(--bg3); border-radius: 8px; padding: .55rem .7rem; }
+    .ha-stat-title { font-size: .68rem; color: var(--text2); margin-bottom: .25rem; }
+    .ha-stat-row { font-size: .8rem; }
+    @media (max-width: 600px) { .ha-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
     /* USG 圖例（彩色文字，無方塊） */
     .usg-legend { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; margin-top: .5rem; font-size: .78rem; }
 
@@ -642,7 +650,10 @@
   <!-- ⑤ 主客場 -->
   <section id="home-away">
     <h2>主客場優勢</h2>
-    <div class="ha-compare" id="ha-compare"></div>
+    <div class="card chart-wrap">
+      <canvas id="chart-ha" style="max-height:240px"></canvas>
+    </div>
+    <div id="ha-stats" style="margin-top:.65rem"></div>
   </section>
 
   <!-- ⑥ 節次分析 -->

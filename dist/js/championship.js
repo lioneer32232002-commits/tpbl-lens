@@ -6,6 +6,7 @@
   var D = null;
   var currentOpp = null;
   var effChart = null;
+  var haChart = null;
   var scenarioChartF = null;
   var scenarioChartK = null;
   var usgChartF = null;
@@ -300,53 +301,89 @@
 
   /* ⑤ 主客場 */
   function renderHomeAway(fm, opp) {
-    var container = document.getElementById('ha-compare');
-    container.innerHTML = '';
+    var fHomeWR = (fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1) * 100);
+    var oHomeWR = (opp.home.wins / (opp.home.wins + opp.home.losses || 1) * 100);
+    var fAwayWR = (fm.away.wins  / (fm.away.wins  + fm.away.losses  || 1) * 100);
+    var oAwayWR = (opp.away.wins / (opp.away.wins + opp.away.losses || 1) * 100);
 
-    var fHomeWR = fm.home.win_rate  !== undefined ? fm.home.win_rate  : fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1);
-    var oHomeWR = opp.home.win_rate !== undefined ? opp.home.win_rate : opp.home.wins / (opp.home.wins + opp.home.losses || 1);
-    var fAwayWR = fm.away.win_rate  !== undefined ? fm.away.win_rate  : fm.away.wins  / (fm.away.wins  + fm.away.losses  || 1);
-    var oAwayWR = opp.away.win_rate !== undefined ? opp.away.win_rate : opp.away.wins / (opp.away.wins + opp.away.losses || 1);
+    if (haChart) { haChart.destroy(); }
+    var ctx = document.getElementById('chart-ha');
+    if (!ctx) { return; }
+    haChart = new Chart(ctx.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['主場', '客場'],
+        datasets: [
+          { label: '夢想家',
+            data: [fHomeWR, fAwayWR],
+            backgroundColor: 'rgba(0,229,255,.55)',
+            borderColor: 'rgba(0,229,255,.95)',
+            borderWidth: 1.5, borderRadius: 6,
+            barPercentage: 0.48, categoryPercentage: 0.65 },
+          { label: opp.short,
+            data: [oHomeWR, oAwayWR],
+            backgroundColor: hexToRgba(opp.color, .55),
+            borderColor: opp.color,
+            borderWidth: 1.5, borderRadius: 6,
+            barPercentage: 0.48, categoryPercentage: 0.65 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (c) {
+                var isHome = c.dataIndex === 0;
+                var isFm   = c.datasetIndex === 0;
+                var d = isHome ? (isFm ? fm.home : opp.home) : (isFm ? fm.away : opp.away);
+                return ' ' + c.dataset.label + '  ' + d.wins + 'W ' + d.losses + 'L  ' +
+                  c.raw.toFixed(1) + '%  均分 ' + d.avg_pts.toFixed(1) + '  失分 ' + d.avg_opp.toFixed(1);
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#8fa3b8', font: { size: 12 } }, grid: { color: 'rgba(255,255,255,.05)' } },
+          y: { min: 0, max: 110,
+               ticks: { color: '#8fa3b8', callback: function (v) { return v + '%'; } },
+               grid: { color: 'rgba(255,255,255,.05)' },
+               title: { display: true, text: '勝率', color: '#8fa3b8', font: { size: 10 } } }
+        }
+      }
+    });
 
-    function haVsSection(title, rows) {
-      var rowsHtml = rows.map(function (r) {
-        var fBetter = r.higherBetter ? r.fVal >= r.oVal : r.fVal <= r.oVal;
-        var fCls = fBetter ? 'style="color:var(--accent);font-weight:700"' : 'style="color:var(--text2)"';
-        var oCls = !fBetter ? 'style="color:var(--opp-color);font-weight:700"' : 'style="color:var(--text2)"';
-        return '<div ' + fCls + '>' + r.fText + '</div>' +
-               '<div style="font-size:.73rem;color:var(--text2);text-align:center;white-space:nowrap">' + r.label + '</div>' +
-               '<div ' + oCls + '>' + r.oText + '</div>';
-      }).join('');
-      return '<div style="margin-bottom:.85rem">' +
-        '<div style="font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:.5rem;letter-spacing:.03em">' + title + '</div>' +
-        '<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.3rem .75rem;align-items:center;font-size:.85rem">' +
-          '<div style="text-align:right;font-size:.72rem;color:var(--accent);font-weight:700">夢想家</div>' +
-          '<div></div>' +
-          '<div style="text-align:left;font-size:.72rem;color:var(--opp-color);font-weight:700">' + opp.short + '</div>' +
-          rowsHtml +
+    // 彩色文字圖例
+    var prev = ctx.nextElementSibling;
+    if (prev && prev.classList.contains('ha-legend')) { prev.parentNode.removeChild(prev); }
+    var leg = document.createElement('div');
+    leg.className = 'ha-legend';
+    leg.innerHTML = '<span style="color:rgba(0,229,255,.95)">夢想家</span>' +
+                    '<span style="color:' + opp.color + '">' + opp.short + '</span>';
+    ctx.parentNode.insertBefore(leg, ctx.nextSibling);
+
+    // 均分 / 失分對照（4 格）
+    var statsEl = document.getElementById('ha-stats');
+    if (!statsEl) { return; }
+    function haCell(title, fVal, oVal, higherIsBetter) {
+      var fBetter = higherIsBetter ? fVal >= oVal : fVal <= oVal;
+      return '<div class="ha-stat-cell">' +
+        '<div class="ha-stat-title">' + title + '</div>' +
+        '<div class="ha-stat-row">' +
+          '<span style="color:' + (fBetter ? 'rgba(0,229,255,.95)' : 'var(--text2)') + ';font-weight:' + (fBetter ? '700' : '400') + '">夢 ' + fVal.toFixed(1) + '</span>' +
+          '<span style="color:var(--text2);margin:0 .3rem">/</span>' +
+          '<span style="color:' + (!fBetter ? opp.color : 'var(--text2)') + ';font-weight:' + (!fBetter ? '700' : '400') + '">' + opp.short + ' ' + oVal.toFixed(1) + '</span>' +
         '</div>' +
       '</div>';
     }
-
-    container.innerHTML =
-      haVsSection('主場', [
-        { label: '勝率', fVal: fHomeWR, oVal: oHomeWR, higherBetter: true,
-          fText: fm.home.wins + 'W ' + fm.home.losses + 'L　' + pct(fHomeWR),
-          oText: opp.home.wins + 'W ' + opp.home.losses + 'L　' + pct(oHomeWR) },
-        { label: '場均得分', fVal: fm.home.avg_pts, oVal: opp.home.avg_pts, higherBetter: true,
-          fText: fm.home.avg_pts.toFixed(1), oText: opp.home.avg_pts.toFixed(1) },
-        { label: '場均失分', fVal: fm.home.avg_opp, oVal: opp.home.avg_opp, higherBetter: false,
-          fText: fm.home.avg_opp.toFixed(1), oText: opp.home.avg_opp.toFixed(1) }
-      ]) +
-      haVsSection('客場', [
-        { label: '勝率', fVal: fAwayWR, oVal: oAwayWR, higherBetter: true,
-          fText: fm.away.wins + 'W ' + fm.away.losses + 'L　' + pct(fAwayWR),
-          oText: opp.away.wins + 'W ' + opp.away.losses + 'L　' + pct(oAwayWR) },
-        { label: '場均得分', fVal: fm.away.avg_pts, oVal: opp.away.avg_pts, higherBetter: true,
-          fText: fm.away.avg_pts.toFixed(1), oText: opp.away.avg_pts.toFixed(1) },
-        { label: '場均失分', fVal: fm.away.avg_opp, oVal: opp.away.avg_opp, higherBetter: false,
-          fText: fm.away.avg_opp.toFixed(1), oText: opp.away.avg_opp.toFixed(1) }
-      ]);
+    statsEl.innerHTML =
+      '<div class="ha-stat-grid">' +
+        haCell('主場 均分', fm.home.avg_pts, opp.home.avg_pts, true) +
+        haCell('主場 失分', fm.home.avg_opp, opp.home.avg_opp, false) +
+        haCell('客場 均分', fm.away.avg_pts, opp.away.avg_pts, true) +
+        haCell('客場 失分', fm.away.avg_opp, opp.away.avg_opp, false) +
+      '</div>';
   }
 
   /* ⑥ 節次分析 */
