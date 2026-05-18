@@ -662,8 +662,8 @@
   var USG_TS_THRESHOLD = 50; // TS% < 50% 視為低效，顯示粉色
 
   function renderUSGCharts(oppKey, opp) {
-    var fmPlayers  = D['h2h_formosa_usg'] || D.formosa_usg;
-    var oppPlayers = D['h2h_' + oppKey + '_usg'] || D[oppKey + '_usg'];
+    var fmPlayers  = (D['h2h_formosa_usg'] || D.formosa_usg).filter(function (p) { return (p.gp || 0) >= 3; });
+    var oppPlayers = (D['h2h_' + oppKey + '_usg'] || D[oppKey + '_usg']).filter(function (p) { return (p.gp || 0) >= 3; });
 
     function toPoint(p) {
       return { x: p.usg, y: p.tsp, r: Math.max(5, p.pts * 0.7), label: p.name, gp: p.gp };
