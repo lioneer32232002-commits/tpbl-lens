@@ -478,35 +478,45 @@
 
   /* ⑨ 情境分析（H2H 對戰場次，各隊各一張） */
   function renderScenario(fm, opp, oppKey) {
-    var fmS  = D['formosa_h2h_scenario']   || D.formosa_scenario;
-    var oppS = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
-    var labels = fmS.map(function (s) { return s.label; });
+    var fmS    = D['formosa_h2h_scenario']   || D.formosa_scenario;
+    var oppS   = D[oppKey + '_h2h_scenario'] || D[oppKey + '_scenario'];
+    var fmSeas = D.formosa_scenario  || [];
+    var oppSeas= D[oppKey + '_scenario'] || [];
 
-    // n=0 → null
-    function scVal(arr, key) {
-      return arr.map(function (s) { return (s.n > 0) ? +s[key] : null; });
+    // 只保留雙方都有對戰場次的情境
+    var idxs = fmS.reduce(function (acc, s, i) {
+      if (s.n > 0 && oppS[i] && oppS[i].n > 0) { acc.push(i); }
+      return acc;
+    }, []);
+    var fmF  = idxs.map(function (i) { return fmS[i]; });
+    var oppF = idxs.map(function (i) { return oppS[i]; });
+    var labels = fmF.map(function (s) { return s.label; });
+
+    // 依標籤查全季情境統計（作為三分/命中率等參考）
+    function seasStats(arr, label) {
+      for (var j = 0; j < arr.length; j++) {
+        if (arr[j].label === label) { return arr[j].stats || {}; }
+      }
+      return {};
     }
 
-    // 情境深淺色（Best 最深→Low 最淺）
+    // 情境深淺色：Best 最深 → Low 最淺
+    var SC_ORDER  = ['Best', 'Ideal', 'Fair', 'Low'];
     var SC_ALPHAS = [0.88, 0.65, 0.42, 0.22];
+    function scAlpha(label) {
+      var i = SC_ORDER.indexOf(label);
+      return i >= 0 ? SC_ALPHAS[i] : 0.55;
+    }
 
-    function buildChart(ctx, scenarioArr, teamColor, teamShort, isFormosa) {
-      var barColors = scenarioArr.map(function (s, i) {
-        if (s.n === 0) { return 'rgba(0,0,0,0)'; }
-        return isFormosa
-          ? 'rgba(0,229,255,' + SC_ALPHAS[i] + ')'
-          : hexToRgba(teamColor, SC_ALPHAS[i]);
+    function buildChart(ctx, scenArr, teamColor, teamShort, isFormosa) {
+      var barColors   = scenArr.map(function (s) {
+        return isFormosa ? 'rgba(0,229,255,' + scAlpha(s.label) + ')' : hexToRgba(teamColor, scAlpha(s.label));
       });
-      var borderColors = scenarioArr.map(function (s, i) {
-        if (s.n === 0) { return 'rgba(0,0,0,0)'; }
+      var borderColors = scenArr.map(function (s) {
         return isFormosa ? 'rgba(0,229,255,.95)' : teamColor;
       });
-      var scoreData = scVal(scenarioArr, 'team_mean').map(function (v) {
-        return v === null ? null : (+v).toFixed(1);
-      });
-      var winData = scVal(scenarioArr, 'win_rate').map(function (v) {
-        return v === null ? null : (v * 100).toFixed(1);
-      });
+      var scoreData = scenArr.map(function (s) { return (+s.team_mean).toFixed(1); });
+      var winData   = scenArr.map(function (s) { return (s.win_rate * 100).toFixed(1); });
       var lineColor = isFormosa ? 'rgba(0,229,255,.85)' : hexToRgba(teamColor, .85);
 
       return new Chart(ctx.getContext('2d'), {
@@ -523,8 +533,7 @@
               borderRadius: 6,
               barPercentage: 0.55,
               categoryPercentage: 0.7,
-              yAxisID: 'y',
-              skipNull: true
+              yAxisID: 'y'
             },
             {
               label: teamShort + ' 勝率',
@@ -538,8 +547,7 @@
               pointHoverRadius: 6,
               fill: false,
               tension: 0.3,
-              yAxisID: 'y2',
-              spanGaps: false
+              yAxisID: 'y2'
             }
           ]
         },
@@ -580,54 +588,53 @@
     // 夢想家圖
     if (scenarioChartF) { scenarioChartF.destroy(); }
     var ctxF = document.getElementById('chart-scenario-f');
-    if (ctxF) { scenarioChartF = buildChart(ctxF, fmS, '#00e5ff', '夢想家', true); }
+    if (ctxF) { scenarioChartF = buildChart(ctxF, fmF, '#00e5ff', '夢想家', true); }
 
     // 對手圖
     var oppLbl = document.getElementById('scenario-opp-label');
     if (oppLbl) { oppLbl.textContent = opp.name; oppLbl.style.color = opp.color; }
     if (scenarioChartK) { scenarioChartK.destroy(); }
     var ctxK = document.getElementById('chart-scenario-k');
-    if (ctxK) { scenarioChartK = buildChart(ctxK, oppS, opp.color, opp.short, false); }
+    if (ctxK) { scenarioChartK = buildChart(ctxK, oppF, opp.color, opp.short, false); }
 
-    // 情境摘要卡片（取代舊 table）
+    // 情境摘要卡片
+    function makeCard(s, seasArr, clr, isOpp) {
+      var st  = seasStats(seasArr, s.label);
+      var a   = scAlpha(s.label);
+      var bg     = isOpp ? hexToRgba(clr, a * 0.18) : 'rgba(0,229,255,' + (a * 0.18) + ')';
+      var border = isOpp ? hexToRgba(clr, a * 0.45) : 'rgba(0,229,255,' + (a * 0.45) + ')';
+      var clrCss = isOpp ? 'var(--opp-color)' : 'var(--accent)';
+      // 三分進球估算：以全季各情境 3P% × 22 次平均出手
+      var tpm3 = st['3P%'] ? Math.round(st['3P%'] / 100 * 22) : null;
+      var rows = [
+        ['均分',   s.team_mean.toFixed(1)],
+        ['三分命中', st['3P%']  ? st['3P%'].toFixed(1) + '%'  : '—'],
+        ['三分進球', tpm3 !== null ? '約 ' + tpm3 + ' 顆' : '—'],
+        ['投籃命中', st['FG%']  ? st['FG%'].toFixed(1) + '%'  : '—'],
+        ['助攻',   st['AST'] ? st['AST'].toFixed(1)         : '—'],
+        ['失誤',   st['TO']  ? st['TO'].toFixed(1)          : '—'],
+      ];
+      var grid = rows.map(function (r) {
+        return '<span class="sc-sl">' + r[0] + '</span><span class="sc-sv">' + r[1] + '</span>';
+      }).join('');
+      return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + '">' +
+        '<div class="sc-label" style="color:' + clrCss + '">' + s.label + '</div>' +
+        '<div class="sc-winrate" style="color:' + clrCss + '">' + (s.win_rate * 100).toFixed(0) + '%</div>' +
+        '<div class="sc-stats-grid">' + grid + '</div>' +
+        '<div class="sc-n">' + s.n + ' 場</div>' +
+      '</div>';
+    }
+
+    var cardsF = fmF.map(function (s) { return makeCard(s, fmSeas, '#00e5ff', false); }).join('');
+    var cardsO = oppF.map(function (s) { return makeCard(s, oppSeas, opp.color, true); }).join('');
+
     var tbl = document.getElementById('scenario-table');
-    var cardsF = labels.map(function (lbl, i) {
-      var fs = fmS[i];
-      var empty = !fs || fs.n === 0;
-      var alpha = SC_ALPHAS[i];
-      var bg = 'rgba(0,229,255,' + (alpha * 0.18) + ')';
-      var border = 'rgba(0,229,255,' + (alpha * 0.45) + ')';
-      return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + (empty ? ';opacity:.35' : '') + '">' +
-        '<div class="sc-label" style="color:var(--accent)">' + lbl + '</div>' +
-        (empty
-          ? '<div class="sc-stat">無對戰場次</div>'
-          : '<div class="sc-winrate" style="color:var(--accent)">' + (fs.win_rate * 100).toFixed(0) + '%</div>' +
-            '<div class="sc-stat">均分 ' + fs.team_mean.toFixed(1) + '</div>' +
-            '<div class="sc-stat">' + fs.n + ' 場</div>') +
-      '</div>';
-    }).join('');
-
-    var cardsO = labels.map(function (lbl, i) {
-      var os = oppS[i];
-      var empty = !os || os.n === 0;
-      var alpha = SC_ALPHAS[i];
-      var bg = hexToRgba(opp.color, alpha * 0.18);
-      var border = hexToRgba(opp.color, alpha * 0.45);
-      return '<div class="sc-card" style="border-color:' + border + ';background:' + bg + (empty ? ';opacity:.35' : '') + '">' +
-        '<div class="sc-label" style="color:var(--opp-color)">' + lbl + '</div>' +
-        (empty
-          ? '<div class="sc-stat">無對戰場次</div>'
-          : '<div class="sc-winrate" style="color:var(--opp-color)">' + (os.win_rate * 100).toFixed(0) + '%</div>' +
-            '<div class="sc-stat">均分 ' + os.team_mean.toFixed(1) + '</div>' +
-            '<div class="sc-stat">' + os.n + ' 場</div>') +
-      '</div>';
-    }).join('');
-
     tbl.innerHTML =
       '<div style="font-size:.73rem;color:var(--accent);font-weight:700;margin-bottom:.4rem">夢想家</div>' +
       '<div class="sc-cards">' + cardsF + '</div>' +
       '<div style="font-size:.73rem;color:var(--opp-color);font-weight:700;margin:.75rem 0 .4rem">' + opp.short + '</div>' +
-      '<div class="sc-cards">' + cardsO + '</div>';
+      '<div class="sc-cards">' + cardsO + '</div>' +
+      '<div class="sc-note">均分與勝率取自雙方對戰紀錄；三分命中率、投籃命中率、助攻、失誤為全季各情境趨勢參考。三分進球為估算值（3P% × 22 次出手）。</div>';
   }
 
   /* ⑩ USG% vs TS% 散點圖（H2H，分隊各一張） */
