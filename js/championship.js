@@ -234,18 +234,19 @@
     tbody.innerHTML = '';
     h2h.forEach(function (g) {
       var dateStr = g.date.slice(0, 4) + '/' + g.date.slice(4, 6) + '/' + g.date.slice(6);
-      var homeTag = g.formosa_home
-        ? '<span class="h2h-home-tag">主</span>'
-        : '<span class="h2h-home-tag">客</span>';
+      var homeLabel = g.formosa_home ? '夢主場' : opp.short + '主場';
+      var homeTag = '<span class="h2h-home-tag">' + homeLabel + '</span>';
       var badge = g.won
-        ? '<span class="h2h-badge h2h-w">勝</span>'
-        : '<span class="h2h-badge h2h-l">敗</span>';
+        ? '<span class="h2h-badge h2h-w">夢勝</span>'
+        : '<span class="h2h-badge h2h-l">' + opp.short + '勝</span>';
+      var fColor = g.won  ? 'var(--accent)'    : 'var(--text2)';
+      var oColor = !g.won ? 'var(--opp-color)' : 'var(--text2)';
       var tr = document.createElement('tr');
       tr.innerHTML =
         '<td>' + dateStr + '</td>' +
-        '<td style="font-weight:700;color:' + (g.won ? 'var(--accent)' : 'var(--accent2)') + '">' + g.formosa_score + '</td>' +
+        '<td style="font-weight:700;color:' + fColor + '">' + g.formosa_score + '</td>' +
         '<td style="color:var(--text2)">:</td>' +
-        '<td style="font-weight:700">' + g.opp_score + '</td>' +
+        '<td style="font-weight:700;color:' + oColor + '">' + g.opp_score + '</td>' +
         '<td>' + homeTag + '</td>' +
         '<td>' + badge + '</td>';
       tbody.appendChild(tr);
