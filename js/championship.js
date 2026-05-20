@@ -1095,6 +1095,81 @@
       fcont.appendChild(el);
     });
 
+    renderG1Win(fm, opp, pH);
+  }
+
+  /* G1 夢想家勝率（三情境） */
+  function renderG1Win(fm, opp, pH) {
+    var card = document.getElementById('g1-pred-card');
+    if (!card) { return; }
+
+    var SCENARIOS = [
+      {
+        label: '夢想家主動',
+        cond: '三分命中率 ≥ 38%<br>失誤數 ≤ 15',
+        prob: Math.min(0.85, pH + 0.15),
+        ref: '參照 G1431（116-96）、G1468（107-90）',
+        color: 'var(--accent)',
+        border: 'rgba(0,229,255,.45)',
+        bg: 'rgba(0,229,255,.06)',
+        bar: 'rgba(0,229,255,.85)',
+        note: '三分火熱配合低失誤時，主場具明顯優勢。'
+      },
+      {
+        label: '旗鼓相當',
+        cond: '三分命中率 28–37%<br>均勢攻防',
+        prob: pH,
+        ref: '模型基準（H2H + NetRtg 加權）',
+        color: 'var(--text)',
+        border: 'rgba(255,255,255,.18)',
+        bg: 'rgba(255,255,255,.03)',
+        bar: 'rgba(255,255,255,.55)',
+        note: '主場優勢抵銷 H2H 負 NetRtg，互有機會。'
+      },
+      {
+        label: '國王逆轉',
+        cond: '三分命中率 < 28%<br>失誤數 ≥ 20',
+        prob: Math.max(0.20, pH - 0.20),
+        ref: '參照 G1439（97-114 主場失利）',
+        color: 'var(--accent2)',
+        border: 'rgba(240,98,146,.4)',
+        bg: 'rgba(240,98,146,.06)',
+        bar: 'rgba(240,98,146,.85)',
+        note: '手感低迷加高失誤時，主場優勢幾乎消失。'
+      }
+    ];
+
+    var html =
+      '<div style="font-size:.75rem;color:var(--text2);margin-bottom:1rem">' +
+        '依三分命中率與失誤數分三種情境，對應夢想家在 6 場 H2H 對戰中不同表現形態。' +
+        '基準主場勝率 <strong style="color:var(--text)">' + Math.round(pH * 100) + '%</strong>，' +
+        '各情境依 H2H 關鍵因子（三分 p=0.05、失誤 p=0.05）上下調整。' +
+      '</div>' +
+      '<div class="sc-cards">';
+
+    SCENARIOS.forEach(function (s) {
+      var pct = Math.round(s.prob * 100);
+      html +=
+        '<div class="sc-card" style="border-color:' + s.border + ';background:' + s.bg + '">' +
+          '<div class="sc-label" style="color:' + s.color + '">' + s.label + '</div>' +
+          '<div style="font-size:.7rem;color:var(--text2);line-height:1.55;margin-bottom:.45rem">' + s.cond + '</div>' +
+          '<div style="font-size:2rem;font-weight:900;line-height:1;margin-bottom:.45rem;color:' + s.color + '">' + pct + '%</div>' +
+          '<div class="prob-bar-bg" style="margin-bottom:.45rem">' +
+            '<div class="prob-bar-fill" data-w="' + pct + '%" style="width:0%;background:' + s.bar + '"></div>' +
+          '</div>' +
+          '<div style="font-size:.67rem;color:var(--text2);opacity:.75;margin-bottom:.2rem">' + s.ref + '</div>' +
+          '<div style="font-size:.69rem;color:var(--text2);line-height:1.5">' + s.note + '</div>' +
+        '</div>';
+    });
+
+    html +=
+      '</div>' +
+      '<div style="font-size:.7rem;color:var(--text2);margin-top:.75rem;line-height:1.55;border-top:1px solid rgba(255,255,255,.07);padding-top:.6rem">' +
+        'G1 於夢想家主場台中（' + opp.short + '主場新莊）。' +
+        '三分命中率與助攻為夢想家 H2H 勝場最顯著因子。僅供參考，不構成投注建議。' +
+      '</div>';
+
+    card.innerHTML = html;
   }
 
   /* ── Bar 動畫：讀取 data-w 展開 ── */
@@ -1113,10 +1188,11 @@
   /* ── Scroll trigger：各區塊進入視口才播動畫 ── */
   function setupScrollTriggers() {
     var configs = [
-      { id: 'pred-card',    sel: '.pred-path-bar-fill' },
-      { id: 'efficiency',   sel: '#efficiency .cmp-bar-f, #efficiency .cmp-bar-o' },
-      { id: 'mann-whitney', sel: '#mann-whitney .mhu-bar-fill' },
-      { id: 'extended',     sel: '#extended .mini-bar-fill' },
+      { id: 'pred-card',      sel: '.pred-path-bar-fill' },
+      { id: 'g1-pred-card',   sel: '#g1-pred-card .prob-bar-fill' },
+      { id: 'efficiency',     sel: '#efficiency .cmp-bar-f, #efficiency .cmp-bar-o' },
+      { id: 'mann-whitney',   sel: '#mann-whitney .mhu-bar-fill' },
+      { id: 'extended',       sel: '#extended .mini-bar-fill' },
     ];
 
     if (!('IntersectionObserver' in window)) {
