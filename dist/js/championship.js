@@ -1098,75 +1098,110 @@
     renderG1Win(fm, opp, pH);
   }
 
-  /* G1 夢想家勝率（三情境） */
+  /* G1 夢想家勝率（三情境，六大因子） */
   function renderG1Win(fm, opp, pH) {
     var card = document.getElementById('g1-pred-card');
     if (!card) { return; }
 
+    // 六項 H2H 勝敗場顯著因子（Mann-Whitney p=0.05）
+    // 勝場中位數 vs 敗場中位數：三分% 45/26.6、FG% 52.8/44.1、助攻 22.5/17、失誤 12.5/22.5、抄截 9.5/5.5、禁區 48/43
     var SCENARIOS = [
       {
         label: '夢想家主動',
-        cond: '三分命中率 ≥ 38%<br>失誤數 ≤ 15',
         prob: Math.min(0.85, pH + 0.15),
-        ref: '參照 G1431（116-96）、G1468（107-90）',
         color: 'var(--accent)',
         border: 'rgba(0,229,255,.45)',
         bg: 'rgba(0,229,255,.06)',
         bar: 'rgba(0,229,255,.85)',
-        note: '三分火熱配合低失誤時，主場具明顯優勢。'
+        stats: [
+          { name: '三分%',  val: '≥ 38%',   dir:  1 },
+          { name: 'FG%',    val: '≥ 48%',   dir:  1 },
+          { name: '助攻',   val: '≥ 20',    dir:  1 },
+          { name: '失誤',   val: '≤ 15',    dir:  1 },
+          { name: '抄截',   val: '≥ 8',     dir:  1 },
+          { name: '禁區',   val: '≥ 45分',  dir:  1 }
+        ],
+        ref: '參照 G1431（116-96）、G1468（107-90）',
+        note: '三分手感熱 + 助攻流暢；抄截積極帶動反擊，主場優勢完整釋放。'
       },
       {
         label: '旗鼓相當',
-        cond: '三分命中率 28–37%<br>均勢攻防',
         prob: pH,
-        ref: '模型基準（H2H + NetRtg 加權）',
         color: 'var(--text)',
         border: 'rgba(255,255,255,.18)',
         bg: 'rgba(255,255,255,.03)',
-        bar: 'rgba(255,255,255,.55)',
-        note: '主場優勢抵銷 H2H 負 NetRtg，互有機會。'
+        bar: 'rgba(255,255,255,.5)',
+        stats: [
+          { name: '三分%',  val: '28–37%',  dir:  0 },
+          { name: 'FG%',    val: '44–47%',  dir:  0 },
+          { name: '助攻',   val: '17–20',   dir:  0 },
+          { name: '失誤',   val: '16–20',   dir:  0 },
+          { name: '抄截',   val: '6–8',     dir:  0 },
+          { name: '禁區',   val: '43–47分', dir:  0 }
+        ],
+        ref: '模型基準（H2H + NetRtg 加權）',
+        note: '各項指標均在平均值附近，勝負取決於臨場細節執行與換人調度。'
       },
       {
         label: '國王逆轉',
-        cond: '三分命中率 < 28%<br>失誤數 ≥ 20',
         prob: Math.max(0.20, pH - 0.20),
-        ref: '參照 G1439（97-114 主場失利）',
         color: 'var(--accent2)',
         border: 'rgba(240,98,146,.4)',
         bg: 'rgba(240,98,146,.06)',
         bar: 'rgba(240,98,146,.85)',
-        note: '手感低迷加高失誤時，主場優勢幾乎消失。'
+        stats: [
+          { name: '三分%',  val: '< 28%',   dir: -1 },
+          { name: 'FG%',    val: '< 44%',   dir: -1 },
+          { name: '助攻',   val: '≤ 17',    dir: -1 },
+          { name: '失誤',   val: '≥ 20',    dir: -1 },
+          { name: '抄截',   val: '≤ 6',     dir: -1 },
+          { name: '禁區',   val: '≤ 43分',  dir: -1 }
+        ],
+        ref: '參照 G1439（97-114 主場失利）',
+        note: '進攻低效又混亂時，林書緯持球組織配合禁區壓制足以主導全場。'
       }
     ];
 
     var html =
       '<div style="font-size:.75rem;color:var(--text2);margin-bottom:1rem">' +
-        '依三分命中率與失誤數分三種情境，對應夢想家在 6 場 H2H 對戰中不同表現形態。' +
-        '基準主場勝率 <strong style="color:var(--text)">' + Math.round(pH * 100) + '%</strong>，' +
-        '各情境依 H2H 關鍵因子（三分 p=0.05、失誤 p=0.05）上下調整。' +
+        '依 H2H 6 場勝敗場關鍵因子分析（Mann-Whitney），六項顯著指標（p=0.05）' +
+        '定義三種對戰情境。基準主場勝率 <strong style="color:var(--text)">' + Math.round(pH * 100) + '%</strong>，各情境依多因子表現組合上下調整。' +
       '</div>' +
       '<div class="sc-cards">';
 
     SCENARIOS.forEach(function (s) {
       var pct = Math.round(s.prob * 100);
+
+      var grid = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem .35rem;margin-bottom:.55rem">';
+      s.stats.forEach(function (st) {
+        var vc = st.dir === 1 ? 'var(--accent)' : (st.dir === -1 ? 'var(--accent2)' : 'var(--text2)');
+        grid +=
+          '<div>' +
+            '<div style="font-size:.58rem;color:var(--text2);margin-bottom:.05rem">' + st.name + '</div>' +
+            '<div style="font-size:.73rem;font-weight:700;color:' + vc + ';white-space:nowrap">' + st.val + '</div>' +
+          '</div>';
+      });
+      grid += '</div>';
+
       html +=
         '<div class="sc-card" style="border-color:' + s.border + ';background:' + s.bg + '">' +
-          '<div class="sc-label" style="color:' + s.color + '">' + s.label + '</div>' +
-          '<div style="font-size:.7rem;color:var(--text2);line-height:1.55;margin-bottom:.45rem">' + s.cond + '</div>' +
-          '<div style="font-size:2rem;font-weight:900;line-height:1;margin-bottom:.45rem;color:' + s.color + '">' + pct + '%</div>' +
+          '<div class="sc-label" style="color:' + s.color + ';margin-bottom:.5rem">' + s.label + '</div>' +
+          grid +
+          '<div style="font-size:1.85rem;font-weight:900;line-height:1;margin-bottom:.4rem;color:' + s.color + '">' + pct + '%</div>' +
           '<div class="prob-bar-bg" style="margin-bottom:.45rem">' +
             '<div class="prob-bar-fill" data-w="' + pct + '%" style="width:0%;background:' + s.bar + '"></div>' +
           '</div>' +
-          '<div style="font-size:.67rem;color:var(--text2);opacity:.75;margin-bottom:.2rem">' + s.ref + '</div>' +
-          '<div style="font-size:.69rem;color:var(--text2);line-height:1.5">' + s.note + '</div>' +
+          '<div style="font-size:.63rem;color:var(--text2);opacity:.75;margin-bottom:.22rem">' + s.ref + '</div>' +
+          '<div style="font-size:.67rem;color:var(--text2);line-height:1.5">' + s.note + '</div>' +
         '</div>';
     });
 
     html +=
       '</div>' +
-      '<div style="font-size:.7rem;color:var(--text2);margin-top:.75rem;line-height:1.55;border-top:1px solid rgba(255,255,255,.07);padding-top:.6rem">' +
-        'G1 於夢想家主場台中（' + opp.short + '主場新莊）。' +
-        '三分命中率與助攻為夢想家 H2H 勝場最顯著因子。僅供參考，不構成投注建議。' +
+      '<div style="font-size:.7rem;color:var(--text2);margin-top:.75rem;line-height:1.6;border-top:1px solid rgba(255,255,255,.07);padding-top:.6rem">' +
+        '★ 六項顯著因子（p=0.05）：三分%、整體命中率、助攻、失誤、抄截、禁區得分。' +
+        '籃板（勝場中位 45.5 vs 敗場 46.5，p=0.15）與阻攻（p=0.15）、快攻得分（p=0.15）' +
+        '在 H2H 樣本中差異不顯著，未列入情境條件。G1 夢主場台中。僅供參考。' +
       '</div>';
 
     card.innerHTML = html;
