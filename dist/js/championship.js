@@ -996,10 +996,18 @@
         cls = g.home === 'f' ? 'home-f' : 'home-o';
         tooltip = g.label + ' ' + g.date + ' ' + homeTag;
       }
+      var subLabel;
+      if (played) {
+        subLabel = played.won ? '夢' : 'K';
+      } else if (g.tbd) {
+        subLabel = '待定';
+      } else {
+        subLabel = g.date;
+      }
       html +=
         '<div class="pred-game-dot ' + cls + '" title="' + tooltip + '">' +
           '<span>' + g.label + '</span>' +
-          '<span style="font-size:.5rem;opacity:.8">' + (g.tbd && !played ? '待定' : g.date) + '</span>' +
+          '<span style="font-size:.5rem;opacity:.8">' + subLabel + '</span>' +
         '</div>';
     });
     html += '</div>';
