@@ -54,19 +54,55 @@
     fmH2H.name  = fm.name;  fmH2H.short  = fm.short;  fmH2H.color  = fm.color;
     oppH2H.name = opp.name; oppH2H.short = opp.short; oppH2H.color = opp.color;
 
+    // 冠軍戰至今的隊伍統計（若系列賽已開打就改用它）
+    var champF = D.formosa_champ;
+    var champO = D[oppKey + '_champ'];
+    var hasChamp = !!(champF && champO && champF.gp > 0);
+    var effF = hasChamp ? withMeta(champF, fm)  : fmH2H;
+    var effO = hasChamp ? withMeta(champO, opp) : oppH2H;
+    var srcTag = hasChamp ? ('冠軍戰至今 ' + champF.gp + ' 場') : '雙方對戰 6 場';
+
     renderHero(fm, opp);
+    renderChampTodate(oppKey, opp);
     renderH2H(h2h, opp);
-    renderPrediction(fmH2H, oppH2H, h2h);
-    renderEfficiency(fmH2H, oppH2H);
-    renderScoring(fmH2H, oppH2H);
-    renderHomeAway(fmH2H, oppH2H);
+    renderPrediction(effF, effO, h2h, hasChamp);
+    renderEfficiency(effF, effO);
+    renderScoring(effF, effO);
+    renderHomeAway(effF, effO);
     renderQuarter(fmH2H, oppH2H, opp);
     renderPlayers(fmH2H, oppH2H);
     renderMHU(fm, opp, oppKey);
     renderScenario(fm, opp, oppKey);
     renderUSGCharts(oppKey, opp);
     renderHeatmaps(fm, opp, oppKey);
+
+    // 依資料來源更新區塊標題
+    setSecTitle('efficiency', '每百回合效率比較（' + srcTag + '）');
+    setSecTitle('scoring',    '得分來源比較（' + srcTag + '）');
+    setSecTitle('home-away',  '主客場優勢（' + srcTag + '）');
+
+    setupCollapsibles();
     setupScrollTriggers();
+  }
+
+  /* 更新區塊 h2 標題（保留折疊 caret） */
+  function setSecTitle(secId, text) {
+    var sec = document.getElementById(secId);
+    if (!sec) { return; }
+    var h2 = sec.querySelector('h2');
+    if (!h2) { return; }
+    var caret = h2.querySelector('.collapse-caret');
+    h2.textContent = text;
+    if (caret) { h2.appendChild(caret); }
+  }
+
+  /* 將冠軍戰隊伍 block 套上名稱/顏色/球員等 metadata，供既有渲染函式使用 */
+  function withMeta(block, base) {
+    var o = {};
+    for (var k in block) { if (block.hasOwnProperty(k)) { o[k] = block[k]; } }
+    o.name = base.name; o.short = base.short; o.color = base.color;
+    o.players = base.players;
+    return o;
   }
 
   /* ① 英雄區塊 */
@@ -746,6 +782,30 @@
       hexToRgba(opp.color, .5), opp.color, opp.color);
   }
 
+  /* ★ 冠軍戰球員數據・系列賽至今（Plus/Minus + PPP） */
+  function renderChampTodate(oppKey, opp) {
+    var sec = document.getElementById('champ-todate');
+    if (!sec) { return; }
+    var fmPM   = D.formosa_champ_pm;
+    var oppPM  = D[oppKey + '_champ_pm'];
+    var fmPPP  = D.formosa_champ_ppp;
+    var oppPPP = D[oppKey + '_champ_ppp'];
+
+    // 系列賽尚未開打 → 隱藏整個區塊
+    if (!fmPM || !fmPM.length) { sec.style.display = 'none'; return; }
+    sec.style.display = '';
+
+    var n = (D.formosa_champ && D.formosa_champ.gp) || 0;
+    setSecTitle('champ-todate', '冠軍戰球員數據・系列賽至今（' + n + ' 場）');
+
+    var fmActive  = buildActiveMap(D.formosa.players);
+    var oppActive = buildActiveMap(opp.players);
+
+    renderMiniBar('champ-pm-compare', fmPM, oppPM, D.formosa, opp, 'pm',
+      'var(--accent)', 'var(--opp-color)', fmActive, oppActive);
+    renderPppGrid('champ-ppp-compare', fmPPP, oppPPP, opp, fmActive, oppActive);
+  }
+
   /* ⑫ Plus/Minus 與 PPP 熱力圖（折疊）*/
   function filterByTime(arr) {
     if (!arr) { return arr; }
@@ -940,7 +1000,7 @@
   }
 
   /* ⑪ 勝負預測 */
-  function renderPrediction(fm, opp, h2h) {
+  function renderPrediction(fm, opp, h2h, hasChamp) {
     var card = document.getElementById('pred-card');
     if (!card) { return; }
     card.innerHTML = '';
@@ -952,9 +1012,12 @@
 
     var wins = h2h.filter(function (g) { return g.won; }).length;
     var h2hWinRate = wins / h2h.length;
+    // 近況勝率：有冠軍戰資料時改採系列賽當前戰績
+    var formWinRate = (hasChamp && seriesPlayed.length > 0)
+      ? (fSeriesW / seriesPlayed.length) : h2hWinRate;
     var netDiff = fm.netrtg - opp.netrtg;
     var netProb = Math.min(0.82, Math.max(0.18, 0.5 + netDiff * 0.025));
-    var gameProb = Math.min(0.78, Math.max(0.22, netProb * 0.6 + h2hWinRate * 0.4));
+    var gameProb = Math.min(0.78, Math.max(0.22, netProb * 0.6 + formWinRate * 0.4));
     var HOME_BOOST = 0.10;
     var pH = Math.min(0.82, gameProb + HOME_BOOST);
     var pA = Math.max(0.18, gameProb - HOME_BOOST);
@@ -1162,10 +1225,14 @@
     }
 
     // ── 說明 ──
+    var netSrcLabel = hasChamp ? '冠軍戰至今 NetRtg 差距 ' : 'Net Rating 差距 ';
+    var formNote = (hasChamp && seriesPlayed.length > 0)
+      ? '，系列賽 ' + fSeriesW + '-' + oSeriesW + '（例行賽 H2H ' + wins + '勝' + (h2h.length - wins) + '敗）'
+      : '，H2H ' + wins + '勝' + (h2h.length - wins) + '敗';
     html +=
       '<div class="pred-note" style="margin-bottom:.85rem">' +
-        'Net Rating 差距 ' + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
-        '，H2H ' + wins + '勝' + (h2h.length - wins) + '敗。' +
+        netSrcLabel + (netDiff >= 0 ? '+' : '') + netDiff.toFixed(1) +
+        formNote + '。' +
         '主場勝率 ' + Math.round(pH * 100) + '%・客場 ' + Math.round(pA * 100) + '%。Monte Carlo 30萬次模擬。僅供參考。' +
       '</div>';
 
@@ -1175,12 +1242,16 @@
 
     var fHomeWR  = fm.home.win_rate  !== undefined ? fm.home.win_rate  : fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1);
     var oHomeWR  = opp.home.win_rate !== undefined ? opp.home.win_rate : opp.home.wins / (opp.home.wins + opp.home.losses || 1);
+    var pfx = hasChamp ? '冠軍戰 ' : 'H2H ';
+    var recFactor = (hasChamp && seriesPlayed.length > 0)
+      ? { name: '系列賽戰績', fVal: fSeriesW, oVal: oSeriesW, higherBetter: true, fmt: function (v) { return v + 'W'; } }
+      : { name: 'H2H 戰績',   fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } };
     var factors = [
-      { name: 'H2H NetRtg',    fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
+      { name: pfx + 'NetRtg',  fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
       { name: '進攻效率 ORtg',  fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
       { name: '防守效率 DRtg',  fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
-      { name: 'H2H 主場勝率',   fVal: fHomeWR,   oVal: oHomeWR,    higherBetter: true,  fmt: pct },
-      { name: 'H2H 戰績',       fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } }
+      { name: pfx + '主場勝率', fVal: fHomeWR,   oVal: oHomeWR,    higherBetter: true,  fmt: pct },
+      recFactor
     ];
     var fcont = document.getElementById('pred-factors');
     factors.forEach(function (f) {
@@ -1493,6 +1564,7 @@
   /* ── Scroll trigger：各區塊進入視口才播動畫 ── */
   function setupScrollTriggers() {
     var configs = [
+      { id: 'champ-todate',   sel: '#champ-todate .mini-bar-fill' },
       { id: 'pred-card',      sel: '.pred-path-bar-fill' },
       { id: 'g1-pred-card',   sel: '#g1-pred-card .prob-bar-fill' },
       { id: 'efficiency',     sel: '#efficiency .cmp-bar-f, #efficiency .cmp-bar-o' },
@@ -1520,6 +1592,47 @@
     configs.forEach(function (c) {
       var el = document.getElementById(c.id);
       if (el) { obs.observe(el); }
+    });
+  }
+
+  /* ── 例行賽區塊：點擊標題才展開（預設收合）── */
+  var COLLAPSIBLE_IDS = ['h2h', 'quarter', 'mann-whitney', 'scenario', 'players', 'usg-ts', 'extended'];
+  function setupCollapsibles() {
+    COLLAPSIBLE_IDS.forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (!sec || sec.dataset.collapsibleInit === '1') { return; }
+      var h2 = sec.querySelector('h2');
+      if (!h2) { return; }
+      sec.dataset.collapsibleInit = '1';
+      sec.classList.add('collapsible');
+
+      // h2 之後的所有兄弟元素皆為內容
+      var content = [];
+      var node = h2.nextElementSibling;
+      while (node) { content.push(node); node = node.nextElementSibling; }
+
+      var caret = document.createElement('span');
+      caret.className = 'collapse-caret';
+      h2.appendChild(caret);
+
+      var collapsed = true;
+      function apply() {
+        content.forEach(function (el) { el.style.display = collapsed ? 'none' : ''; });
+        caret.textContent = collapsed ? '▸ 展開' : '▾ 收合';
+        sec.classList.toggle('is-collapsed', collapsed);
+      }
+      h2.addEventListener('click', function () {
+        collapsed = !collapsed;
+        apply();
+        if (!collapsed) {
+          // 展開後補播長條動畫並還原隱藏期間縮放的圖表
+          animateBars('.mhu-bar-fill, .mini-bar-fill, .prob-bar-fill, .pred-path-bar-fill, .cmp-bar-f, .cmp-bar-o', sec);
+          [scenarioChartF, scenarioChartK, usgChartF, usgChartK].forEach(function (c) {
+            if (c) { try { c.resize(); } catch (e) {} }
+          });
+        }
+      });
+      apply();
     });
   }
 

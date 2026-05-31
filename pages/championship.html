@@ -484,6 +484,17 @@
     #extended-toggle:hover { color: var(--text); }
     #extended-toggle { transition: color .15s; }
 
+    /* 例行賽折疊區塊（點擊標題展開） */
+    .collapsible > h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .collapse-caret {
+      font-size: .68rem; font-weight: 700; color: var(--text2);
+      border: 1px solid var(--border); border-radius: 5px;
+      padding: .1rem .5rem; white-space: nowrap; flex-shrink: 0;
+      transition: color .15s, border-color .15s;
+    }
+    .collapsible > h2:hover .collapse-caret { color: var(--accent); border-color: var(--accent); }
+    .collapsible.is-collapsed > h2 { margin-bottom: 0; }
+
     /* MHU 並排 */
     .mhu-compare { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
     .mhu-panel { }
@@ -600,23 +611,9 @@
     </div>
   </section>
 
-  <!-- ② 勝負預測 -->
-  <section id="prediction">
-    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
-    <div class="card" id="pred-card">
-      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
-    </div>
-  </section>
+  <!-- ═══ 上半部：冠軍戰數據分析（常時顯示）═══ -->
 
-  <!-- ②-b G1 夢想家勝率預測 -->
-  <section id="g1-prediction">
-    <h2>第一戰（G1）夢想家勝率預測・三種情境</h2>
-    <div class="card" id="g1-pred-card">
-      <!-- 由 JS 填入 -->
-    </div>
-  </section>
-
-  <!-- ③ 效率比較 -->
+  <!-- 冠軍戰球隊對戰數據 ① 每百回合效率 -->
   <section id="efficiency">
     <h2>每百回合效率比較（雙方對戰 6 場）</h2>
     <div class="card">
@@ -629,7 +626,66 @@
     </div>
   </section>
 
-  <!-- ③ 例行賽交手紀錄 -->
+  <!-- 冠軍戰球隊對戰數據 ② 得分來源 -->
+  <section id="scoring">
+    <h2>得分來源比較（雙方對戰 6 場）</h2>
+    <div class="card">
+      <div id="scoring-bars"></div>
+      <div class="score-src-legend" id="scoring-legend"></div>
+    </div>
+  </section>
+
+  <!-- 冠軍戰球隊對戰數據 ③ 主客場 -->
+  <section id="home-away">
+    <h2>主客場優勢</h2>
+    <div class="card chart-wrap">
+      <canvas id="chart-ha" style="max-height:240px"></canvas>
+    </div>
+    <div id="ha-stats" style="margin-top:.65rem"></div>
+  </section>
+
+  <!-- 冠軍戰球員數據・系列賽至今（正負值 + PPP） -->
+  <section id="champ-todate">
+    <h2>冠軍戰球員數據・系列賽至今</h2>
+    <div id="champ-todate-content">
+      <div style="font-size:.75rem;color:var(--text2);margin-bottom:1rem">
+        以下為總冠軍系列賽<strong style="color:var(--text)">已開打場次</strong>的球員表現。
+        Plus/Minus 為每場正負值平均；每回合得分（PPP）數值越高代表進攻效率越好。
+      </div>
+      <!-- Plus/Minus -->
+      <div style="margin-bottom:1.5rem">
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.25rem">Plus/Minus（系列賽至今）</h3>
+        <p style="font-size:.72rem;color:var(--text2);margin:0 0 .65rem;opacity:.7">每場正負值平均，依高低排序</p>
+        <div class="heatmap-side-by-side" id="champ-pm-compare"></div>
+      </div>
+      <!-- PPP -->
+      <div>
+        <h3 style="font-size:.9rem;color:var(--text2);margin-bottom:.25rem">每回合得分（PPP）（系列賽至今）</h3>
+        <p style="font-size:.72rem;color:var(--text2);margin:0 0 .65rem;opacity:.7">PTS ÷ 回合數，色深代表效率高</p>
+        <div id="champ-ppp-compare"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 勝負預測 -->
+  <section id="prediction">
+    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
+    <div class="card" id="pred-card">
+      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
+    </div>
+  </section>
+
+  <!-- G1 夢想家勝率預測 -->
+  <section id="g1-prediction">
+    <h2>第一戰（G1）夢想家勝率預測・三種情境</h2>
+    <div class="card" id="g1-pred-card">
+      <!-- 由 JS 填入 -->
+    </div>
+  </section>
+
+  <!-- ═══ 下半部：例行賽對戰數據（點擊標題展開）═══ -->
+
+  <!-- 例行賽交手紀錄 -->
   <section id="h2h">
     <h2>例行賽交手紀錄</h2>
     <div class="card">
@@ -650,24 +706,6 @@
         </table>
       </div>
     </div>
-  </section>
-
-  <!-- ④ 得分來源 -->
-  <section id="scoring">
-    <h2>得分來源比較（雙方對戰 6 場）</h2>
-    <div class="card">
-      <div id="scoring-bars"></div>
-      <div class="score-src-legend" id="scoring-legend"></div>
-    </div>
-  </section>
-
-  <!-- ⑤ 主客場 -->
-  <section id="home-away">
-    <h2>主客場優勢</h2>
-    <div class="card chart-wrap">
-      <canvas id="chart-ha" style="max-height:240px"></canvas>
-    </div>
-    <div id="ha-stats" style="margin-top:.65rem"></div>
   </section>
 
   <!-- ⑥ 節次分析 -->

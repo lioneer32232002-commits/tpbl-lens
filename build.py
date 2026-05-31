@@ -46,6 +46,13 @@ def inject_partials(content, head, nav, footer):
     return content
 
 def build():
+    # 0. 計算冠軍戰「系列賽至今」統計，注入 championship_2526.json
+    try:
+        import compute_champ_todate
+        compute_champ_todate.main()
+    except Exception as e:  # 計算失敗不阻斷 build
+        print(f"[build] champ-todate 計算略過：{e}")
+
     head   = _read(os.path.join(TEMPLATES, "_head.html"))
     nav    = _read(os.path.join(TEMPLATES, "_nav.html"))
     footer = _read(os.path.join(TEMPLATES, "_footer.html"))
