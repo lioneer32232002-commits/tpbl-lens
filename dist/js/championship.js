@@ -1201,11 +1201,11 @@
       fcont.appendChild(el);
     });
 
-    renderG1Win(fm, opp, pH);
+    renderG1Win(fm, opp, pH, pA);
   }
 
-  /* G1/G2 預測卡（依系列賽狀況動態切換） */
-  function renderG1Win(fm, opp, pH) {
+  /* 系列賽前瞻卡（依系列賽狀況動態切換：最近一場回顧 + 下一場前瞻） */
+  function renderG1Win(fm, opp, pH, pA) {
     var card = document.getElementById('g1-pred-card');
     if (!card) { return; }
 
@@ -1293,101 +1293,166 @@
       return;
     }
 
-    // ── G1 已打：G1 回顧 + G2 前瞻 ──
+    // ── 已打 ≥1 場：最近一場回顧 + 下一場前瞻（依資料動態） ──
+    var nextIdx   = seriesPlayed.length;
+    var latest    = seriesPlayed[nextIdx - 1];
+    var nextSched = nextIdx < SERIES_GAMES.length ? SERIES_GAMES[nextIdx] : null;
+    var CN = ['一', '二', '三', '四', '五', '六', '七'];
+
     var secTitle = document.querySelector('#g1-prediction h2');
-    if (secTitle) { secTitle.textContent = '第二戰（G2）前瞻・三種情境'; }
+    if (secTitle) {
+      secTitle.textContent = nextSched
+        ? ('第' + CN[nextIdx] + '戰（' + nextSched.label + '）前瞻・三種情境')
+        : '系列賽回顧';
+    }
 
-    var g1 = seriesPlayed[0];
-    var g1Fs = g1.formosa_stats || {};
-    var g1Os = g1.opp_stats   || {};
-
-    // G1 關鍵數字摘要
-    var g1Summary =
+    // 最近一場回顧摘要（依 championship_series 資料動態產生）
+    var lFs = latest.formosa_stats || {};
+    var lOs = latest.opp_stats || {};
+    var fmtMD = function (d) { return (+d.slice(4, 6)) + '/' + (+d.slice(6, 8)); };
+    var perfLine = function (arr) {
+      return (arr || []).map(function (p) {
+        return p.name + ' ' + p.pts + '分' + (p.ts_pct != null ? '（TS ' + p.ts_pct + '%）' : '');
+      }).join('、');
+    };
+    var fPerf = perfLine(latest.top_performers && latest.top_performers.formosa);
+    var oPerf = perfLine(latest.top_performers && latest.top_performers.opp);
+    var reviewSummary =
       '<div style="margin-bottom:1rem;padding:.6rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:.5rem">' +
-        '<div style="font-size:.72rem;font-weight:700;color:var(--text2);margin-bottom:.4rem">G1 回顧（5/24 台中・夢想家主場）</div>' +
+        '<div style="font-size:.72rem;font-weight:700;color:var(--text2);margin-bottom:.4rem">' + latest.game + ' 回顧（' + fmtMD(latest.date) + ' ' + (latest.formosa_home ? '台中・夢想家主場' : '新莊・' + opp.short + '主場') + '）</div>' +
         '<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.4rem;align-items:center;font-size:.7rem;margin-bottom:.45rem">' +
           '<div>' +
             '<div style="font-size:.6rem;color:var(--text2)">夢想家</div>' +
-            '<div style="font-size:1.4rem;font-weight:900;color:var(--text2)">' + g1.formosa_score + '</div>' +
+            '<div style="font-size:1.4rem;font-weight:900;color:' + (latest.won ? 'var(--accent)' : 'var(--text2)') + '">' + latest.formosa_score + '</div>' +
           '</div>' +
           '<div style="color:var(--text2);font-size:.85rem">–</div>' +
           '<div style="text-align:right">' +
             '<div style="font-size:.6rem;color:var(--text2)">' + opp.short + '</div>' +
-            '<div style="font-size:1.4rem;font-weight:900;color:var(--opp-color)">' + g1.opp_score + '</div>' +
+            '<div style="font-size:1.4rem;font-weight:900;color:' + (!latest.won ? 'var(--opp-color)' : 'var(--text2)') + '">' + latest.opp_score + '</div>' +
           '</div>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem .5rem;font-size:.65rem;color:var(--text2)">' +
-          '<div>夢 FG% <strong style="color:var(--text)">' + g1Fs.fg_pct + '%</strong>（' + g1Fs.fg_made + '/' + g1Fs.fg_att + '）</div>' +
-          '<div>王 FG% <strong style="color:var(--text)">' + g1Os.fg_pct + '%</strong>（' + g1Os.fg_made + '/' + g1Os.fg_att + '）</div>' +
-          '<div>夢 3P% <strong style="color:var(--text)">' + g1Fs['3p_pct'] + '%</strong>（' + g1Fs['3pm'] + '/' + g1Fs['3pa'] + '）</div>' +
-          '<div>王 3P% <strong style="color:var(--text)">' + g1Os['3p_pct'] + '%</strong>（' + g1Os['3pm'] + '/' + g1Os['3pa'] + '）</div>' +
-          '<div>夢 助攻 <strong style="color:var(--text)">' + g1Fs.ast + '</strong>　失誤 <strong style="color:var(--text)">' + g1Fs.tov + '</strong></div>' +
-          '<div>王 助攻 <strong style="color:var(--text)">' + g1Os.ast + '</strong>　失誤 <strong style="color:var(--text)">' + g1Os.tov + '</strong></div>' +
+          '<div>夢 FG% <strong style="color:var(--text)">' + lFs.fg_pct + '%</strong>（' + lFs.fg_made + '/' + lFs.fg_att + '）</div>' +
+          '<div>' + opp.short + ' FG% <strong style="color:var(--text)">' + lOs.fg_pct + '%</strong>（' + lOs.fg_made + '/' + lOs.fg_att + '）</div>' +
+          '<div>夢 3P% <strong style="color:var(--text)">' + lFs['3p_pct'] + '%</strong>（' + lFs['3pm'] + '/' + lFs['3pa'] + '）</div>' +
+          '<div>' + opp.short + ' 3P% <strong style="color:var(--text)">' + lOs['3p_pct'] + '%</strong>（' + lOs['3pm'] + '/' + lOs['3pa'] + '）</div>' +
+          '<div>夢 助攻 <strong style="color:var(--text)">' + lFs.ast + '</strong>　失誤 <strong style="color:var(--text)">' + lFs.tov + '</strong></div>' +
+          '<div>' + opp.short + ' 助攻 <strong style="color:var(--text)">' + lOs.ast + '</strong>　失誤 <strong style="color:var(--text)">' + lOs.tov + '</strong></div>' +
         '</div>' +
-        '<div style="margin-top:.35rem;font-size:.65rem;color:var(--accent2)">★ ' + (g1.note || '') + '　霍爾曼 24分（TS 75.6%）；杰倫 41分 8記三分（TS 87.9%）</div>' +
+        '<div style="margin-top:.35rem;font-size:.65rem;color:var(--accent2)">★ ' + (latest.note || '') +
+          (fPerf ? '　夢：' + fPerf : '') + (oPerf ? '；' + opp.short + '：' + oPerf : '') + '</div>' +
       '</div>';
 
-    // G2 前瞻三情境（夢想家主場，背水一戰）
-    var SCENARIOS_G2 = [
-      {
-        label: '夢想家扳平',
-        prob: Math.min(0.82, pH + 0.08),
-        color: 'var(--accent)',
-        border: 'rgba(0,229,255,.45)', bg: 'rgba(0,229,255,.06)', bar: 'rgba(0,229,255,.85)',
-        stats: [
-          { name: '杰倫',   val: '≤ 25分',  dir:  1 },
-          { name: 'FG%',    val: '≥ 44%',   dir:  1 },
-          { name: '三分%',  val: '≥ 35%',   dir:  1 },
-          { name: '助攻',   val: '≥ 20',    dir:  1 },
-          { name: '禁區',   val: '≥ 42分',  dir:  1 },
-          { name: 'FT%',    val: '≥ 80%',   dir:  1 }
-        ],
-        ref: '夢想家防守輪轉正常化 + G1 FG% 修正',
-        note: '杰倫三分命中率難以維持 G1 水準（8/12→回歸均值）。夢想家禁區+籃板優勢如發揮，主場氣勢回穩。'
-      },
-      {
-        label: '旗鼓相當',
-        prob: pH,
-        color: 'var(--text)',
-        border: 'rgba(255,255,255,.18)', bg: 'rgba(255,255,255,.03)', bar: 'rgba(255,255,255,.5)',
-        stats: [
-          { name: '杰倫',   val: '25–35分', dir:  0 },
-          { name: 'FG%',    val: '40–44%',  dir:  0 },
-          { name: '三分%',  val: '30–35%',  dir:  0 },
-          { name: '助攻',   val: '17–20',   dir:  0 },
-          { name: '禁區',   val: '38–42分', dir:  0 },
-          { name: 'FT%',    val: '70–80%',  dir:  0 }
-        ],
-        ref: '模型基準（延伸 H2H NetRtg 差 −1.4）',
-        note: '緊張攻防下勝負再次取決關鍵時刻執行。罰球（蔣淯安 G1 終場 2 罰不中）是最大變數。'
-      },
-      {
-        label: '國王 2-0',
-        prob: Math.max(0.18, pH - 0.18),
-        color: 'var(--accent2)',
-        border: 'rgba(240,98,146,.4)', bg: 'rgba(240,98,146,.06)', bar: 'rgba(240,98,146,.85)',
-        stats: [
-          { name: '杰倫',   val: '≥ 35分',  dir: -1 },
-          { name: 'FG%',    val: '< 40%',   dir: -1 },
-          { name: '三分%',  val: '< 30%',   dir: -1 },
-          { name: '助攻',   val: '≤ 17',    dir: -1 },
-          { name: '禁區',   val: '≤ 38分',  dir: -1 },
-          { name: 'FT%',    val: '< 70%',   dir: -1 }
-        ],
-        ref: 'G1 低效重演（FG 37.5%）+ 杰倫持續爆發',
-        note: '若 G1 低效模式延續（FG <40%），國王 2-0 領先將使系列賽走向幾乎確立。'
-      }
-    ];
+    // 系列賽結束（無下一場）→ 僅顯示回顧
+    if (!nextSched) {
+      card.innerHTML = '<div style="font-size:.75rem;color:var(--text2);margin-bottom:.75rem">系列賽已結束。</div>' + reviewSummary;
+      return;
+    }
 
-    var html2 =
-      '<div style="font-size:.75rem;color:var(--text2);margin-bottom:.75rem">' +
-        'G1 國王逆轉後，G2（5/26 台中）夢想家主場背水一戰。依 H2H 關鍵因子 + G1 數據定義三種情境。' +
-        '基準主場勝率 <strong style="color:var(--text)">' + Math.round(pH * 100) + '%</strong>。' +
-      '</div>' +
-      g1Summary +
+    var nextHome = nextSched.home === 'f';
+    var pBase = nextHome ? pH : pA;
+    var fW = seriesPlayed.filter(function (g) { return g.won; }).length;
+    var oW = seriesPlayed.length - fW;
+
+    // 下一場前瞻情境：優先採用客製劇本，否則套用通用門檻
+    var PREVIEWS = {
+      'G4': {
+        intro: 'G3 國王主場大勝後 2-1 領先，G4（5/31 新莊）夢想家客場背水一戰，再輸將陷 1-3 絕境。依關鍵因子 + G3 數據定義三種情境。基準客場勝率 <strong style="color:var(--text)">' + Math.round(pBase * 100) + '%</strong>。',
+        scenarios: [
+          { label: '夢想家扳平 2-2', prob: Math.min(0.75, pBase + 0.08), color: 'var(--accent)',
+            border: 'rgba(0,229,255,.45)', bg: 'rgba(0,229,255,.06)', bar: 'rgba(0,229,255,.85)',
+            stats: [
+              { name: 'FG%', val: '≥ 44%', dir: 1 },
+              { name: '三分%', val: '≥ 33%', dir: 1 },
+              { name: '限制王三分', val: '< 35%', dir: 1 },
+              { name: '助攻', val: '≥ 20', dir: 1 },
+              { name: '禁區', val: '≥ 40分', dir: 1 },
+              { name: '失誤', val: '≤ 13', dir: 1 }
+            ],
+            ref: 'G3 FG 32.9% 需大幅修正 + 守住國王外線（G3 13記/43.3%）',
+            note: '命中率回升、守住國王三分並打出禁區優勢，夢想家可在客場扳平、奪回 G5 主場主動權。' },
+          { label: '旗鼓相當', prob: pBase, color: 'var(--text)',
+            border: 'rgba(255,255,255,.18)', bg: 'rgba(255,255,255,.03)', bar: 'rgba(255,255,255,.5)',
+            stats: [
+              { name: 'FG%', val: '40–44%', dir: 0 },
+              { name: '三分%', val: '28–33%', dir: 0 },
+              { name: '限制王三分', val: '35–40%', dir: 0 },
+              { name: '助攻', val: '17–20', dir: 0 },
+              { name: '禁區', val: '36–40分', dir: 0 },
+              { name: '失誤', val: '14–17', dir: 0 }
+            ],
+            ref: '模型基準（客場 + 系列賽落後 1-2）',
+            note: '雙方拉鋸，勝負取決臨場執行與板凳貢獻；國王主場氣勢與夢想家求勝意志對撞。' },
+          { label: '國王聽牌 3-1', prob: Math.max(0.15, pBase - 0.15), color: 'var(--accent2)',
+            border: 'rgba(240,98,146,.4)', bg: 'rgba(240,98,146,.06)', bar: 'rgba(240,98,146,.85)',
+            stats: [
+              { name: 'FG%', val: '< 40%', dir: -1 },
+              { name: '三分%', val: '< 28%', dir: -1 },
+              { name: '限制王三分', val: '≥ 40%', dir: -1 },
+              { name: '助攻', val: '≤ 17', dir: -1 },
+              { name: '禁區', val: '≤ 36分', dir: -1 },
+              { name: '失誤', val: '≥ 18', dir: -1 }
+            ],
+            ref: 'G3 低效重演（FG 32.9%/3P 20.6%）+ 國王外線續熱',
+            note: '若 G3 冷手延續又守不住外線，國王 3-1 聽牌，夢想家將被逼到淘汰邊緣。' }
+        ],
+        footnote: '★ G4 關鍵觀察：夢想家三分回溫（G3 僅 7/34）、限制杰倫（G3 25分5記三分）與林書緯（20分7助攻）、爭取禁區得分。國王 G3 助攻 24 次傳導極順，夢想家防守輪轉是勝負關鍵。僅供參考。'
+      }
+    };
+
+    var preview = PREVIEWS[nextSched.label];
+    if (!preview) {
+      // 通用前瞻（尚未客製化的場次，如系列賽後段）
+      preview = {
+        intro: nextSched.label + '（' + nextSched.date + ' ' + (nextHome ? '台中・夢想家主場' : '新莊・' + opp.short + '主場') + '）。目前系列賽 夢想家 ' + fW + ' – ' + oW + ' ' + opp.short + '。基準' + (nextHome ? '主' : '客') + '場勝率 <strong style="color:var(--text)">' + Math.round(pBase * 100) + '%</strong>。',
+        scenarios: [
+          { label: '夢想家主動', prob: Math.min(0.82, pBase + 0.12), color: 'var(--accent)',
+            border: 'rgba(0,229,255,.45)', bg: 'rgba(0,229,255,.06)', bar: 'rgba(0,229,255,.85)',
+            stats: [
+              { name: '三分%', val: '≥ 35%', dir: 1 },
+              { name: 'FG%', val: '≥ 46%', dir: 1 },
+              { name: '助攻', val: '≥ 20', dir: 1 },
+              { name: '失誤', val: '≤ 14', dir: 1 },
+              { name: '抄截', val: '≥ 8', dir: 1 },
+              { name: '禁區', val: '≥ 42分', dir: 1 }
+            ],
+            ref: '進攻流暢 + 防守端壓制',
+            note: '命中率與助攻同步拉高、抄截帶動反擊，夢想家可掌握節奏。' },
+          { label: '旗鼓相當', prob: pBase, color: 'var(--text)',
+            border: 'rgba(255,255,255,.18)', bg: 'rgba(255,255,255,.03)', bar: 'rgba(255,255,255,.5)',
+            stats: [
+              { name: '三分%', val: '30–35%', dir: 0 },
+              { name: 'FG%', val: '42–46%', dir: 0 },
+              { name: '助攻', val: '17–20', dir: 0 },
+              { name: '失誤', val: '15–18', dir: 0 },
+              { name: '抄截', val: '6–8', dir: 0 },
+              { name: '禁區', val: '38–42分', dir: 0 }
+            ],
+            ref: '模型基準',
+            note: '各項指標貼近均值，勝負取決臨場執行與調度。' },
+          { label: opp.short + '佔優', prob: Math.max(0.18, pBase - 0.15), color: 'var(--accent2)',
+            border: 'rgba(240,98,146,.4)', bg: 'rgba(240,98,146,.06)', bar: 'rgba(240,98,146,.85)',
+            stats: [
+              { name: '三分%', val: '< 30%', dir: -1 },
+              { name: 'FG%', val: '< 42%', dir: -1 },
+              { name: '助攻', val: '≤ 17', dir: -1 },
+              { name: '失誤', val: '≥ 18', dir: -1 },
+              { name: '抄截', val: '≤ 6', dir: -1 },
+              { name: '禁區', val: '≤ 38分', dir: -1 }
+            ],
+            ref: '進攻低效 + 失誤偏高',
+            note: '若命中率低迷又失誤增加，' + opp.short + '可主導比賽。' }
+        ],
+        footnote: '★ ' + nextSched.label + ' 採通用情境門檻；詳細前瞻將於前一場結束後更新。僅供參考。'
+      };
+    }
+
+    var htmlP =
+      '<div style="font-size:.75rem;color:var(--text2);margin-bottom:.75rem">' + preview.intro + '</div>' +
+      reviewSummary +
       '<div class="sc-cards">';
 
-    SCENARIOS_G2.forEach(function (s) {
+    preview.scenarios.forEach(function (s) {
       var pct = Math.round(s.prob * 100);
       var grid = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem .35rem;margin-bottom:.55rem">';
       s.stats.forEach(function (st) {
@@ -1396,7 +1461,7 @@
           '<div style="font-size:.73rem;font-weight:700;color:' + vc + ';white-space:nowrap">' + st.val + '</div></div>';
       });
       grid += '</div>';
-      html2 += '<div class="sc-card" style="border-color:' + s.border + ';background:' + s.bg + '">' +
+      htmlP += '<div class="sc-card" style="border-color:' + s.border + ';background:' + s.bg + '">' +
         '<div class="sc-label" style="color:' + s.color + ';margin-bottom:.5rem">' + s.label + '</div>' +
         grid +
         '<div style="font-size:1.85rem;font-weight:900;line-height:1;margin-bottom:.4rem;color:' + s.color + '">' + pct + '%</div>' +
@@ -1406,12 +1471,10 @@
         '</div>';
     });
 
-    html2 += '</div><div style="font-size:.7rem;color:var(--text2);margin-top:.75rem;line-height:1.6;border-top:1px solid rgba(255,255,255,.07);padding-top:.6rem">' +
-      '★ G2 關鍵觀察：杰倫 3P%（G1 66.7%→預期回歸均值 ~40%）、蔣淯安罰球執行力、班提爾禁區效率（G1 TS 39.8% 需改善）。' +
-      '國王 G1 失誤 19 次，若 G2 持續，夢想家有機會反撲。僅供參考。' +
-      '</div>';
+    htmlP += '</div><div style="font-size:.7rem;color:var(--text2);margin-top:.75rem;line-height:1.6;border-top:1px solid rgba(255,255,255,.07);padding-top:.6rem">' +
+      preview.footnote + '</div>';
 
-    card.innerHTML = html2;
+    card.innerHTML = htmlP;
   }
 
   /* ── Bar 動畫：讀取 data-w 展開 ── */
