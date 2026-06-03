@@ -962,8 +962,8 @@
     { label: 'G2', date: '5/26', home: 'f', tbd: false },
     { label: 'G3', date: '5/29', home: 'o', tbd: false },
     { label: 'G4', date: '5/31', home: 'o', tbd: false },
-    { label: 'G5', date: '6/2',  home: 'f', tbd: true },
-    { label: 'G6', date: '6/4',  home: 'o', tbd: true },
+    { label: 'G5', date: '6/2',  home: 'f', tbd: false },
+    { label: 'G6', date: '6/4',  home: 'o', tbd: false },
     { label: 'G7', date: '6/6',  home: 'f', tbd: true }
   ];
 
@@ -1468,6 +1468,48 @@
             note: '若 G3 冷手延續又守不住外線，國王 3-1 聽牌，夢想家將被逼到淘汰邊緣。' }
         ],
         footnote: '★ G4 關鍵觀察：夢想家三分回溫（G3 僅 7/34）、限制杰倫（G3 25分5記三分）與林書緯（20分7助攻）、爭取禁區得分。國王 G3 助攻 24 次傳導極順，夢想家防守輪轉是勝負關鍵。僅供參考。'
+      },
+      'G6': {
+        intro: 'G5 夢想家主場 105-69 狂勝 36 分逼出 G6，系列賽 2-3 落後。G6（6/4 新莊）夢想家客場淘汰邊緣，再輸即出局；贏則逼出 G7 回台中。依關鍵因子 + G5 數據定義三種情境。基準客場勝率 <strong style="color:var(--text)">' + Math.round(pBase * 100) + '%</strong>。',
+        scenarios: [
+          { label: '夢想家逼出 G7', prob: Math.min(0.72, pBase + 0.08), color: 'var(--accent)',
+            border: 'rgba(0,229,255,.45)', bg: 'rgba(0,229,255,.06)', bar: 'rgba(0,229,255,.85)',
+            stats: [
+              { name: 'FG%', val: '≥ 46%', dir: 1 },
+              { name: '三分%', val: '≥ 35%', dir: 1 },
+              { name: '限制王FG', val: '< 42%', dir: 1 },
+              { name: '助攻', val: '≥ 22', dir: 1 },
+              { name: '失誤', val: '≤ 15', dir: 1 },
+              { name: '抄截', val: '≥ 9', dir: 1 }
+            ],
+            ref: '延續 G5 火力（FG 50.7%/3P 15記）+ 守國王 FG 38.8%',
+            note: '延續 G5 進攻火力與防守壓迫、守住國王命中率，夢想家可在客場逼出 G7 回台中。' },
+          { label: '旗鼓相當', prob: pBase, color: 'var(--text)',
+            border: 'rgba(255,255,255,.18)', bg: 'rgba(255,255,255,.03)', bar: 'rgba(255,255,255,.5)',
+            stats: [
+              { name: 'FG%', val: '42–46%', dir: 0 },
+              { name: '三分%', val: '30–35%', dir: 0 },
+              { name: '限制王FG', val: '42–46%', dir: 0 },
+              { name: '助攻', val: '18–22', dir: 0 },
+              { name: '失誤', val: '15–18', dir: 0 },
+              { name: '抄截', val: '6–9', dir: 0 }
+            ],
+            ref: '模型基準（客場 + 系列賽落後 2-3）',
+            note: '雙方拉鋸，國王主場求封王與夢想家背水一戰對撞，勝負取決臨場執行與板凳貢獻。' },
+          { label: '國王封王 4-2', prob: Math.max(0.20, pBase - 0.12), color: 'var(--accent2)',
+            border: 'rgba(240,98,146,.4)', bg: 'rgba(240,98,146,.06)', bar: 'rgba(240,98,146,.85)',
+            stats: [
+              { name: 'FG%', val: '< 42%', dir: -1 },
+              { name: '三分%', val: '< 30%', dir: -1 },
+              { name: '限制王FG', val: '≥ 46%', dir: -1 },
+              { name: '助攻', val: '≤ 18', dir: -1 },
+              { name: '失誤', val: '≥ 18', dir: -1 },
+              { name: '抄截', val: '≤ 6', dir: -1 }
+            ],
+            ref: 'G3/G4 低效重演 + 國王主場手感回溫',
+            note: '若 G5 火力無法延續、國王主場手感回溫，國王將在新莊 4-2 封王。' }
+        ],
+        footnote: '★ G6 關鍵觀察：夢想家能否延續 G5 三分手感（15/39）與防守壓迫（逼國王 19 失誤）；國王罰球 G5 僅 10/24、命中率 38.8%，主場能否回穩。沃許本內線單點需要外線支援。僅供參考。'
       }
     };
 
