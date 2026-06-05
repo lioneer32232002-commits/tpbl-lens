@@ -1190,38 +1190,6 @@
           '<div class="pred-path-val" style="color:var(--opp-color)">' + v + '%</div></div>';
       });
       html += '</div>';
-    } else {
-      // 賽中：下一場勝/負後的條件機率
-      var nextGIdx = seriesPlayed.length;
-      var nextSched = nextGIdx < SERIES_GAMES.length ? SERIES_GAMES[nextGIdx] : null;
-      if (nextSched) {
-        var nextIsHome = nextSched.home === 'f';
-        // 下一場夢想家贏 → fSeriesW+1, oSeriesW
-        var ifFwin  = simSeries(pH, pA, SERIES_SCHEDULE.slice(nextGIdx + 1), 4 - (fSeriesW + 1), 4 - oSeriesW);
-        // 下一場夢想家輸 → fSeriesW, oSeriesW+1
-        var ifFloss = simSeries(pH, pA, SERIES_SCHEDULE.slice(nextGIdx + 1), 4 - fSeriesW, 4 - (oSeriesW + 1));
-        var nextWinPct  = Math.round(nextIsHome ? pH * 100 : pA * 100);
-        var ifFwinPct   = Math.round(ifFwin  * 100);
-        var ifFlossPct  = Math.round(ifFloss * 100);
-        var nextLabel = nextSched.label + '（' + nextSched.date + ' ' + (nextIsHome ? '夢主場 台中' : opp.short + '主 新莊') + '）';
-        html += '<div class="pred-paths">';
-        html += '<div class="pred-path-title" style="color:var(--text2);margin-bottom:.5rem">' + nextLabel + ' 條件機率</div>';
-        var conditionals = [
-          { lbl: '夢贏 ' + nextSched.label + ' → 奪冠機率', v: ifFwinPct, c: 'var(--accent)' },
-          { lbl: '夢輸 ' + nextSched.label + ' → 奪冠機率', v: ifFlossPct, c: 'var(--accent2)' }
-        ];
-        var maxCond = Math.max(ifFwinPct, ifFlossPct);
-        conditionals.forEach(function (c) {
-          var bw = maxCond > 0 ? (c.v / maxCond * 100).toFixed(1) : 0;
-          html += '<div class="pred-path-row">' +
-            '<div class="pred-path-label" style="color:' + c.c + ';min-width:9rem">' + c.lbl + '</div>' +
-            '<div class="pred-path-bar-bg"><div class="pred-path-bar-fill" data-w="' + bw + '%" style="width:0%;background:' + c.c + '"></div></div>' +
-            '<div class="pred-path-val" style="color:' + c.c + '">' + c.v + '%</div></div>';
-        });
-        html += '<div style="margin-top:.4rem;font-size:.65rem;color:var(--text2)">' +
-          nextSched.label + ' 夢想家' + (nextIsHome ? '主場' : '客場') + '勝率 ≈ ' + nextWinPct + '%（模型估算）</div>';
-        html += '</div>';
-      }
     }
 
     // ── 說明 ──
