@@ -107,12 +107,16 @@
 
   /* ① 英雄區塊 */
   function renderHero(fm, opp) {
-    document.getElementById('hero-opp-fullname').textContent = opp.name;
-    document.getElementById('hero-opp-short').textContent = opp.short;
-    document.getElementById('hero-record-o').textContent = opp.wins + ' 勝 ' + opp.losses + ' 敗';
-    var netSign = opp.netrtg >= 0 ? '+' : '';
-    document.getElementById('hero-netrtg-o').innerHTML =
-      'Net Rtg <span style="color:var(--opp-color)">' + netSign + opp.netrtg + '</span>';
+    // 對決概況區塊已移除，保留函式以免呼叫出錯
+    var el;
+    el = document.getElementById('hero-opp-fullname'); if (el) el.textContent = opp.name;
+    el = document.getElementById('hero-opp-short');    if (el) el.textContent = opp.short;
+    el = document.getElementById('hero-record-o');     if (el) el.textContent = opp.wins + ' 勝 ' + opp.losses + ' 敗';
+    el = document.getElementById('hero-netrtg-o');
+    if (el) {
+      var netSign = opp.netrtg >= 0 ? '+' : '';
+      el.innerHTML = 'Net Rtg <span style="color:var(--opp-color)">' + netSign + opp.netrtg + '</span>';
+    }
   }
 
   /* ①-b 英雄區塊得分來源 mini bars */

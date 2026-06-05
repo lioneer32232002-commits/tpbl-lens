@@ -593,21 +593,11 @@
 <main id="champ-main">
 
   <!-- ① 對決英雄區塊 -->
-  <section id="matchup-hero">
-    <h2>對決概況</h2>
-    <div id="hero-card" class="champ-hero card">
-      <div class="hero-team">
-        <div class="hero-name">福爾摩沙夢想家</div>
-        <div class="hero-short formosa">夢想家</div>
-        <div class="hero-record" id="hero-record-f">22 勝 14 敗</div>
-        <div class="hero-netrtg">Net Rtg <span style="color:var(--accent)">+4.7</span></div>
-      </div>
-      <div class="hero-team">
-        <div class="hero-name" id="hero-opp-fullname">新北國王</div>
-        <div class="hero-short opponent" id="hero-opp-short">國王</div>
-        <div class="hero-record" id="hero-record-o">19 勝 17 敗</div>
-        <div class="hero-netrtg" id="hero-netrtg-o">Net Rtg <span style="color:var(--opp-color)">-1.4</span></div>
-      </div>
+  <!-- 勝負預測（置頂） -->
+  <section id="prediction">
+    <h2>冠軍賽奪冠機率預測（7 戰 4 勝）</h2>
+    <div class="card" id="pred-card">
+      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
     </div>
   </section>
 
@@ -664,14 +654,6 @@
         <p style="font-size:.72rem;color:var(--text2);margin:0 0 .65rem;opacity:.7">PTS ÷ 回合數，色深代表效率高</p>
         <div id="champ-ppp-compare"></div>
       </div>
-    </div>
-  </section>
-
-  <!-- 勝負預測 -->
-  <section id="prediction">
-    <h2>系列賽奪冠機率預測（7 戰 4 勝）</h2>
-    <div class="card" id="pred-card">
-      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
     </div>
   </section>
 
