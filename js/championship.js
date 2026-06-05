@@ -1065,7 +1065,7 @@
       }
       var subLabel;
       if (played) {
-        subLabel = played.won ? '夢' : 'K';
+        subLabel = played.won ? 'D' : 'K';
       } else if (g.tbd) {
         subLabel = '待定';
       } else {
@@ -1199,7 +1199,7 @@
     // ── 說明 ──
     var netSrcLabel = hasChamp ? '冠軍戰至今 NetRtg 差距 ' : 'Net Rating 差距 ';
     var formNote = (hasChamp && seriesPlayed.length > 0)
-      ? '，系列賽 ' + fSeriesW + '-' + oSeriesW + '（例行賽 H2H ' + wins + '勝' + (h2h.length - wins) + '敗）'
+      ? '，冠軍賽 ' + fSeriesW + '-' + oSeriesW + '（例行賽 H2H ' + wins + '勝' + (h2h.length - wins) + '敗）'
       : '，H2H ' + wins + '勝' + (h2h.length - wins) + '敗';
     html +=
       '<div class="pred-note" style="margin-bottom:.85rem">' +
@@ -1214,16 +1214,26 @@
 
     var fHomeWR  = fm.home.win_rate  !== undefined ? fm.home.win_rate  : fm.home.wins  / (fm.home.wins  + fm.home.losses  || 1);
     var oHomeWR  = opp.home.win_rate !== undefined ? opp.home.win_rate : opp.home.wins / (opp.home.wins + opp.home.losses || 1);
-    var pfx = hasChamp ? '冠軍戰 ' : 'H2H ';
-    var recFactor = (hasChamp && seriesPlayed.length > 0)
-      ? { name: '系列賽戰績', fVal: fSeriesW, oVal: oSeriesW, higherBetter: true, fmt: function (v) { return v + 'W'; } }
-      : { name: 'H2H 戰績',   fVal: wins, oVal: h2h.length - wins, higherBetter: true, fmt: function (v) { return v + 'W'; } };
+    var pfx = hasChamp ? '冠軍賽 ' : 'H2H ';
+    // 從系列賽場次計算三分命中數與失誤數均值
+    var f3pmSum = 0, o3pmSum = 0, ftovSum = 0, otovSum = 0;
+    seriesPlayed.forEach(function (g) {
+      f3pmSum += (g.formosa_stats && g.formosa_stats['3pm']) || 0;
+      o3pmSum += (g.opp_stats    && g.opp_stats['3pm'])    || 0;
+      ftovSum += (g.formosa_stats && g.formosa_stats.tov)  || 0;
+      otovSum += (g.opp_stats    && g.opp_stats.tov)      || 0;
+    });
+    var gpN = seriesPlayed.length || 1;
+    var f3pmAvg = f3pmSum / gpN, o3pmAvg = o3pmSum / gpN;
+    var ftovAvg = ftovSum / gpN, otovAvg = otovSum / gpN;
+    var fmt1 = function (v) { return v.toFixed(1); };
     var factors = [
-      { name: pfx + 'NetRtg',  fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
-      { name: '進攻效率 ORtg',  fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
-      { name: '防守效率 DRtg',  fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
-      { name: pfx + '主場勝率', fVal: fHomeWR,   oVal: oHomeWR,    higherBetter: true,  fmt: pct },
-      recFactor
+      { name: pfx + 'NetRtg',   fVal: fm.netrtg, oVal: opp.netrtg, higherBetter: true,  fmt: function (v) { return (v >= 0 ? '+' : '') + v; } },
+      { name: '進攻效率 ORtg',   fVal: fm.ortg,   oVal: opp.ortg,   higherBetter: true,  fmt: function (v) { return v; } },
+      { name: '防守效率 DRtg',   fVal: fm.drtg,   oVal: opp.drtg,   higherBetter: false, fmt: function (v) { return v; } },
+      { name: pfx + '主場勝率',  fVal: fHomeWR,   oVal: oHomeWR,    higherBetter: true,  fmt: pct },
+      { name: '場均三分命中', fVal: f3pmAvg, oVal: o3pmAvg, higherBetter: true,  fmt: fmt1 },
+      { name: '場均失誤',     fVal: ftovAvg, oVal: otovAvg, higherBetter: false, fmt: fmt1 }
     ];
     var fcont = document.getElementById('pred-factors');
     factors.forEach(function (f) {
