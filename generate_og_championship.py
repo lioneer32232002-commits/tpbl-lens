@@ -1,6 +1,6 @@
 # generate_og_championship.py — OG image for championship page
 # Requires: pip install Pillow
-import os
+import json, os, random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H = 1200, 630
@@ -23,15 +23,102 @@ CYAN_FILL = _blend(CYAN, 50)
 GOLD_FILL = _blend(GOLD, 50)
 TBD_FILL  = _blend(WHITE, 12)
 
-SERIES_GAMES = [
-    {'label': 'G1', 'date': '5/24', 'home': 'f', 'tbd': False},
-    {'label': 'G2', 'date': '5/26', 'home': 'f', 'tbd': False},
-    {'label': 'G3', 'date': '5/29', 'home': 'o', 'tbd': False},
-    {'label': 'G4', 'date': '5/31', 'home': 'o', 'tbd': False},
-    {'label': 'G5', 'date': '待定',  'home': 'f', 'tbd': True},
-    {'label': 'G6', 'date': '待定',  'home': 'o', 'tbd': True},
-    {'label': 'G7', 'date': '待定',  'home': 'f', 'tbd': True},
+# ── 固定賽程框架（主場標記）──
+_SCHED_TEMPLATE = [
+    {'label': 'G1', 'date': '5/24', 'home': 'f'},
+    {'label': 'G2', 'date': '5/26', 'home': 'f'},
+    {'label': 'G3', 'date': '5/29', 'home': 'o'},
+    {'label': 'G4', 'date': '5/31', 'home': 'o'},
+    {'label': 'G5', 'date': '6/2',  'home': 'f'},
+    {'label': 'G6', 'date': '6/4',  'home': 'o'},
+    {'label': 'G7', 'date': '6/6',  'home': 'f'},
 ]
+
+# ── 讀取 championship_2526.json 動態資料 ──
+def _load_series_data(base_dir):
+    path = os.path.join(base_dir, 'data', 'championship_2526.json')
+    try:
+        with open(path, encoding='utf-8') as f:
+            d = json.load(f)
+    except Exception:
+        return [], None, None
+    opp_key = d.get('active_opponent', 'kings')
+    played  = [g for g in (d.get('championship_series') or [])
+               if g.get('opp_key') == opp_key]
+    fm_champ  = d.get('formosa_champ')
+    opp_champ = d.get(opp_key + '_champ')
+    fm_reg    = d.get('formosa', {})
+    opp_reg   = d.get(opp_key, {})
+    return played, (fm_champ or fm_reg), (opp_champ or opp_reg)
+
+# ── 相同機率模型（與 championship.js 一致）──
+_SCHED_HOME = [g['home'] for g in _SCHED_TEMPLATE]  # ['f','f','o','o','f','o','f']
+
+def _sim_series(p_home, p_away, sched, f_need, k_need, n=300_000):
+    rng = random.Random(42)
+    f_wins = 0
+    for _ in range(n):
+        fn, kn = f_need, k_need
+        for side in sched:
+            p = p_home if side == 'f' else p_away
+            if rng.random() < p:
+                fn -= 1
+            else:
+                kn -= 1
+            if fn == 0:
+                f_wins += 1
+                break
+            if kn == 0:
+                break
+    return f_wins / n
+
+def _calc_prob(played, fm, opp):
+    h2h_key   = 'h2h_kings'  # always kings for now
+    h2h       = []            # not needed for accuracy
+    n_played  = len(played)
+    f_w = sum(1 for g in played if g.get('won'))
+    k_w = n_played - f_w
+    # formWinRate
+    if n_played > 0:
+        form_wr = f_w / n_played
+    else:
+        form_wr = 0.5  # fallback
+    net_diff  = (fm.get('netrtg') or 0) - (opp.get('netrtg') or 0)
+    net_prob  = min(0.82, max(0.18, 0.5 + net_diff * 0.025))
+    game_prob = min(0.78, max(0.22, net_prob * 0.6 + form_wr * 0.4))
+    HOME_BOOST = 0.10
+    p_home = min(0.82, game_prob + HOME_BOOST)
+    p_away = max(0.18, game_prob - HOME_BOOST)
+    remain_sched = _SCHED_HOME[n_played:]
+    f_need = 4 - f_w
+    k_need = 4 - k_w
+    return _sim_series(p_home, p_away, remain_sched, f_need, k_need)
+
+def _build_series_games(played):
+    """合併固定框架與已打結果，回傳 display 用 list。"""
+    played_map = {g['game']: g for g in played}
+    games = []
+    for t in _SCHED_TEMPLATE:
+        lbl = t['label']
+        p   = played_map.get(lbl)
+        if p:
+            games.append({
+                'label': lbl,
+                'date':  str(p['date'])[4:6].lstrip('0') + '/' + str(p['date'])[6:8].lstrip('0'),
+                'home':  t['home'],
+                'tbd':   False,
+                'won':   p.get('won'),          # True=夢贏 False=王贏
+                'done':  True,
+            })
+        else:
+            games.append({
+                'label': lbl,
+                'date':  t['date'],
+                'home':  t['home'],
+                'tbd':   True,
+                'done':  False,
+            })
+    return games
 
 
 def _find_font(bold=False):
@@ -71,6 +158,13 @@ def generate_og_championship(base_dir=None):
     if base_dir is None:
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
+    # ── 動態資料 ──────────────────────────────────────────────────────
+    played, fm, opp = _load_series_data(base_dir)
+    series_games    = _build_series_games(played)
+    f_prob          = _calc_prob(played, fm or {}, opp or {})
+    f_pct_int       = round(f_prob * 100)
+    o_pct_int       = 100 - f_pct_int
+
     fp_b = _find_font(bold=True)
     fp_r = _find_font(bold=False)
 
@@ -81,13 +175,14 @@ def generate_og_championship(base_dir=None):
     f_sht  = _font(fp_b, 30)
     f_ful  = _font(fp_r, 17)
     f_pct  = _font(fp_b, 86)
+    f_sub  = _font(fp_b, 13)
 
     img  = Image.new('RGB', (W, H), BG)
     draw = ImageDraw.Draw(img)
 
     # ── Header bar ──────────────────────────────────────────────────
     draw.rectangle([0, 0, W, 52], fill=HEADER)
-    draw.text((W // 2, 14), 'TPBL 2025–26  冠軍戰', fill=TEXT1, font=f_hdr, anchor='mt')
+    draw.text((W // 2, 14), 'TPBL 2025–26  冠軍賽', fill=TEXT1, font=f_hdr, anchor='mt')
     draw.text((W - 24,  38), 'tpbl-lens.pages.dev', fill=TEXT2, font=f_brd, anchor='rs')
 
     # Thin separator line
@@ -96,12 +191,12 @@ def generate_og_championship(base_dir=None):
     # ── Game dots ───────────────────────────────────────────────────
     DOT_D   = 62
     DOT_GAP = 14
-    n       = len(SERIES_GAMES)
+    n       = len(series_games)
     total_w = n * DOT_D + (n - 1) * DOT_GAP
     dot_x0  = (W - total_w) // 2
     dot_cy  = 172
 
-    for i, g in enumerate(SERIES_GAMES):
+    for i, g in enumerate(series_games):
         cx   = dot_x0 + i * (DOT_D + DOT_GAP) + DOT_D // 2
         bbox = [cx - DOT_D // 2, dot_cy - DOT_D // 2,
                 cx + DOT_D // 2, dot_cy + DOT_D // 2]
@@ -110,27 +205,37 @@ def generate_og_championship(base_dir=None):
             draw.ellipse(bbox, fill=TBD_FILL)
             _dashed_ellipse(draw, bbox, TEXT2, width=1)
             lbl_color = TEXT2
+            sub_text  = g['date']
         elif g['home'] == 'f':
             draw.ellipse(bbox, fill=CYAN_FILL, outline=CYAN, width=2)
             lbl_color = CYAN
+            sub_text  = 'D' if g.get('won') else 'K'
         else:
             draw.ellipse(bbox, fill=GOLD_FILL, outline=GOLD, width=2)
             lbl_color = GOLD
+            sub_text  = 'D' if g.get('won') else 'K'
 
         draw.text((cx, dot_cy - 12), g['label'], fill=lbl_color, font=f_dlbl, anchor='mt')
-        draw.text((cx, dot_cy + 6),  g['date'],  fill=TEXT2,     font=f_ddt,  anchor='mt')
+        draw.text((cx, dot_cy + 6),  sub_text,   fill=TEXT2,     font=f_ddt,  anchor='mt')
 
-    # ── Bar geometry (defines left/right team centers) ───────────────
+    # ── Series score subtitle (if series has started) ────────────────
+    if played:
+        f_w = sum(1 for g in played if g.get('won'))
+        k_w = len(played) - f_w
+        score_txt = f'夢想家 {f_w}  –  {k_w} 國王'
+        draw.text((W // 2, dot_cy + DOT_D // 2 + 8), score_txt,
+                  fill=TEXT2, font=f_sub, anchor='mt')
+
+    # ── Bar geometry ────────────────────────────────────────────────
     BAR_X  = 80
     BAR_W  = W - BAR_X * 2   # 1040
     BAR_H  = 30
-    BAR_R  = BAR_H // 2      # 15
-    F_PROB = 0.30
-    split  = BAR_X + int(BAR_W * F_PROB)  # 392
+    BAR_R  = BAR_H // 2
+    split  = BAR_X + int(BAR_W * f_prob)
     BAR_Y  = 468
 
-    F_CX = 300   # visually balanced left-team center
-    O_CX = 900   # visually balanced right-team center
+    F_CX = 300
+    O_CX = 900
 
     # ── Team short names ─────────────────────────────────────────────
     SHT_Y = 248
@@ -143,20 +248,18 @@ def generate_og_championship(base_dir=None):
 
     # ── Percentage numbers ───────────────────────────────────────────
     PCT_Y = 322
-    draw.text((F_CX, PCT_Y), '30%', fill=CYAN, font=f_pct, anchor='mt')
-    draw.text((O_CX, PCT_Y), '70%', fill=GOLD, font=f_pct, anchor='mt')
+    draw.text((F_CX, PCT_Y), f'{f_pct_int}%', fill=CYAN, font=f_pct, anchor='mt')
+    draw.text((O_CX, PCT_Y), f'{o_pct_int}%', fill=GOLD, font=f_pct, anchor='mt')
 
     # ── Opposition bar ───────────────────────────────────────────────
-    # Full bar in gold (gives rounded right end)
     draw.rounded_rectangle(
         [BAR_X, BAR_Y, BAR_X + BAR_W, BAR_Y + BAR_H],
         radius=BAR_R, fill=GOLD,
     )
-    # Overwrite left portion with cyan (left rounded end + body)
     draw.ellipse([BAR_X, BAR_Y, BAR_X + BAR_H, BAR_Y + BAR_H], fill=CYAN)
     draw.rectangle([BAR_X + BAR_R, BAR_Y, split, BAR_Y + BAR_H], fill=CYAN)
 
-    # Glow divider at split point
+    # Glow divider
     glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     gd   = ImageDraw.Draw(glow)
     gd.rectangle([split - 3, BAR_Y - 8, split + 3, BAR_Y + BAR_H + 8],
@@ -164,7 +267,6 @@ def generate_og_championship(base_dir=None):
     glow = glow.filter(ImageFilter.GaussianBlur(radius=10))
     img_rgba = img.convert('RGBA')
     img_rgba = Image.alpha_composite(img_rgba, glow)
-    # Sharp white line on top
     sharp = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     sd    = ImageDraw.Draw(sharp)
     sd.rectangle([split - 1, BAR_Y - 8, split + 1, BAR_Y + BAR_H + 8],
