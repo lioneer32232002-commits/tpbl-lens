@@ -5,22 +5,42 @@
 
 ---
 
-## 部署流程（一條龍，不可跳步）
+## 賽季階段 Playbook（換季 / 換階段）
 
-修改任何檔案後，必須用以下**單一指令**完成：
+完整 SOP 見 **[`docs/SEASON_WORKFLOW.md`](docs/SEASON_WORKFLOW.md)**。使用者用一句話觸發，依該檔對應 Playbook 執行：
+
+| 使用者說 | 動作 |
+|----------|------|
+| 「建立新賽季」「換季」 | Playbook A — 改年度碼（config + 約 20 處硬寫字串/檔名）、重建資料 |
+| 「進季後賽」 | Playbook B — 目前無專屬頁面，先與使用者確認要呈現什麼 |
+| 「進冠軍賽」 | Playbook C-1 — 建立 `championship_25xx.json` 賽前資料、調賽程日期 |
+| 「GN 打完了 / 更新冠軍頁」 | Playbook C-2 — 抓 game 檔、追加 `championship_series`、build、部署 |
+
+冠軍頁 `championship.js` 依系列賽進度（空 / 進行中 / 任一方≥4勝）**自動切換**賽前預測 → 賽中前瞻 → 冠軍橫幅＋賽後重點，多數情況不需改 JS。
+
+---
+
+## 部署流程
+
+本機工作目錄為 `C:\Users\User\OneDrive\02_創作\14_AI TEST\tpbl_lens`，目前多直接在 `master` 開發。改檔後：
 
 ```bash
-cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens" && git merge claude/magical-snyder-a11061 && python build.py && git add dist/ && (git diff --cached --quiet || git commit -m "build: update dist") && git push origin master && npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=auto-deploy
+python build.py
+git add data/ dist/ <改到的原始檔>
+git commit -m "..."
+git push origin master
+npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=deploy --commit-dirty=true
 ```
 
-**順序說明**：
-1. `git merge` — 合併 worktree 變更到 master
-2. `python build.py` — 重新產生 dist/
-3. `git add dist/ && git commit` — **必須把新 dist/ commit 進 git**，否則 GitHub 推上去的是舊版
-4. `git push` — 推到 GitHub（含正確的 dist/）
-5. `wrangler deploy` — 直接部署 dist/ 到 Cloudflare
+**重點**：
+1. `python build.py` — 重新產生 dist/（內部會跑 compute_champ_todate 與 OG 產生）
+2. `git add dist/ && git commit` — **必須把新 dist/ commit 進 git**，否則 GitHub 推上去的是舊版
+3. `git push` — 推到 GitHub（GitHub→Cloudflare 整合會自動部署）
+4. `wrangler deploy` — 要「立即生效」時的直傳（可選）
 
-> ⚠️ 步驟 3 不可省略：dist/ 被 git 追蹤，GitHub 整合會用 repo 內的 dist/ 部署，跳過這步就會看到舊版本。
+> ⚠️ 步驟 2 不可省略：dist/ 被 git 追蹤，GitHub 整合會用 repo 內的 dist/ 部署。
+> 註：若是在 worktree 分支（`.claude/worktrees/<branch>`）開發，先回 master `git merge <branch>` 再跑上面流程；直接在 master 改則略過 merge。
+> 部署屬對外動作，推送前先向使用者確認。
 
 ---
 
@@ -31,9 +51,11 @@ cd "C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens" && git merge claude/
 | 冠軍頁 HTML | `pages/championship.html` |
 | 冠軍頁 JS | `js/championship.js` |
 | 冠軍頁資料 | `data/championship_2526.json` |
-| 球隊賽季資料 | `data/team_*.json` |
-| 比賽原始資料 | `data/games/{game_id}.txt`（JSON 格式） |
+| 球隊賽季資料 | `data/{slug}_2526.json`（slug：formosa/lions/aquas/leopards/braves/kings/warriors） |
+| 聯盟資料 | `data/league_2526.json` |
+| 比賽原始資料 | `data/games/{game_id}.txt`（JSON 格式，gitignored） |
 | 部署目標 | `dist/`（由 build.py 產生，不要直接手動修改） |
+| 換季 / 換階段 SOP | `docs/SEASON_WORKFLOW.md` |
 
 ---
 
