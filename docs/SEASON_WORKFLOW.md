@@ -53,6 +53,9 @@ npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=<msg> -
 
 ## Playbook A：建立新賽季
 
+> **🏗️ 重構決策關卡（換季時先評估，再決定要不要照舊流程做）**
+> 換季是動架構的天然時機。若這季打算加「歷史賽季並存」或大批新圖表/功能，**先評估是否趁此重構成 TS + 框架（Vite + React/Svelte/Vue）**，而不是繼續在 `championship.js`(~1600行)、`team.js`(~2600行) 這種 `innerHTML` 字串拼接的單檔巨獸上疊。詳見下方[架構演進](#架構演進--技術債換季時評估)。若這季只是延續同樣呈現、純換年度，照本 Playbook 做即可。
+
 新例行賽開打時。核心：把所有「綁賽季」的設定從舊年度碼改到新年度碼（例 `2025-26`→`2026-27`、檔名 `2526`→`2627`）。
 
 ### A1. 核心設定 `config.py`
@@ -148,6 +151,22 @@ OG 圖 `generate_og_championship.py`：未分勝負畫機率長條；分勝負�
 
 ### C3. 系列賽結束（自動）
 任一方達 4 勝後，C2 的最後一次 build 就會讓頁面切到冠軍橫幅 + 賽後重點，OG 也切成冠軍慶祝版。通常**不需額外動作**；若要微調文案，看 `renderChampionBanner` / `renderPostSeries`。
+
+---
+
+## 架構演進 / 技術債（換季時評估）
+
+**定位**：TPBL-Lens 是「全聯盟分析平台」，注定持續長大（更多圖表、歷史賽季）。現行純 vanilla JS 目前可行，但有單檔膨脹風險。
+
+**現況與風險**
+- `js/championship.js`(~1600 行)、`js/team.js`(~2600 行) 都用 `innerHTML` 字串拼接整頁，是單檔巨獸，難維護、難測試（同類專案 lioneers-web 已踩過此坑）。
+- 換季有約 20 處硬寫年度碼（見 Playbook A）。**多賽季並存**（賽季切換、路由、資料版本）在純 JS + 寫死年度下會很痛——這是最該觸發重構的功能。
+- 反面：目前「無 node build、`python build.py` 出靜態檔」的簡單性是資產，部署零摩擦。
+
+**建議**
+- **觸發時機**：下次大改版，尤其是要做「歷史賽季」時。**不要賽季中為重構而重構**（拿風險換沒有立即收益）。把它當成有預算、有範圍的計畫項目，請 Claude Code 執行。
+- **目標**：TS + 框架（Vite + React/Svelte/Vue），型別安全 + 元件化（chart、heatmap、scenario card 抽成可複用元件）；年度碼由單一設定衍生，支援多季路由。
+- **低風險踏腳石**（不一定要一次大爆改，可漸進）：①單檔拆成 ES modules ②加 JSDoc 型別檢查（不改語言先抓型別）③抽共用 chart/component 層 ④build.py 從 `config.SEASON` 注入年度、移除硬寫字串。
 
 ---
 
