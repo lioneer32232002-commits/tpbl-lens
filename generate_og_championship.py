@@ -159,6 +159,29 @@ def _dashed_ellipse(draw, bbox, color, width=1, segments=16):
         draw.arc(bbox, start=start, end=end, fill=color, width=width)
 
 
+def _draw_crown(draw, cx, cy, w, color):
+    """簡易皇冠（純色多邊形，避免 emoji 在 PIL 字型缺字）。"""
+    h = w * 0.62
+    left, right = cx - w / 2, cx + w / 2
+    top, bot = cy - h / 2, cy + h / 2
+    band_h = h * 0.26
+    q1, q3 = left + w / 4, right - w / 4
+    pts = [
+        (left, bot - band_h),
+        (left, top + h * 0.15),
+        (q1, top + h * 0.58),
+        (cx, top),
+        (q3, top + h * 0.58),
+        (right, top + h * 0.15),
+        (right, bot - band_h),
+    ]
+    draw.polygon(pts, fill=color)
+    draw.rectangle([int(left), int(bot - band_h), int(right), int(bot)], fill=color)
+    r = max(3, w / 22)
+    for (x, y) in [(left, top + h * 0.15), (cx, top), (right, top + h * 0.15)]:
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=color)
+
+
 def generate_og_championship(base_dir=None):
     if base_dir is None:
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -169,6 +192,10 @@ def generate_og_championship(base_dir=None):
     f_prob          = _calc_prob(played, fm or {}, opp or {})
     f_pct_int       = round(f_prob * 100)
     o_pct_int       = 100 - f_pct_int
+
+    f_w_done = sum(1 for g in played if g.get('won'))
+    k_w_done = len(played) - f_w_done
+    clinched = f_w_done >= 4 or k_w_done >= 4
 
     fp_b = _find_font(bold=True)
     fp_r = _find_font(bold=False)
@@ -223,62 +250,80 @@ def generate_og_championship(base_dir=None):
         draw.text((cx, dot_cy - 12), g['label'], fill=lbl_color, font=f_dlbl, anchor='mt')
         draw.text((cx, dot_cy + 6),  sub_text,   fill=TEXT2,     font=f_ddt,  anchor='mt')
 
-    # ── Series score subtitle (if series has started) ────────────────
-    if played:
+    # ── Series score subtitle (進行中才顯示；冠軍版面有自己的系列賽列) ──
+    if played and not clinched:
         f_w = sum(1 for g in played if g.get('won'))
         k_w = len(played) - f_w
         score_txt = f'夢想家 {f_w}  –  {k_w} 國王'
         draw.text((W // 2, dot_cy + DOT_D // 2 + 8), score_txt,
                   fill=TEXT2, font=f_sub, anchor='mt')
 
-    # ── Bar geometry ────────────────────────────────────────────────
-    BAR_X  = 80
-    BAR_W  = W - BAR_X * 2   # 1040
-    BAR_H  = 30
-    BAR_R  = BAR_H // 2
-    split  = BAR_X + int(BAR_W * f_prob)
-    BAR_Y  = 468
+    if clinched:
+        # ── 冠軍慶祝版面 ──────────────────────────────────────────────
+        champ_fm    = f_w_done >= 4
+        champ_full  = '福爾摩沙夢想家' if champ_fm else '新北國王'
+        champ_color = CYAN if champ_fm else GOLD
+        beaten      = '國王' if champ_fm else '夢想家'
+        hi, lo      = max(f_w_done, k_w_done), min(f_w_done, k_w_done)
 
-    F_CX = 300
-    O_CX = 900
+        f_champ_name = _font(fp_b, 66)
+        f_champ_sub  = _font(fp_b, 30)
+        f_champ_ser  = _font(fp_r, 24)
 
-    # ── Team short names ─────────────────────────────────────────────
-    SHT_Y = 248
-    FUL_Y = 288
+        _draw_crown(draw, W // 2, 258, 116, GOLD)
+        draw.text((W // 2, 300), champ_full, fill=champ_color, font=f_champ_name, anchor='mt')
+        draw.text((W // 2, 392), '2025–26 TPBL 年度總冠軍', fill=GOLD, font=f_champ_sub, anchor='mt')
+        draw.text((W // 2, 448), f'系列賽 {hi} – {lo} 擊敗 {beaten}',
+                  fill=TEXT2, font=f_champ_ser, anchor='mt')
+    else:
+        # ── Bar geometry ────────────────────────────────────────────────
+        BAR_X  = 80
+        BAR_W  = W - BAR_X * 2   # 1040
+        BAR_H  = 30
+        BAR_R  = BAR_H // 2
+        split  = BAR_X + int(BAR_W * f_prob)
+        BAR_Y  = 468
 
-    draw.text((F_CX, SHT_Y), '夢想家',        fill=CYAN,  font=f_sht, anchor='mt')
-    draw.text((F_CX, FUL_Y), '福爾摩沙夢想家', fill=TEXT2, font=f_ful,  anchor='mt')
-    draw.text((O_CX, SHT_Y), '國王',          fill=GOLD,  font=f_sht, anchor='mt')
-    draw.text((O_CX, FUL_Y), '新北國王',      fill=TEXT2, font=f_ful,  anchor='mt')
+        F_CX = 300
+        O_CX = 900
 
-    # ── Percentage numbers ───────────────────────────────────────────
-    PCT_Y = 322
-    draw.text((F_CX, PCT_Y), f'{f_pct_int}%', fill=CYAN, font=f_pct, anchor='mt')
-    draw.text((O_CX, PCT_Y), f'{o_pct_int}%', fill=GOLD, font=f_pct, anchor='mt')
+        # ── Team short names ─────────────────────────────────────────────
+        SHT_Y = 248
+        FUL_Y = 288
 
-    # ── Opposition bar ───────────────────────────────────────────────
-    draw.rounded_rectangle(
-        [BAR_X, BAR_Y, BAR_X + BAR_W, BAR_Y + BAR_H],
-        radius=BAR_R, fill=GOLD,
-    )
-    draw.ellipse([BAR_X, BAR_Y, BAR_X + BAR_H, BAR_Y + BAR_H], fill=CYAN)
-    draw.rectangle([BAR_X + BAR_R, BAR_Y, split, BAR_Y + BAR_H], fill=CYAN)
+        draw.text((F_CX, SHT_Y), '夢想家',        fill=CYAN,  font=f_sht, anchor='mt')
+        draw.text((F_CX, FUL_Y), '福爾摩沙夢想家', fill=TEXT2, font=f_ful,  anchor='mt')
+        draw.text((O_CX, SHT_Y), '國王',          fill=GOLD,  font=f_sht, anchor='mt')
+        draw.text((O_CX, FUL_Y), '新北國王',      fill=TEXT2, font=f_ful,  anchor='mt')
 
-    # Glow divider
-    glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-    gd   = ImageDraw.Draw(glow)
-    gd.rectangle([split - 3, BAR_Y - 8, split + 3, BAR_Y + BAR_H + 8],
-                 fill=(255, 255, 255, 180))
-    glow = glow.filter(ImageFilter.GaussianBlur(radius=10))
-    img_rgba = img.convert('RGBA')
-    img_rgba = Image.alpha_composite(img_rgba, glow)
-    sharp = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-    sd    = ImageDraw.Draw(sharp)
-    sd.rectangle([split - 1, BAR_Y - 8, split + 1, BAR_Y + BAR_H + 8],
-                 fill=(255, 255, 255, 230))
-    img_rgba = Image.alpha_composite(img_rgba, sharp)
-    img  = img_rgba.convert('RGB')
-    draw = ImageDraw.Draw(img)
+        # ── Percentage numbers ───────────────────────────────────────────
+        PCT_Y = 322
+        draw.text((F_CX, PCT_Y), f'{f_pct_int}%', fill=CYAN, font=f_pct, anchor='mt')
+        draw.text((O_CX, PCT_Y), f'{o_pct_int}%', fill=GOLD, font=f_pct, anchor='mt')
+
+        # ── Opposition bar ───────────────────────────────────────────────
+        draw.rounded_rectangle(
+            [BAR_X, BAR_Y, BAR_X + BAR_W, BAR_Y + BAR_H],
+            radius=BAR_R, fill=GOLD,
+        )
+        draw.ellipse([BAR_X, BAR_Y, BAR_X + BAR_H, BAR_Y + BAR_H], fill=CYAN)
+        draw.rectangle([BAR_X + BAR_R, BAR_Y, split, BAR_Y + BAR_H], fill=CYAN)
+
+        # Glow divider
+        glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        gd   = ImageDraw.Draw(glow)
+        gd.rectangle([split - 3, BAR_Y - 8, split + 3, BAR_Y + BAR_H + 8],
+                     fill=(255, 255, 255, 180))
+        glow = glow.filter(ImageFilter.GaussianBlur(radius=10))
+        img_rgba = img.convert('RGBA')
+        img_rgba = Image.alpha_composite(img_rgba, glow)
+        sharp = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        sd    = ImageDraw.Draw(sharp)
+        sd.rectangle([split - 1, BAR_Y - 8, split + 1, BAR_Y + BAR_H + 8],
+                     fill=(255, 255, 255, 230))
+        img_rgba = Image.alpha_composite(img_rgba, sharp)
+        img  = img_rgba.convert('RGB')
+        draw = ImageDraw.Draw(img)
 
     # ── Bottom branding ──────────────────────────────────────────────
     draw.text((W // 2, 592), 'tpbl-lens.pages.dev', fill=TEXT2, font=f_brd, anchor='mt')

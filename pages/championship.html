@@ -394,6 +394,26 @@
     .player-panel h3.formosa { color: var(--accent); }
     .player-panel h3.opponent { color: var(--opp-color, #ffd700); }
 
+    /* 冠軍橫幅（系列賽結束後置頂） */
+    .champ-banner { text-align: center; padding: .5rem 0 .25rem; }
+    .champ-crown { font-size: 3.4rem; line-height: 1; margin-bottom: .35rem; filter: drop-shadow(0 0 12px rgba(255,215,0,.35)); }
+    .champ-title { font-size: 2rem; font-weight: 900; line-height: 1.15; margin-bottom: .2rem; }
+    .champ-sub { font-size: .92rem; color: var(--text2); letter-spacing: .1em; margin-bottom: .6rem; }
+    .champ-series { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 1.1rem; }
+    .champ-banner .pred-schedule { margin-bottom: .25rem; }
+    @media (max-width: 600px) { .champ-title { font-size: 1.55rem; } .champ-crown { font-size: 2.8rem; } }
+
+    /* 賽後重點：轉折故事 + 每場戰報 */
+    .ps-intro { font-size: .9rem; line-height: 1.8; color: var(--text); margin-bottom: 1.1rem; }
+    .ps-report-title { font-size: .8rem; font-weight: 700; color: var(--text2); letter-spacing: .04em; margin-bottom: .35rem; border-top: 1px solid rgba(255,255,255,.07); padding-top: .75rem; }
+    .ps-game { padding: .55rem 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .ps-game:last-child { border-bottom: none; }
+    .ps-game-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; margin-bottom: .25rem; }
+    .ps-g-label { font-weight: 900; font-size: .95rem; color: var(--text); min-width: 1.8rem; }
+    .ps-g-meta { font-size: .72rem; color: var(--text2); }
+    .ps-g-score { font-size: .85rem; color: var(--text2); }
+    .ps-g-note { font-size: .76rem; color: var(--text2); line-height: 1.6; }
+
     /* 勝負預測 */
     .pred-container { display: flex; flex-direction: column; gap: .85rem; }
     .pred-bar-wrap { display: flex; align-items: center; gap: .75rem; }
@@ -597,8 +617,14 @@
   <section id="prediction">
     <h2>冠軍賽奪冠機率預測（7 戰 4 勝）</h2>
     <div class="card" id="pred-card">
-      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
+      <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子；
+           系列賽分出勝負後改為冠軍橫幅 -->
     </div>
+  </section>
+
+  <!-- 賽後重點（系列賽結束後由 JS 顯示；進行中隱藏） -->
+  <section id="post-series" style="display:none">
+    <!-- 由 JS 填入：標題、轉折故事、每場戰報 -->
   </section>
 
   <!-- ═══ 上半部：冠軍戰數據分析（常時顯示）═══ -->

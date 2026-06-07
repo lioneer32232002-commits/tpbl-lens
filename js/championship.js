@@ -66,6 +66,7 @@
     renderChampTodate(oppKey, opp);
     renderH2H(h2h, opp);
     renderPrediction(effF, effO, h2h, hasChamp);
+    renderPostSeries(opp);
     renderEfficiency(effF, effO);
     renderScoring(effF, effO);
     renderHomeAway(effF, effO);
@@ -1003,6 +1004,62 @@
     return { f: f, k: k };
   }
 
+  /* 賽程圓點 HTML（置頂預測與冠軍橫幅共用） */
+  function buildScheduleDots(seriesPlayed, opp) {
+    var html = '<div class="pred-schedule">';
+    SERIES_GAMES.forEach(function (g, idx) {
+      var played = idx < seriesPlayed.length ? seriesPlayed[idx] : null;
+      var cls, tooltip, subLabel;
+      var homeTag = g.home === 'f' ? '夢主場' : opp.short + '主';
+      if (played) {
+        cls = played.won ? 'result-f' : 'result-o';
+        tooltip = g.label + ' ' + g.date + ' ' + (played.won ? '夢 ' + played.formosa_score + '-' + played.opp_score + ' 王' : '王 ' + played.opp_score + '-' + played.formosa_score + ' 夢') + '（' + (played.note || '') + '）';
+        subLabel = played.won ? 'D' : 'K';
+      } else if (g.tbd) {
+        cls = 'tbd';
+        tooltip = g.label + ' 如需要';
+        subLabel = '待定';
+      } else {
+        cls = g.home === 'f' ? 'home-f' : 'home-o';
+        tooltip = g.label + ' ' + g.date + ' ' + homeTag;
+        subLabel = g.date;
+      }
+      html +=
+        '<div class="pred-game-dot ' + cls + '" title="' + tooltip + '">' +
+          '<span>' + g.label + '</span>' +
+          '<span style="font-size:.5rem;opacity:.8">' + subLabel + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* 冠軍橫幅（系列賽分出勝負後取代預測） */
+  function renderChampionBanner(card, opp, seriesPlayed, fSeriesW, oSeriesW) {
+    var champFm   = fSeriesW >= 4;
+    var champName = champFm ? '福爾摩沙夢想家' : opp.name;
+    var champClr  = champFm ? 'var(--accent)' : 'var(--opp-color)';
+    var beaten    = champFm ? opp.short : '夢想家';
+    var hi = Math.max(fSeriesW, oSeriesW), lo = Math.min(fSeriesW, oSeriesW);
+
+    var secH2 = document.querySelector('#prediction h2');
+    if (secH2) { secH2.textContent = '🏆 2025-26 TPBL 總冠軍'; }
+
+    card.innerHTML =
+      '<div class="champ-banner">' +
+        '<div class="champ-crown">🏆</div>' +
+        '<div class="champ-title" style="color:' + champClr + '">' + champName + '</div>' +
+        '<div class="champ-sub">2025-26 TPBL 年度總冠軍</div>' +
+        '<div class="champ-series">系列賽 ' +
+          '<strong style="color:' + champClr + '">' + hi + '</strong>' +
+          ' – ' +
+          '<strong style="color:var(--text2)">' + lo + '</strong>' +
+          ' 擊敗 ' + beaten +
+        '</div>' +
+        buildScheduleDots(seriesPlayed, opp) +
+      '</div>';
+  }
+
   /* ⑪ 勝負預測 */
   function renderPrediction(fm, opp, h2h, hasChamp) {
     var card = document.getElementById('pred-card');
@@ -1013,6 +1070,12 @@
     var seriesPlayed = (D.championship_series || []).filter(function(g){ return g.opp_key === currentOpp; });
     var fSeriesW = seriesPlayed.filter(function(g){ return g.won; }).length;
     var oSeriesW = seriesPlayed.length - fSeriesW;
+
+    // 系列賽已分勝負 → 改顯示冠軍橫幅（取代機率預測）
+    if (fSeriesW >= 4 || oSeriesW >= 4) {
+      renderChampionBanner(card, opp, seriesPlayed, fSeriesW, oSeriesW);
+      return;
+    }
 
     var wins = h2h.filter(function (g) { return g.won; }).length;
     var h2hWinRate = wins / h2h.length;
@@ -1048,36 +1111,7 @@
     var html = '';
 
     // ── 賽程圓點 ──
-    html += '<div class="pred-schedule">';
-    SERIES_GAMES.forEach(function (g, idx) {
-      var played = idx < seriesPlayed.length ? seriesPlayed[idx] : null;
-      var cls, tooltip;
-      var homeTag = g.home === 'f' ? '夢主場' : opp.short + '主';
-      if (played) {
-        cls = played.won ? 'result-f' : 'result-o';
-        tooltip = g.label + ' ' + g.date + ' ' + (played.won ? '夢 ' + played.formosa_score + '-' + played.opp_score + ' 王' : '王 ' + played.opp_score + '-' + played.formosa_score + ' 夢') + '（' + (played.note || '') + '）';
-      } else if (g.tbd) {
-        cls = 'tbd';
-        tooltip = g.label + ' 如需要';
-      } else {
-        cls = g.home === 'f' ? 'home-f' : 'home-o';
-        tooltip = g.label + ' ' + g.date + ' ' + homeTag;
-      }
-      var subLabel;
-      if (played) {
-        subLabel = played.won ? 'D' : 'K';
-      } else if (g.tbd) {
-        subLabel = '待定';
-      } else {
-        subLabel = g.date;
-      }
-      html +=
-        '<div class="pred-game-dot ' + cls + '" title="' + tooltip + '">' +
-          '<span>' + g.label + '</span>' +
-          '<span style="font-size:.5rem;opacity:.8">' + subLabel + '</span>' +
-        '</div>';
-    });
-    html += '</div>';
+    html += buildScheduleDots(seriesPlayed, opp);
 
     // ── 系列賽比分（若已開打）──
     if (seriesPlayed.length > 0) {
@@ -1259,6 +1293,88 @@
     });
 
     renderG1Win(fm, opp, pH, pA);
+  }
+
+  /* 賽後重點（系列賽結束後）：轉折故事 + 每場戰報。
+     系列賽進行中則隱藏，改由 #g1-prediction 顯示前瞻。 */
+  function renderPostSeries(opp) {
+    var sec   = document.getElementById('post-series');
+    var g1sec = document.getElementById('g1-prediction');
+    if (!sec) { return; }
+
+    var seriesPlayed = (D.championship_series || []).filter(function(g){ return g.opp_key === currentOpp; });
+    var fW = seriesPlayed.filter(function(g){ return g.won; }).length;
+    var oW = seriesPlayed.length - fW;
+    var clinched = fW >= 4 || oW >= 4;
+
+    if (!clinched) { sec.style.display = 'none'; return; }
+    if (g1sec) { g1sec.style.display = 'none'; }   // 賽後不再顯示前瞻
+    sec.style.display = '';
+
+    var champFm = fW >= 4;
+    var champName = champFm ? '福爾摩沙夢想家' : opp.name;
+    var beaten    = champFm ? opp.name : '福爾摩沙夢想家';
+    var hi = Math.max(fW, oW), lo = Math.min(fW, oW);
+
+    // 逐場累計戰績 → 找出冠軍隊最深落後與收尾連勝
+    var f = 0, o = 0, worst = 0, worstStr = '';
+    seriesPlayed.forEach(function (g) {
+      if (g.won) { f++; } else { o++; }
+      var deficit = champFm ? (o - f) : (f - o);
+      if (deficit > worst) {
+        worst = deficit;
+        worstStr = champFm ? (f + '-' + o) : (o + '-' + f);
+      }
+    });
+    var streak = [];
+    for (var i = seriesPlayed.length - 1; i >= 0; i--) {
+      var won = champFm ? seriesPlayed[i].won : !seriesPlayed[i].won;
+      if (won) { streak.unshift(seriesPlayed[i].game); } else { break; }
+    }
+    var CN = ['一','二','三','四','五','六','七'];
+
+    // ── 轉折故事 ──
+    var story = champName;
+    if (worst >= 2) {
+      story += '在系列賽一度以 <strong style="color:var(--opp-color)">' + worstStr + '</strong> 落後，';
+      if (streak.length >= 2) {
+        story += '背水一戰連下 ' + streak.join('、') + ' ' + CN[streak.length - 1] + '城，完成大逆轉，';
+      }
+    } else if (streak.length >= 2) {
+      story += '以 ' + streak.join('、') + ' 的收尾連勝，';
+    }
+    story += '最終 <strong style="color:var(--accent)">' + hi + '–' + lo + '</strong> 擊敗' + beaten +
+             '，奪下 2025-26 賽季總冠軍。';
+
+    var html =
+      '<div class="card">' +
+        '<div class="ps-intro">' + story + '</div>' +
+        '<div class="ps-report-title">系列賽每場戰報</div>';
+
+    // ── 每場戰報 ──
+    seriesPlayed.forEach(function (g) {
+      var md = (+g.date.slice(4, 6)) + '/' + (+g.date.slice(6, 8));
+      var place = g.formosa_home ? '台中' : '新莊';
+      var badge = g.won
+        ? '<span class="h2h-badge h2h-w">勝</span>'
+        : '<span class="h2h-badge h2h-l">敗</span>';
+      var scoreHtml = '夢 <strong style="color:' + (g.won ? 'var(--accent)' : 'var(--text2)') + '">' + g.formosa_score + '</strong>' +
+        ' – ' +
+        '<strong style="color:' + (!g.won ? 'var(--opp-color)' : 'var(--text2)') + '">' + g.opp_score + '</strong> ' + opp.short;
+      html +=
+        '<div class="ps-game">' +
+          '<div class="ps-game-head">' +
+            '<span class="ps-g-label">' + g.game + '</span>' +
+            '<span class="ps-g-meta">' + md + ' · ' + place + '</span>' +
+            '<span class="ps-g-score">' + scoreHtml + '</span>' +
+            badge +
+          '</div>' +
+          (g.note ? '<div class="ps-g-note">' + g.note + '</div>' : '') +
+        '</div>';
+    });
+
+    html += '</div>';
+    sec.innerHTML = '<h2>賽後重點</h2>' + html;
   }
 
   /* 系列賽前瞻卡（依系列賽狀況動態切換：最近一場回顧 + 下一場前瞻） */
