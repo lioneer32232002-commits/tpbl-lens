@@ -480,6 +480,37 @@
     .pred-path-bar-fill { height:100%; border-radius:3px; transition:width .75s cubic-bezier(.25,.46,.45,.94); }
     .pred-path-val { font-size:.72rem; font-weight:700; width:28px; flex-shrink:0; }
 
+    /* ── 預測回顧 ── */
+    .rev-intro { font-size:.74rem; color:var(--text2); line-height:1.6; margin-bottom:1.1rem; }
+    .rev-intro strong { color:var(--text); }
+    .rev-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; margin-bottom:1.25rem; }
+    @media (max-width:560px){ .rev-metrics { grid-template-columns:repeat(2,1fr); } }
+    .rev-metric { background:var(--bg3); border-radius:8px; padding:.7rem .5rem; text-align:center; }
+    .rev-metric-num { font-size:1.55rem; font-weight:900; line-height:1; }
+    .rev-metric-label { font-size:.66rem; color:var(--text2); margin-top:.32rem; line-height:1.35; }
+    .rev-metric-sub { font-size:.6rem; color:var(--text2); opacity:.75; margin-top:.18rem; }
+    .rev-grade-good { color:var(--accent); }
+    .rev-grade-mid  { color:#ffd166; }
+    .rev-grade-bad  { color:var(--accent2); }
+    .rev-tbl { width:100%; border-collapse:collapse; font-size:.8rem; }
+    .rev-tbl th { color:var(--text2); font-size:.7rem; font-weight:700; padding:.4rem .5rem; border-bottom:1px solid var(--bg3); text-align:center; white-space:nowrap; }
+    .rev-tbl td { padding:.42rem .5rem; text-align:center; border-bottom:1px solid rgba(255,255,255,.04); white-space:nowrap; }
+    .rev-tbl tr:last-child td { border-bottom:none; }
+    .rev-tbl td.rev-game { font-weight:700; color:var(--text); }
+    .rev-hit  { color:var(--accent); font-weight:700; }
+    .rev-miss { color:var(--accent2); font-weight:700; }
+    .rev-section-title { font-size:.82rem; color:var(--text); font-weight:700; margin:1.4rem 0 .6rem; }
+    .rev-traj { margin-top:.4rem; }
+    .rev-traj-row { display:flex; align-items:center; gap:.5rem; margin-bottom:.3rem; }
+    .rev-traj-label { font-size:.7rem; color:var(--text2); width:118px; flex-shrink:0; text-align:right; }
+    .rev-traj-bar-bg { flex:1; height:14px; background:var(--bg3); border-radius:3px; overflow:hidden; position:relative; }
+    .rev-traj-bar-fill { height:100%; border-radius:3px; transition:width .8s cubic-bezier(.25,.46,.45,.94); }
+    .rev-traj-val { font-size:.7rem; font-weight:700; width:36px; flex-shrink:0; text-align:left; }
+    .rev-verdict { background:rgba(0,229,255,.05); border:1px solid rgba(0,229,255,.18); border-radius:10px; padding:.9rem 1.1rem; margin-top:1.25rem; font-size:.76rem; color:var(--text2); line-height:1.7; }
+    .rev-verdict strong { color:var(--text); }
+    .rev-verdict .rev-v-title { font-size:.8rem; color:var(--accent); font-weight:700; margin-bottom:.5rem; letter-spacing:.03em; }
+    .rev-pending { font-size:.78rem; color:#ffd166; background:rgba(255,209,102,.07); border:1px solid rgba(255,209,102,.25); border-radius:8px; padding:.7rem .9rem; margin-bottom:1.1rem; line-height:1.6; }
+
     /* 折疊標題 hover */
     #extended-toggle:hover { color: var(--text); }
     #extended-toggle { transition: color .15s; }
@@ -598,6 +629,14 @@
     <h2>冠軍賽奪冠機率預測（7 戰 4 勝）</h2>
     <div class="card" id="pred-card">
       <!-- 由 JS 填入：賽程圓點、大機率、G1效應、路徑分佈、因子 -->
+    </div>
+  </section>
+
+  <!-- 預測回顧（系列賽結束後評估模型準確度） -->
+  <section id="review">
+    <h2>預測回顧・模型準不準？</h2>
+    <div class="card" id="review-card">
+      <!-- 由 JS 填入：賽前機率對照、Brier/log loss、奪冠機率軌跡、總結 -->
     </div>
   </section>
 
