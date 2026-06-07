@@ -78,6 +78,11 @@ def _calc_prob(played, fm, opp):
     n_played  = len(played)
     f_w = sum(1 for g in played if g.get('won'))
     k_w = n_played - f_w
+    # 系列賽已分勝負：直接回傳確定機率（_sim_series 對 need=0 的 edge case 會失準）
+    if f_w >= 4:
+        return 1.0
+    if k_w >= 4:
+        return 0.0
     # formWinRate
     if n_played > 0:
         form_wr = f_w / n_played

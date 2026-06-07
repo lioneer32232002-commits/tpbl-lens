@@ -1083,13 +1083,17 @@
     if (seriesPlayed.length > 0) {
       var fLead = fSeriesW > oSeriesW;
       var oLead = oSeriesW > fSeriesW;
+      var clinched = fSeriesW >= 4 || oSeriesW >= 4;
+      var statusTxt = clinched
+        ? (fSeriesW >= 4 ? '&nbsp;（夢想家奪冠 🏆）' : '&nbsp;（' + opp.short + '奪冠 🏆）')
+        : (fLead ? '&nbsp;（夢想家領先）' : oLead ? '&nbsp;（' + opp.short + '領先）' : '&nbsp;（平局）');
       html +=
         '<div style="text-align:center;margin:.6rem 0 .8rem;font-size:.9rem;color:var(--text2)">' +
-          '系列賽現況：' +
+          (clinched ? '系列賽結果：' : '系列賽現況：') +
           '<span style="color:var(--accent);font-weight:700">夢想家 ' + fSeriesW + '</span>' +
           ' – ' +
           '<span style="color:var(--opp-color);font-weight:700">' + oSeriesW + ' ' + opp.short + '</span>' +
-          (fLead ? '&nbsp;（夢想家領先）' : oLead ? '&nbsp;（' + opp.short + '領先）' : '&nbsp;（平局）') +
+          statusTxt +
         '</div>';
     }
 
