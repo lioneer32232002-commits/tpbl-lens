@@ -66,6 +66,7 @@
     renderChampTodate(oppKey, opp);
     renderH2H(h2h, opp);
     renderPrediction(effF, effO, h2h, hasChamp);
+    renderReview(effF, effO, h2h);
     renderEfficiency(effF, effO);
     renderScoring(effF, effO);
     renderHomeAway(effF, effO);
@@ -1001,6 +1002,240 @@
     }
     for (var j = 0; j < 4; j++) { f[j] /= N; k[j] /= N; }
     return { f: f, k: k };
+  }
+
+  /* ⑩·5 預測回顧 — 評估模型賽前機率的準確度（資料驅動，系列賽每加一場自動更新） */
+  function renderReview(effF, effO, h2h) {
+    var card = document.getElementById('review-card');
+    if (!card) { return; }
+    var games = (D.championship_series || []).filter(function (g) { return g.opp_key === currentOpp; });
+    var oppName = D[currentOpp] ? D[currentOpp].name : '對手';
+    var oppShort = D[currentOpp] ? D[currentOpp].short : '對手';
+
+    if (games.length === 0) {
+      card.innerHTML = '<div class="rev-intro">系列賽尚未開打，待開賽後此處將自動評估每場賽前預測的準確度。</div>';
+      return;
+    }
+
+    var netDiff = effF.netrtg - effO.netrtg;
+    var h2hWins = h2h.filter(function (g) { return g.won; }).length;
+    var h2hWinRate = h2hWins / h2h.length;
+
+    function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+    // 重建「進入第 i 場前」的模型參數（與 renderPrediction 同公式）
+    function preGame(i) {
+      var fw = 0;
+      for (var j = 0; j < i; j++) { if (games[j].won) { fw++; } }
+      var fwr = i === 0 ? h2hWinRate : fw / i;
+      var netProb  = clamp(0.5 + netDiff * 0.025, 0.18, 0.82);
+      var gameProb = clamp(netProb * 0.6 + fwr * 0.4, 0.22, 0.78);
+      var pH = Math.min(0.82, gameProb + 0.10);
+      var pA = Math.max(0.18, gameProb - 0.10);
+      return { pH: pH, pA: pA, fw: fw };
+    }
+
+    // 列舉剩餘賽程的系列賽奪冠機率（≤7 場，直接展開）
+    function champProb(pH, pA, sched, fNeed, oNeed) {
+      var total = 0;
+      (function rec(idx, f, o, prob) {
+        if (f >= fNeed) { total += prob; return; }
+        if (o >= oNeed) { return; }
+        var p = sched[idx] === 'h' ? pH : pA;
+        rec(idx + 1, f + 1, o, prob * p);
+        rec(idx + 1, f, o + 1, prob * (1 - p));
+      })(0, 0, 0, 1);
+      return total;
+    }
+
+    // 逐場：賽前單場夢勝率(fp)、賽前奪冠機率(cp)、實際結果(won)
+    var rows = [];
+    games.forEach(function (g, i) {
+      var pg = preGame(i);
+      var home = g.formosa_home;
+      var fp = home ? pg.pH : pg.pA;
+      var ow = i - pg.fw;
+      var cp = champProb(pg.pH, pg.pA, SERIES_SCHEDULE.slice(i), 4 - pg.fw, 4 - ow);
+      rows.push({ label: g.game, date: g.date, home: home, fp: fp, cp: cp, won: g.won, fScore: g.formosa_score, oScore: g.opp_score });
+    });
+
+    // ── 整體指標 ──
+    var n = rows.length;
+    var brierSum = 0, logSum = 0, dirHit = 0, dirPicks = 0, absSum = 0;
+    var fmFav = 0, fmFavWin = 0, oFav = 0, oFavWin = 0;
+    rows.forEach(function (r) {
+      var y = r.won ? 1 : 0;
+      var p = clamp(r.fp, 1e-6, 1 - 1e-6);
+      brierSum += (p - y) * (p - y);
+      logSum   += -(y * Math.log(p) + (1 - y) * Math.log(1 - p));
+      absSum   += Math.abs(r.fp - y);
+      if (Math.abs(r.fp - 0.5) > 1e-9) {
+        dirPicks++;
+        var pickF = r.fp > 0.5;
+        if (pickF === r.won) { dirHit++; }
+      }
+      if (r.fp > 0.5)      { fmFav++; if (r.won)  { fmFavWin++; } }
+      else if (r.fp < 0.5) { oFav++;  if (!r.won) { oFavWin++;  } }
+    });
+    var brier = brierSum / n;
+    var logloss = logSum / n;
+    var mae = absSum / n;
+    var dirPct = dirPicks ? Math.round(dirHit / dirPicks * 100) : 0;
+
+    // 系列賽是否已分曉、冠軍歸屬
+    var fWins = rows.filter(function (r) { return r.won; }).length;
+    var oWins = n - fWins;
+    var decided = fWins >= 4 || oWins >= 4;
+    var formosaChamp = fWins >= 4;
+    var finalY = formosaChamp ? 1 : 0;          // 真實冠軍歸屬（夢想家=1）
+    var preSeriesCp = rows[0].cp;               // 賽前（G1 前）模型給的夢奪冠機率
+    var preFav = preSeriesCp >= 0.5 ? 'formosa' : (preSeriesCp > 0 && preSeriesCp < 0.5 ? 'opp' : 'tie');
+
+    // 奪冠機率最大誤差（相對最終真實結果）— 僅在已分曉時有意義
+    var maxErr = 0, maxErrGame = '';
+    if (decided) {
+      rows.forEach(function (r) {
+        var e = Math.abs(r.cp - finalY);
+        if (e > maxErr) { maxErr = e; maxErrGame = r.label; }
+      });
+    }
+
+    function grade(v, goodLt, midLt) { return v < goodLt ? 'rev-grade-good' : (v < midLt ? 'rev-grade-mid' : 'rev-grade-bad'); }
+
+    var html = '';
+
+    // 待補提示
+    if (!decided) {
+      html += '<div class="rev-pending">系列賽尚未分曉（目前 <strong>夢想家 ' + fWins + ' – ' + oWins + ' ' + oppShort +
+        '</strong>）。以下回顧涵蓋已打的 <strong>' + n + ' 場</strong>，G7 數據寫入後將自動補上最終奪冠判定。</div>';
+    }
+
+    html += '<div class="rev-intro">評估方式：用與上方預測<strong>完全相同的模型公式</strong>，重建「每場開打前」模型對夢想家的勝率，' +
+      '再與實際結果比對。<strong>Brier Score</strong> 與 <strong>Log Loss</strong> 越低代表機率校準越準；' +
+      '擲硬幣基準為 Brier 0.250、Log Loss 0.693。</div>';
+
+    // ── 指標卡 ──
+    var dirCls = dirPct >= 60 ? 'rev-grade-good' : (dirPct >= 50 ? 'rev-grade-mid' : 'rev-grade-bad');
+    html += '<div class="rev-metrics">';
+    html += '<div class="rev-metric"><div class="rev-metric-num ' + grade(brier, 0.20, 0.25) + '">' + brier.toFixed(3) + '</div>' +
+      '<div class="rev-metric-label">Brier Score</div><div class="rev-metric-sub">擲硬幣 0.250</div></div>';
+    html += '<div class="rev-metric"><div class="rev-metric-num ' + grade(logloss, 0.65, 0.693) + '">' + logloss.toFixed(3) + '</div>' +
+      '<div class="rev-metric-label">Log Loss</div><div class="rev-metric-sub">擲硬幣 0.693</div></div>';
+    html += '<div class="rev-metric"><div class="rev-metric-num ' + dirCls + '">' + dirHit + '/' + dirPicks + '</div>' +
+      '<div class="rev-metric-label">單場方向命中</div><div class="rev-metric-sub">' + dirPct + '%</div></div>';
+    if (decided) {
+      var champErrCls = maxErr < 0.4 ? 'rev-grade-good' : (maxErr < 0.65 ? 'rev-grade-mid' : 'rev-grade-bad');
+      html += '<div class="rev-metric"><div class="rev-metric-num ' + champErrCls + '">' + Math.round(maxErr * 100) + '%</div>' +
+        '<div class="rev-metric-label">奪冠機率最大誤差</div><div class="rev-metric-sub">' + maxErrGame + ' 賽前</div></div>';
+    } else {
+      html += '<div class="rev-metric"><div class="rev-metric-num" style="color:var(--text2)">' + Math.round(mae * 100) + '%</div>' +
+        '<div class="rev-metric-label">單場平均誤差</div><div class="rev-metric-sub">|機率−結果|</div></div>';
+    }
+    html += '</div>';
+
+    // ── 逐場對照表 ──
+    html += '<div class="rev-section-title">每場賽前預測 vs 實際</div>';
+    html += '<div style="overflow-x:auto"><table class="rev-tbl"><thead><tr>' +
+      '<th>場次</th><th>主/客</th><th>賽前夢勝率</th><th>實際</th><th>方向</th><th>賽前夢奪冠</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      var resTxt = r.won ? ('夢 ' + r.fScore + '–' + r.oScore) : (oppShort + ' ' + r.oScore + '–' + r.fScore);
+      var resCls = r.won ? 'rev-hit' : 'rev-miss';
+      var pick = Math.abs(r.fp - 0.5) <= 1e-9 ? null : (r.fp > 0.5);
+      var hit = pick === null ? null : (pick === r.won);
+      var dirTxt = hit === null ? '—' : (hit ? '✓' : '✗');
+      var dirCellCls = hit === null ? '' : (hit ? 'rev-hit' : 'rev-miss');
+      html += '<tr>' +
+        '<td class="rev-game">' + r.label + '</td>' +
+        '<td>' + (r.home ? '主' : '客') + '</td>' +
+        '<td>' + Math.round(r.fp * 100) + '%</td>' +
+        '<td class="' + resCls + '">' + resTxt + '</td>' +
+        '<td class="' + dirCellCls + '">' + dirTxt + '</td>' +
+        '<td>' + Math.round(r.cp * 100) + '%</td>' +
+        '</tr>';
+    });
+    html += '</tbody></table></div>';
+
+    // ── 奪冠機率軌跡 ──
+    html += '<div class="rev-section-title">夢想家奪冠機率・賽前軌跡</div>';
+    html += '<div class="rev-traj">';
+    rows.forEach(function (r) {
+      var pct = Math.round(r.cp * 100);
+      var col = r.won ? 'rgba(0,229,255,.75)' : 'rgba(var(--opp-rgb),.7)';
+      html += '<div class="rev-traj-row">' +
+        '<div class="rev-traj-label">' + r.label + ' 賽前</div>' +
+        '<div class="rev-traj-bar-bg"><div class="rev-traj-bar-fill" data-w="' + pct + '%" style="width:0%;background:rgba(0,229,255,.7)"></div></div>' +
+        '<div class="rev-traj-val" style="color:var(--accent)">' + pct + '%</div>' +
+        '</div>';
+    });
+    if (decided) {
+      var champCol = formosaChamp ? 'var(--accent)' : 'var(--opp-color)';
+      var champFill = formosaChamp ? 'rgba(0,229,255,.85)' : 'rgba(var(--opp-rgb),.8)';
+      html += '<div class="rev-traj-row">' +
+        '<div class="rev-traj-label" style="color:' + champCol + ';font-weight:700">最終結果</div>' +
+        '<div class="rev-traj-bar-bg"><div class="rev-traj-bar-fill" data-w="100%" style="width:0%;background:' + champFill + '"></div></div>' +
+        '<div class="rev-traj-val" style="color:' + champCol + '">' + (formosaChamp ? '奪冠' : '落敗') + '</div>' +
+        '</div>';
+    }
+    html += '</div>';
+
+    // ── 總結 ──
+    html += buildReviewVerdict({
+      decided: decided, formosaChamp: formosaChamp, fWins: fWins, oWins: oWins,
+      brier: brier, logloss: logloss, dirHit: dirHit, dirPicks: dirPicks,
+      preSeriesCp: preSeriesCp, preFav: preFav, rows: rows, maxErr: maxErr, maxErrGame: maxErrGame,
+      fmFav: fmFav, fmFavWin: fmFavWin, oFav: oFav, oFavWin: oFavWin,
+      oppName: oppName, oppShort: oppShort
+    });
+
+    card.innerHTML = html;
+
+    // 動畫：軌跡與表格 bar
+    requestAnimationFrame(function () {
+      card.querySelectorAll('.rev-traj-bar-fill').forEach(function (el) {
+        el.style.width = el.getAttribute('data-w');
+      });
+    });
+  }
+
+  /* 預測回顧・文字總結（依系列賽結果動態生成） */
+  function buildReviewVerdict(o) {
+    var champName = o.formosaChamp ? '福爾摩沙夢想家' : o.oppName;
+    var lowest = o.rows.reduce(function (a, b) { return b.cp < a.cp ? b : a; }, o.rows[0]);
+    var html = '<div class="rev-verdict">';
+    html += '<div class="rev-v-title">總結・模型準不準？</div>';
+
+    if (!o.decided) {
+      html += '目前 <strong>' + o.rows.length + '</strong> 場的賽前預測，Brier <strong>' + o.brier.toFixed(3) +
+        '</strong>、Log Loss <strong>' + o.logloss.toFixed(3) + '</strong>，' +
+        (o.brier < 0.25 ? '優於擲硬幣基準（0.250）' : '與擲硬幣基準（0.250）相當') + '；' +
+        '單場方向命中 <strong>' + o.dirHit + '/' + o.dirPicks + '</strong>。' +
+        '系列賽走到 <strong>夢想家 ' + o.fWins + ' – ' + o.oWins + ' ' + o.oppShort +
+        '</strong>，最終奪冠判定待 G7 數據寫入後自動補完。';
+      html += '</div>';
+      return html;
+    }
+
+    // 已分曉
+    var dirRight = o.preFav === (o.formosaChamp ? 'formosa' : 'opp');
+    html += '系列賽結果：<strong>' + champName + '</strong>以 ' +
+      (o.formosaChamp ? o.fWins + '–' + o.oWins : o.oWins + '–' + o.fWins) + ' 奪冠。';
+    html += '賽前（G1 前）模型給夢想家的奪冠機率為 <strong>' + Math.round(o.preSeriesCp * 100) + '%</strong>，' +
+      (dirRight ? '方向<strong class="rev-hit">押對</strong>了最終冠軍。' : '方向<strong class="rev-miss">押錯</strong>了——模型較看好' +
+        (o.preFav === 'formosa' ? '夢想家' : o.oppShort) + '，實際由' + champName + '奪冠。');
+    html += '<br><br>';
+    html += '整體校準：Brier <strong>' + o.brier.toFixed(3) + '</strong>（擲硬幣 0.250）、Log Loss <strong>' +
+      o.logloss.toFixed(3) + '</strong>（擲硬幣 0.693），' +
+      (o.brier < 0.25 ? '<strong class="rev-hit">優於</strong>盲猜' : '<strong class="rev-miss">未勝過</strong>盲猜') +
+      '；單場方向命中 <strong>' + o.dirHit + '/' + o.dirPicks + '</strong>。';
+    html += '<br><br>';
+    // 最大誤差敘事
+    html += '最大誤判落在 <strong>' + o.maxErrGame + ' 賽前</strong>：當時模型只給' +
+      (o.formosaChamp ? '夢想家' : o.oppShort) + ' <strong>' + Math.round(lowest.cp * 100) + '%</strong> 奪冠機率' +
+      (o.formosaChamp ? '（夢想家當時面臨淘汰）' : '') + '，與最終奪冠的事實相差 <strong>' + Math.round(o.maxErr * 100) + '%</strong>。' +
+      (o.formosaChamp ? '模型在夢想家背水一戰時明顯低估其韌性——這也是純數據模型難以捕捉的「氣勢」與臨場調整。' :
+        '模型多次高估夢想家，' + o.oppShort + '在關鍵場次的執行力超出數據預期。');
+    html += '</div>';
+    return html;
   }
 
   /* ⑪ 勝負預測 */
