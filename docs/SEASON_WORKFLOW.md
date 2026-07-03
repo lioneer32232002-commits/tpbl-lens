@@ -35,7 +35,7 @@ auto_update.py（主流程，GitHub Actions 每日 22:00 CST 自動跑）
 
 ## 部署（所有 Playbook 結尾共用）
 
-本機工作目錄：`C:\Users\User\OneDrive\02_創作\14_AI TEST\tpbl_lens`（在 `master` 直接開發；CLAUDE.md 舊版指令寫的 worktree 合併與 `C:\Users\oneda` 路徑已過時，忽略）。
+本機工作目錄：`C:\Users\oneda\OneDrive\02_創作\14_AI TEST\tpbl_lens`（在 `master` 直接開發。2026-07-03 勘誤：舊版誤寫 `C:\Users\User\...`，實際使用者名稱是 `oneda`）。
 
 ```bash
 python build.py
@@ -47,7 +47,7 @@ npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=<msg> -
 
 - `dist/` **有被 git 追蹤**，必須 commit（GitHub→Cloudflare 整合會用 repo 內的 dist/）。
 - `git push` 後 GitHub Actions/整合會自動部署；`wrangler` 是要「立即生效」時的直傳。兩者皆可。
-- 部署屬對外動作 → 推送前先向使用者確認。
+- 確認政策（2026-07-03，與 CLAUDE.md 一致）：**build→commit→push 直接做，不需確認；`wrangler pages deploy` 執行前必須先向使用者確認**（使用者該次對話已明說「直接部署」則不用再問）。
 
 ---
 
@@ -175,4 +175,4 @@ OG 圖 `generate_og_championship.py`：未分勝負畫機率長條；分勝負�
 `.claude/launch.json` 已設好靜態伺服器（`python -m http.server 8765 --directory dist`）。用 preview 工具 `preview_start` 名稱 `tpbl-lens`，開 `/championship/` 或 `/`，以 `preview_eval` 讀 DOM、`preview_console_logs` 看錯誤、OG 圖直接 Read `dist/og/championship.png`。
 
 ## 計算規範
-PPP / USG% / TS% 等定義見 `CLAUDE.md`「資料計算規範」，與 `process_data.py`、`compute_champ_todate.py` 一致。
+PPP / USG% / TS% 等定義見 `docs/DATA_RULES.md`（2026-07-03 更新：原在 CLAUDE.md「資料計算規範」，已搬家），與 `process_data.py`、`compute_champ_todate.py` 一致。
