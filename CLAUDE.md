@@ -20,6 +20,7 @@ npx wrangler pages deploy dist --project-name tpbl-lens --commit-message=deploy 
 - 目前常態是直接在 master 開發；若在 worktree 分支，先回 master merge 再走上面流程。
 
 ## 路由表（動手前先讀對應檔）
+> 「情境」欄是**語意匹配**，引號內只是範例句。使用者用任何口語描述，只要意思符合就讀對應檔——不要求使用者記住特定指令。
 | 情境 | 讀這個 |
 |------|--------|
 | 「換季」「進季後賽」「進冠軍賽」「GN 打完了」 | `docs/SEASON_WORKFLOW.md`（Playbook A/B/C） |
